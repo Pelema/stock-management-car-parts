@@ -15,7 +15,7 @@ export function RootRoute() {
       <NavbarComponent />
       <div className="flex grow overflow-y-hidden p-2">
         <SidebarComponent />
-        <div className="grow ml-2 overflow-y-auto">
+        <div className="grow ml-2">
           <Outlet />
         </div>
       </div>

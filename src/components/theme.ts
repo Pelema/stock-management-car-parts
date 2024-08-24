@@ -3,7 +3,7 @@ export const theme = {
       "base": "h-full",
       "collapsed": {
         "on": "w-16",
-        "off": "w-[240px]"
+        "off": "min-w-[240px] w-[240px]"
       },
       "inner": "h-full overflow-y-auto overflow-x-hidden rounded bg-gray-50 px-3 py-4 dark:bg-gray-800"
     },

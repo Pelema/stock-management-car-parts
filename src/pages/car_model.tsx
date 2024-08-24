@@ -14,8 +14,7 @@ import { tableTheme } from "./table_theme";
 
 export function CarModelPage() {
   return (
-    <>
-      <div className="flex space-x-2">
+      <div className="flex space-x-2 h-full">
         <div className="overflow-x-auto rounded-md grow">
           <Table hoverable theme={tableTheme}>
             <TableHead>
@@ -84,7 +83,6 @@ export function CarModelPage() {
           </Card>
         </div>
       </div>
-    </>
   );
 }
 

@@ -18,7 +18,7 @@ export function SupportPage() {
 
   return (
     <>
-      <div className="overflow-x-auto rounded-md grow">
+      <div className="overflow-x-auto rounded-md h-full">
         <Table hoverable theme={tableTheme}>
           <caption className="p-5 uppercase text-md font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
             <div className="flex flex-row-reverse">

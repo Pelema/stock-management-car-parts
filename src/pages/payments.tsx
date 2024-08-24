@@ -9,31 +9,155 @@ import {
   Label,
   TextInput,
   Modal,
+  Pagination,
+  Checkbox,
+  Popover,
+  Datepicker,
 } from "flowbite-react";
 import { tableTheme } from "./table_theme";
 import { useState } from "react";
+import { HiSearch, HiFilter, HiPlus } from "react-icons/hi";
+import { BiUpload, BiChevronDown } from "react-icons/bi";
+import { BsCheck2All } from "react-icons/bs";
+
 
 export function PaymentsPage() {
   const [openModal, setOpenModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const onPageChange = (page: number) => setCurrentPage(page);
 
   return (
     <>
-      <div className="overflow-x-auto rounded-md grow">
+      <div className="overflow-x-auto rounded-md h-full">
         <Table hoverable theme={tableTheme}>
           <caption className="p-5 uppercase text-md font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
-            <div className="flex flex-row-reverse">
-              <form className="w-1/4">
-                <TextInput
-                  id="search"
-                  type="search"
-                  placeholder="Search for payment..."
-                  required
-                  className="w-full"
-                />
-              </form>
+            <div className="flex justify-between items-center">
+              <div className="flex space-x-2">
+                <form className="w-[300px]">
+                  <TextInput
+                    id="search"
+                    type="search"
+                    placeholder="Search for payment..."
+                    required
+                    className="w-full"
+                    icon={HiSearch}
+                  />
+                </form>
+                <Popover
+                  aria-labelledby="default-popover"
+                  arrow={false}
+                  placement="bottom"
+                  content={
+                    <div
+                      className="flex   flex-col gap-4 p-4 capitalize font-bold"
+                      id="checkbox"
+                    >
+                      <div className="flex space-x-4">
+                        <div className="flex flex-col w-[200px] justify-between">
+                          <div className="flex flex-col space-y-6">
+                            <div>
+                              <div className="mb-3">By status</div>
+                              <div className="pl-2 flex flex-col space-y-2">
+                                <div className="flex items-center gap-2">
+                                  <Checkbox id="accept" defaultChecked />
+                                  <Label
+                                    htmlFor="accept"
+                                    className="font-semibold"
+                                  >
+                                    Pending
+                                  </Label>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Checkbox id="promotion" />
+                                  <Label
+                                    htmlFor="promotion"
+                                    className="font-semibold"
+                                  >
+                                    Processing
+                                  </Label>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Checkbox id="promotion" />
+                                  <Label
+                                    htmlFor="promotion"
+                                    className="font-semibold"
+                                  >
+                                    Completed
+                                  </Label>
+                                </div>
+                              </div>
+                            </div>
+                            <div>
+                              <div className="mb-3">By amount</div>
+                              <div className="pl-2 flex flex-col space-y-2">
+                                <div className="flex items-center gap-2">
+                                  <Checkbox id="age" />
+                                  <Label
+                                    htmlFor="age"
+                                    className="font-semibold"
+                                  >
+                                    0 - 500
+                                  </Label>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Checkbox id="age" />
+                                  <Label
+                                    htmlFor="age"
+                                    className="font-semibold"
+                                  >
+                                    500 - 1 000
+                                  </Label>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <Checkbox id="age" />
+                                  <Label
+                                    htmlFor="age"
+                                    className="font-semibold"
+                                  >
+                                    Above 1000
+                                  </Label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <Button type="submit" outline>
+                            <BsCheck2All className="mr-2 h-5 w-5" />
+                            Apply
+                          </Button>
+                        </div>
+                        <div>
+                          <div>By date</div>
+                          <Datepicker inline />
+                        </div>
+                      </div>
+                    </div>
+                  }
+                >
+                  <Button type="submit" outline>
+                    <HiFilter className="mr-2 h-5 w-5" />
+                    Filter
+                    <BiChevronDown className="ml-2" />
+                  </Button>
+                </Popover>
+              </div>
+              <div className="flex space-x-2">
+                <Button type="submit">
+                  <HiPlus className="mr-2 h-5 w-5" />
+                  Add Payment
+                </Button>
+                <Button type="submit" outline>
+                  <BiUpload className="mr-2 h-5 w-5" />
+                  Export
+                </Button>
+              </div>
             </div>
           </caption>
           <TableHead>
+            <Table.HeadCell className="p-4">
+              <Checkbox />
+            </Table.HeadCell>
             <TableHeadCell>id</TableHeadCell>
             <TableHeadCell>order #</TableHeadCell>
             <TableHeadCell>order date</TableHeadCell>
@@ -47,6 +171,9 @@ export function PaymentsPage() {
           <TableBody className="divide-y">
             {data.map((item) => (
               <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                <Table.Cell className="p-4">
+                  <Checkbox />
+                </Table.Cell>
                 <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                   {item.id}
                 </TableCell>
@@ -70,6 +197,28 @@ export function PaymentsPage() {
             ))}
           </TableBody>
         </Table>
+        <div className="flex justify-between items-center mt-2">
+          <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+            Showing &nbsp;
+            <span className="font-semibold text-gray-900 dark:text-white">
+              1-10 &nbsp;
+            </span>
+            of &nbsp;
+            <span className="font-semibold text-gray-900 dark:text-white">
+              1000
+            </span>
+          </span>
+          <div className="flex overflow-x-auto sm:justify-center">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={100}
+              onPageChange={onPageChange}
+              showIcons
+              previousLabel=""
+              nextLabel=""
+            />
+          </div>
+        </div>
       </div>
 
       <Modal show={openModal} onClose={() => setOpenModal(false)} size={"2xl"}>
