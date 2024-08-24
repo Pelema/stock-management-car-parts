@@ -8,10 +8,18 @@ import {
   TableRow,
 } from "flowbite-react";
 import { HiUsers } from "react-icons/hi";
-import { tableTheme } from "./table_theme";
+import useQuery from "../hooks/query";
 import { card_theme } from "./card_theme";
+import { tableTheme } from "./table_theme";
+import { Order } from "../types";
 
 export function DashboardPage() {
+
+  const { data: orders, loading, error } = useQuery<Order[]>('orders', false, 0, 5);
+
+  console.log("Dashboard ", orders);
+
+
   return (
     <>
       <div className="flex space-x-2 mb-5">
