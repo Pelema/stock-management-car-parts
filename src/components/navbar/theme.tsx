@@ -1,6 +1,6 @@
 export const theme = {
   root: {
-    base: "bg-white px-2 py-2.5 dark:border-gray-700 dark:bg-gray-800 sm:px-4",
+    base: "bg-white px-5 py-2.5 dark:border-gray-700 dark:bg-gray-800 sm:px-5",
     rounded: {
       on: "rounded",
       off: "",
