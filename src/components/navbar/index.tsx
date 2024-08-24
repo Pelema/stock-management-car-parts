@@ -9,7 +9,7 @@ export function NavbarComponent() {
 
   return (
     <Navbar theme={theme}>
-      <Navbar.Brand href="https://flowbite-react.com">
+      <Navbar.Brand href="/">
         <img
           src="/vite.svg"
           className="mr-3 h-6 sm:h-9"
@@ -26,25 +26,24 @@ export function NavbarComponent() {
           label={
             <Avatar
               alt="User settings"
-              placeholderInitials="RR"
+              placeholderInitials={data?.email?.slice(0, 2).toLocaleUpperCase()}
               rounded
               bordered
             />
           }
         >
           <Dropdown.Header>
-            <span className="block text-sm">Bonnie Green</span>
+            <span className="block text-sm capitalize">{data?.email}</span>
             <span className="block truncate text-sm font-medium">
-              name@flowbite.com
+              {data?.email}
             </span>
           </Dropdown.Header>
           <Dropdown.Item>Dashboard</Dropdown.Item>
           <Dropdown.Item>Settings</Dropdown.Item>
-          <Dropdown.Item>Earnings</Dropdown.Item>
           <Dropdown.Divider />
           <Dropdown.Item
-            onClick={() => {
-              signOut();
+            onClick={async () => {
+              await signOut();
               navigate("/login", { replace: true });
             }}
           >

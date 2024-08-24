@@ -12,10 +12,12 @@ import {
   Spinner,
 } from "flowbite-react";
 import { tableTheme } from "./table_theme";
-import { useState } from "react";
+import { Key, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Supplier } from "../types";
 import useMutation from "../hooks/mutation";
+import useQuery from "../hooks/query";
+import { toast } from "sonner";
 
 export function SuppliersPage() {
   const [openModal, setOpenModal] = useState(false);
@@ -24,70 +26,74 @@ export function SuppliersPage() {
     handleSubmit,
   } = useForm<Supplier>()
 
-  const { insert, loading, error } = useMutation();
+  const { insert, data: fetchData, loading, error } = useMutation();
+  const { data: suppliers, loading: isLoading, error: isError } = useQuery<Supplier[]>('suppliers', false, 0, 10);
 
   const onSubmit: SubmitHandler<Supplier> = async (values) => {
-    console.log(values)
-
-    const data = await insert('suppliers', values);
-
-    console.log("Error ", error);
-
-    console.log("Data", data);
+    await insert('suppliers', values);
+    if (error) {
+      toast.error(error);
+    }
+    if (fetchData) {
+      toast.success("supplier added");
+    }
   }
 
   return (
     <>
       <div className="overflow-x-auto rounded-md grow">
-        <Table hoverable theme={tableTheme}>
-          <caption className="p-5 uppercase text-md font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
-            <div className="flex flex-row-reverse">
-              <Button
-                type="submit"
-                className="uppercase"
-                onClick={() => setOpenModal(true)}
-              >
-                add supplier
-              </Button>
-            </div>
-          </caption>
-          <TableHead>
-            <TableHeadCell>id</TableHeadCell>
-            <TableHeadCell>name</TableHeadCell>
-            <TableHeadCell>email</TableHeadCell>
-            <TableHeadCell>telephone</TableHeadCell>
-            <TableHeadCell>contact person</TableHeadCell>
-            <TableHeadCell>
-              <span className="sr-only">Edit</span>
-            </TableHeadCell>
-          </TableHead>
-          <TableBody className="divide-y">
-            {data.map((item) => (
-              <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  {item.id}
-                </TableCell>
-                <TableCell>
-                  {item.last_name} {item.first_name}
-                </TableCell>
-                <TableCell>{item.email}</TableCell>
-                <TableCell>{item.telephone}</TableCell>
-                <TableCell>
-                  {item.contact_person.last_name}{" "}
-                  {item.contact_person.first_name}
-                </TableCell>
-                <TableCell>
-                  <a
-                    href="#"
-                    className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                  >
-                    Edit
-                  </a>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        {isLoading ?
+          <div className="loading">Loading....</div>
+          :
+          <Table hoverable theme={tableTheme}>
+            <caption className="p-5 uppercase text-md font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
+              <div className="flex flex-row-reverse">
+                <Button
+                  type="submit"
+                  className="uppercase"
+                  onClick={() => setOpenModal(true)}
+                >
+                  add supplier
+                </Button>
+              </div>
+            </caption>
+            <TableHead>
+              <TableHeadCell>id</TableHeadCell>
+              <TableHeadCell>name</TableHeadCell>
+              <TableHeadCell>email</TableHeadCell>
+              <TableHeadCell>telephone</TableHeadCell>
+              <TableHeadCell>contact person</TableHeadCell>
+              <TableHeadCell>
+                <span className="sr-only">Edit</span>
+              </TableHeadCell>
+            </TableHead>
+            <TableBody className="divide-y">
+              {suppliers?.map((item, key: Key) => (
+                <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800" key={key + item.name}>
+                  <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                    {item.id}
+                  </TableCell>
+                  <TableCell>
+                    {item.name}
+                  </TableCell>
+                  <TableCell>{item.email}</TableCell>
+                  <TableCell>{item.telephone}</TableCell>
+                  <TableCell>
+                    {item.contact_person}
+                  </TableCell>
+                  <TableCell>
+                    <a
+                      href="#"
+                      className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
+                    >
+                      Edit
+                    </a>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        }
       </div>
 
       <Modal show={openModal} onClose={() => setOpenModal(false)} size={"2xl"}>
@@ -174,7 +180,7 @@ export function SuppliersPage() {
             </div>
           </Modal.Body>
           <Modal.Footer className="justify-end">
-            <Button type="submit">Save &nbsp; {loading && <Spinner />}</Button>
+            <Button type="submit">Save &nbsp; {loading && <Spinner size={'sm'} />}</Button>
           </Modal.Footer>
         </form>
       </Modal>

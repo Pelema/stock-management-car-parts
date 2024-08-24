@@ -12,12 +12,17 @@ import useQuery from "../hooks/query";
 import { card_theme } from "./card_theme";
 import { tableTheme } from "./table_theme";
 import { Order } from "../types";
+import { User } from "@supabase/supabase-js";
 
 export function DashboardPage() {
 
-  const { data: orders, loading, error } = useQuery<Order[]>('orders', false, 0, 5);
+  // const { data: orders, loading, error } = useQuery<Order[]>('orders', false, 0, 5);
 
-  console.log("Dashboard ", orders);
+  // console.log("Dashboard ", orders);
+
+  // const { data: users, loading: isLoading, error: isError } = useQuery<User[]>('auth.users', false, 0, 5);
+
+  // console.log("Dashboard Users", users);
 
 
   return (

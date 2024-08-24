@@ -28,7 +28,13 @@ export type Supplier = {
 
 export type User = {
     id: number;
-    name: string;
+    full_name: string;
     email: string;
-    lastLogin: string;
+    last_login: string;
+}
+
+export type VAT = {
+    id: number;
+    label: string;
+    percentage: number;
 }
