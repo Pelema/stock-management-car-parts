@@ -9,7 +9,7 @@ export default function useMutation() {
 
     const insert = async (table: string, fields: any) => {
         setLoading(true);
-        const { status, statusText, error } = await supabase.from(table).insert({ id: 1, ...fields })
+        const { status, statusText, error } = await supabase.from(table).insert(fields)
         setLoading(false);
         if (error) {
             setError(error.message);

@@ -11,35 +11,31 @@ export default function useAuth() {
     const [error, setError] = useState("");
 
     useEffect(() => {
+        getUser();
+    }, [])
+
+    // useEffect(() => {
+    //     (async () => {
+    //         const { data, error } = await supabase.auth.getSession();
+    //         if (data) {
+    //             setSession(data.session);
+    //         }
+    //     })
+
+    // }, [])
+
+    const getUser = async () => {
         setLoading(true);
-        (async () => {
-            const { data, error } = await supabase.auth.getUser();
-            setLoading(false);
-            if (data) {
-                setData(data.user);
-            }
-            if (error) {
-                setError(error.message);
-            }
-        })
-
-    }, [])
-
-    useEffect(() => {
-        (async () => {
-            const { data, error } = await supabase.auth.getSession();
-            if (data) {
-                setSession(data.session);
-            }
-            if (error) {
-                setError(error.message);
-            }
-        })
-
-    }, [])
+        const { data } = await supabase.auth.getUser();
+        setLoading(false);
+        if (data) {
+            setData(data.user);
+        }
+    }
 
     const signIn = async ({ email, password }: UserInputs) => {
         setLoading(true);
+        setError("");
         const { error } = await supabase.auth.signInWithPassword({
             email,
             password,
@@ -49,7 +45,8 @@ export default function useAuth() {
             setError(error.message);
             return
         }
-        return data?.user_metadata;
+        getUser()
+        return data;
     }
 
     const signOut = async () => {
@@ -58,8 +55,10 @@ export default function useAuth() {
         setLoading(false);
         if (error) {
             setError(error.message);
+            return
         }
-        setData(null);
+        getUser();
+        // setData(null);
     }
 
     const refresh = async () => {

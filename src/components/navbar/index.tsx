@@ -1,9 +1,12 @@
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
 import { theme } from "./theme";
 import { useNavigate } from "react-router-dom";
+import useAuth from "../../hooks/auth";
 
 export function NavbarComponent() {
   const navigate = useNavigate();
+  const { loading, error, data, signOut } = useAuth();
+
   return (
     <Navbar theme={theme}>
       <Navbar.Brand href="https://flowbite-react.com">
@@ -41,7 +44,7 @@ export function NavbarComponent() {
           <Dropdown.Divider />
           <Dropdown.Item
             onClick={() => {
-              localStorage.clear()
+              signOut();
               navigate("/login", { replace: true });
             }}
           >
