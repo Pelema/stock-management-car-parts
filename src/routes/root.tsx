@@ -5,7 +5,7 @@ import { NavbarComponent } from "../components";
 
 export function RootRoute() {
   const user = localStorage.getItem("logged_in");
-  
+
   if (!user) {
     return <Navigate to="/login" replace />;
   }

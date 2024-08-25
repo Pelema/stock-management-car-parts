@@ -9,69 +9,111 @@ import {
   Label,
   TextInput,
   Modal,
+  Dropdown,
 } from "flowbite-react";
 import { tableTheme } from "./table_theme";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import { HiPencil, HiTrash } from "react-icons/hi";
+import {
+  ListSkeletalComponent,
+  TableActionsComponent,
+  TableFooterComponent,
+  TableHeaderComponent,
+} from "../components";
+import { ConfirmActionModalComponent } from "../modals";
 
 export function OrdersPage() {
-  const [openModal, setOpenModal] = useState(false);
+  const [openedModal, setOpenedModal] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
   return (
     <>
-      <div className="overflow-x-auto rounded-md h-full">
-        <Table hoverable theme={tableTheme}>
-          <caption className="p-5 uppercase text-md font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
-            <div className="flex flex-row-reverse">
-              <Button
-                type="submit"
-                className="uppercase"
-                onClick={() => setOpenModal(true)}
-              >
-                add order
-              </Button>
-            </div>
-          </caption>
-          <TableHead>
-            <TableHeadCell>id</TableHeadCell>
-            <TableHeadCell>order #</TableHeadCell>
-            <TableHeadCell>order date</TableHeadCell>
-            <TableHeadCell>customer name</TableHeadCell>
-            <TableHeadCell>telephone</TableHeadCell>
-            <TableHeadCell>company name</TableHeadCell>
-            <TableHeadCell>
-              <span className="sr-only">Edit</span>
-            </TableHeadCell>
-          </TableHead>
-          <TableBody className="divide-y">
-            {data.map((item) => (
-              <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  {item.id}
-                </TableCell>
-                <TableCell>{item.order_number}</TableCell>
-                <TableCell>{item.created}</TableCell>
+      <div className="overflow-x-auto rounded-md h-full flex flex-col">
+        <TableHeaderComponent>
+          <Button
+            type="submit"
+            className="uppercase"
+            onClick={() => setOpenedModal("order-modal")}
+          >
+            add order
+          </Button>
+        </TableHeaderComponent>
+        <div className="h-full overflow-y-auto">
+          <Table hoverable theme={tableTheme} className="table-fixed">
+            <TableHead>
+              <TableHeadCell className="w-20">id</TableHeadCell>
+              <TableHeadCell>order #</TableHeadCell>
+              <TableHeadCell>order date</TableHeadCell>
+              <TableHeadCell>customer name</TableHeadCell>
+              <TableHeadCell>telephone</TableHeadCell>
+              <TableHeadCell>company name</TableHeadCell>
+              <TableHeadCell className="w-24">
+                <span className="sr-only">Actions</span>
+              </TableHeadCell>
+            </TableHead>
+            <TableBody className="divide-y">
+              {loading ? (
+                <ListSkeletalComponent cols={5} />
+              ) : (
+                <>
+                  {data.map((item) => (
+                    <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                      <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                        {item.id}
+                      </TableCell>
+                      <TableCell>{item.order_number}</TableCell>
+                      <TableCell>{item.created}</TableCell>
 
-                <TableCell>
-                  {item.customer.last_name} {item.customer.first_name}
-                </TableCell>
-                <TableCell>{item.telephone}</TableCell>
-                <TableCell>{item.company}</TableCell>
-                <TableCell>
-                  <a
-                    href="#"
-                    className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                  >
-                    Edit
-                  </a>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                      <TableCell>
+                        {item.customer.last_name} {item.customer.first_name}
+                      </TableCell>
+                      <TableCell>{item.telephone}</TableCell>
+                      <TableCell>{item.company}</TableCell>
+                      <TableCell>
+                        <TableActionsComponent>
+                          <>
+                            <Dropdown.Item
+                              icon={HiPencil}
+                              onClick={() => setOpenedModal("order-modal")}
+                            >
+                              Edit
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              icon={HiTrash}
+                              onClick={() => setOpenedModal("confirm-modal")}
+                            >
+                              Delete
+                            </Dropdown.Item>
+                          </>
+                        </TableActionsComponent>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+
+        <TableFooterComponent
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        />
       </div>
 
-      <Modal show={openModal} onClose={() => setOpenModal(false)} size={"2xl"}>
-        <Modal.Header>Add new supplier</Modal.Header>
+      <Modal
+        show={openedModal === "order-modal"}
+        onClose={() => setOpenedModal("")}
+        size={"2xl"}
+      >
+        <Modal.Header>Add new order</Modal.Header>
         <Modal.Body>
           <form className="flex flex-col gap-4">
             <div className="flex space-x-2">
@@ -138,9 +180,14 @@ export function OrdersPage() {
           </form>
         </Modal.Body>
         <Modal.Footer className="justify-end">
-          <Button onClick={() => setOpenModal(false)}>Save</Button>
+          <Button onClick={() => setOpenedModal("")}>Save</Button>
         </Modal.Footer>
       </Modal>
+
+      <ConfirmActionModalComponent
+        openedModal={openedModal}
+        setOpenedModal={setOpenedModal}
+      />
     </>
   );
 }

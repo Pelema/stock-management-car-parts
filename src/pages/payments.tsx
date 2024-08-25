@@ -5,293 +5,137 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Button,
-  Label,
-  TextInput,
-  Modal,
-  Pagination,
   Checkbox,
-  Popover,
-  Datepicker,
+  Button,
+  Dropdown,
 } from "flowbite-react";
-import { tableTheme } from "./table_theme";
-import { useState } from "react";
-import { HiSearch, HiFilter, HiPlus } from "react-icons/hi";
-import { BiUpload, BiChevronDown } from "react-icons/bi";
-import { BsCheck2All } from "react-icons/bs";
 
+import { tableTheme } from "./table_theme";
+import { useEffect, useState } from "react";
+
+import {
+  HiPencil,
+  HiTrash,
+  HiPlus,
+} from "react-icons/hi";
+import { BiUpload } from "react-icons/bi";
+
+import {
+  ListSkeletalComponent,
+  TableActionsComponent,
+  TableFooterComponent,
+  TableHeaderComponent,
+} from "../components";
+
+import {
+  ConfirmActionModalComponent,
+  PaymentEditModalComponent,
+} from "../modals";
 
 export function PaymentsPage() {
-  const [openModal, setOpenModal] = useState(false);
+  const [openedModal, setOpenedModal] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
 
-  const onPageChange = (page: number) => setCurrentPage(page);
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
 
   return (
     <>
-      <div className="overflow-x-auto rounded-md h-full">
-        <Table hoverable theme={tableTheme}>
-          <caption className="p-5 uppercase text-md font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
-            <div className="flex justify-between items-center">
-              <div className="flex space-x-2">
-                <form className="w-[300px]">
-                  <TextInput
-                    id="search"
-                    type="search"
-                    placeholder="Search for payment..."
-                    required
-                    className="w-full"
-                    icon={HiSearch}
-                  />
-                </form>
-                <Popover
-                  aria-labelledby="default-popover"
-                  arrow={false}
-                  placement="bottom"
-                  content={
-                    <div
-                      className="flex   flex-col gap-4 p-4 capitalize font-bold"
-                      id="checkbox"
-                    >
-                      <div className="flex space-x-4">
-                        <div className="flex flex-col w-[200px] justify-between">
-                          <div className="flex flex-col space-y-6">
-                            <div>
-                              <div className="mb-3">By status</div>
-                              <div className="pl-2 flex flex-col space-y-2">
-                                <div className="flex items-center gap-2">
-                                  <Checkbox id="accept" defaultChecked />
-                                  <Label
-                                    htmlFor="accept"
-                                    className="font-semibold"
-                                  >
-                                    Pending
-                                  </Label>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <Checkbox id="promotion" />
-                                  <Label
-                                    htmlFor="promotion"
-                                    className="font-semibold"
-                                  >
-                                    Processing
-                                  </Label>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <Checkbox id="promotion" />
-                                  <Label
-                                    htmlFor="promotion"
-                                    className="font-semibold"
-                                  >
-                                    Completed
-                                  </Label>
-                                </div>
-                              </div>
-                            </div>
-                            <div>
-                              <div className="mb-3">By amount</div>
-                              <div className="pl-2 flex flex-col space-y-2">
-                                <div className="flex items-center gap-2">
-                                  <Checkbox id="age" />
-                                  <Label
-                                    htmlFor="age"
-                                    className="font-semibold"
-                                  >
-                                    0 - 500
-                                  </Label>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <Checkbox id="age" />
-                                  <Label
-                                    htmlFor="age"
-                                    className="font-semibold"
-                                  >
-                                    500 - 1 000
-                                  </Label>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <Checkbox id="age" />
-                                  <Label
-                                    htmlFor="age"
-                                    className="font-semibold"
-                                  >
-                                    Above 1000
-                                  </Label>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          <Button type="submit" outline>
-                            <BsCheck2All className="mr-2 h-5 w-5" />
-                            Apply
-                          </Button>
-                        </div>
-                        <div>
-                          <div>By date</div>
-                          <Datepicker inline />
-                        </div>
-                      </div>
-                    </div>
-                  }
-                >
-                  <Button type="submit" outline>
-                    <HiFilter className="mr-2 h-5 w-5" />
-                    Filter
-                    <BiChevronDown className="ml-2" />
-                  </Button>
-                </Popover>
-              </div>
-              <div className="flex space-x-2">
-                <Button type="submit">
-                  <HiPlus className="mr-2 h-5 w-5" />
-                  Add Payment
-                </Button>
-                <Button type="submit" outline>
-                  <BiUpload className="mr-2 h-5 w-5" />
-                  Export
-                </Button>
-              </div>
-            </div>
-          </caption>
-          <TableHead>
-            <Table.HeadCell className="p-4">
-              <Checkbox />
-            </Table.HeadCell>
-            <TableHeadCell>id</TableHeadCell>
-            <TableHeadCell>order #</TableHeadCell>
-            <TableHeadCell>order date</TableHeadCell>
-            <TableHeadCell>customer name</TableHeadCell>
-            <TableHeadCell>telephone</TableHeadCell>
-            <TableHeadCell>company name</TableHeadCell>
-            <TableHeadCell>
-              <span className="sr-only">Edit</span>
-            </TableHeadCell>
-          </TableHead>
-          <TableBody className="divide-y">
-            {data.map((item) => (
-              <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                <Table.Cell className="p-4">
-                  <Checkbox />
-                </Table.Cell>
-                <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  {item.id}
-                </TableCell>
-                <TableCell>{item.order_number}</TableCell>
-                <TableCell>{item.created}</TableCell>
-
-                <TableCell>
-                  {item.customer.last_name} {item.customer.first_name}
-                </TableCell>
-                <TableCell>{item.telephone}</TableCell>
-                <TableCell>{item.company}</TableCell>
-                <TableCell>
-                  <a
-                    href="#"
-                    className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                  >
-                    Edit
-                  </a>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-        <div className="flex justify-between items-center mt-2">
-          <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-            Showing &nbsp;
-            <span className="font-semibold text-gray-900 dark:text-white">
-              1-10 &nbsp;
-            </span>
-            of &nbsp;
-            <span className="font-semibold text-gray-900 dark:text-white">
-              1000
-            </span>
-          </span>
-          <div className="flex overflow-x-auto sm:justify-center">
-            <Pagination
-              currentPage={currentPage}
-              totalPages={100}
-              onPageChange={onPageChange}
-              showIcons
-              previousLabel=""
-              nextLabel=""
-            />
+      <div className="overflow-x-auto rounded-md h-full flex flex-col">
+        <TableHeaderComponent>
+          <div className="flex space-x-2">
+            <Button onClick={() => setOpenedModal("edit-modal")}>
+              <HiPlus className="mr-2 h-5 w-5" />
+              Add Payment
+            </Button>
+            <Button outline>
+              <BiUpload className="mr-2 h-5 w-5" />
+              Export
+            </Button>
           </div>
+        </TableHeaderComponent>
+        <div className="h-full overflow-y-auto">
+          <Table hoverable theme={tableTheme} className="table-fixed">
+            <TableHead>
+              <Table.HeadCell className="p-4 w-14">
+                <Checkbox />
+              </Table.HeadCell>
+              <TableHeadCell className="w-20">id</TableHeadCell>
+              <TableHeadCell>order #</TableHeadCell>
+              <TableHeadCell>order date</TableHeadCell>
+              <TableHeadCell>customer name</TableHeadCell>
+              <TableHeadCell>telephone</TableHeadCell>
+              <TableHeadCell>company name</TableHeadCell>
+              <TableHeadCell className="w-24">
+                <span className="sr-only">actions</span>
+              </TableHeadCell>
+            </TableHead>
+
+            <TableBody className="divide-y">
+              {loading ? (
+                <ListSkeletalComponent />
+              ) : (
+                <>
+                  {data.map((item) => (
+                    <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                      <Table.Cell className="p-4">
+                        <Checkbox />
+                      </Table.Cell>
+                      <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                        {item.id}
+                      </TableCell>
+                      <TableCell>{item.order_number}</TableCell>
+                      <TableCell>{item.created}</TableCell>
+
+                      <TableCell>
+                        {item.customer.last_name} {item.customer.first_name}
+                      </TableCell>
+                      <TableCell>{item.telephone}</TableCell>
+                      <TableCell>{item.company}</TableCell>
+                      <TableCell>
+                        <TableActionsComponent>
+                          <>
+                            <Dropdown.Item
+                              icon={HiPencil}
+                              onClick={() => setOpenedModal("edit-modal")}
+                            >
+                              Edit
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              icon={HiTrash}
+                              onClick={() => setOpenedModal("confirm-modal")}
+                            >
+                              Delete
+                            </Dropdown.Item>
+                          </>
+                        </TableActionsComponent>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </>
+              )}
+            </TableBody>
+          </Table>
         </div>
+        <TableFooterComponent
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        />
       </div>
 
-      <Modal show={openModal} onClose={() => setOpenModal(false)} size={"2xl"}>
-        <Modal.Header>Add new supplier</Modal.Header>
-        <Modal.Body>
-          <form className="flex flex-col gap-4">
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="email1" value="Name" />
-                </div>
-                <TextInput
-                  id="email1"
-                  type="email"
-                  placeholder="name@flowbite.com"
-                  required
-                />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Email" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Telephone" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Address" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Contact Person" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Website URL" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="VAT Registration" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Company Reg. Number" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-          </form>
-        </Modal.Body>
-        <Modal.Footer className="justify-end">
-          <Button onClick={() => setOpenModal(false)}>Save</Button>
-        </Modal.Footer>
-      </Modal>
+      <PaymentEditModalComponent
+        openedModal={openedModal}
+        setOpenedModal={setOpenedModal}
+      />
+
+      <ConfirmActionModalComponent
+        openedModal={openedModal}
+        setOpenedModal={setOpenedModal}
+      />
     </>
   );
 }
