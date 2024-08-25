@@ -11,12 +11,16 @@ import {
   TextInput,
 } from "flowbite-react";
 import { tableTheme } from "./table_theme";
+import { TableFooterComponent, TableHeaderComponent } from "../components";
+import { useState } from "react";
 
 export function CarModelPage() {
+  const [currentPage, setCurrentPage] = useState(1);
+
   return (
-    <>
-      <div className="flex space-x-2">
+      <div className="flex space-x-2 h-full">
         <div className="overflow-x-auto rounded-md grow">
+        <TableHeaderComponent />
           <Table hoverable theme={tableTheme}>
             <TableHead>
               <TableHeadCell>id</TableHeadCell>
@@ -48,6 +52,7 @@ export function CarModelPage() {
               ))}
             </TableBody>
           </Table>
+          <TableFooterComponent setCurrentPage={setCurrentPage} currentPage={currentPage}/>
         </div>
 
         <div className="basis-1/3">
@@ -84,7 +89,6 @@ export function CarModelPage() {
           </Card>
         </div>
       </div>
-    </>
   );
 }
 

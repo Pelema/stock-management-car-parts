@@ -5,10 +5,7 @@ import { NavbarComponent } from "../components";
 import useAuth from "../hooks/auth";
 
 export function RootRoute() {
-
   const { data: user, loading } = useAuth();
-
-
   if (!user && !loading) {
     return <Navigate to="/login" replace />;
   }
@@ -16,9 +13,9 @@ export function RootRoute() {
   return (
     <div className="h-full flex flex-col">
       <NavbarComponent />
-      <div className="flex grow">
+      <div className="flex grow overflow-y-hidden p-2">
         <SidebarComponent />
-        <div className="grow p-4">
+        <div className="grow ml-2">
           <Outlet />
         </div>
       </div>

@@ -5,144 +5,137 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Checkbox,
   Button,
-  Label,
-  TextInput,
-  Modal,
+  Dropdown,
 } from "flowbite-react";
+
 import { tableTheme } from "./table_theme";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+import {
+  HiPencil,
+  HiTrash,
+  HiPlus,
+} from "react-icons/hi";
+import { BiUpload } from "react-icons/bi";
+
+import {
+  ListSkeletalComponent,
+  TableActionsComponent,
+  TableFooterComponent,
+  TableHeaderComponent,
+} from "../components";
+
+import {
+  ConfirmActionModalComponent,
+  PaymentEditModalComponent,
+} from "../modals";
 
 export function PaymentsPage() {
-  const [openModal, setOpenModal] = useState(false);
+  const [openedModal, setOpenedModal] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, []);
 
   return (
     <>
-      <div className="overflow-x-auto rounded-md grow">
-        <Table hoverable theme={tableTheme}>
-          <caption className="p-5 uppercase text-md font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
-            <div className="flex flex-row-reverse">
-              <form className="w-1/4">
-                <TextInput
-                  id="search"
-                  type="search"
-                  placeholder="Search for payment..."
-                  required
-                  className="w-full"
-                />
-              </form>
-            </div>
-          </caption>
-          <TableHead>
-            <TableHeadCell>id</TableHeadCell>
-            <TableHeadCell>order #</TableHeadCell>
-            <TableHeadCell>order date</TableHeadCell>
-            <TableHeadCell>customer name</TableHeadCell>
-            <TableHeadCell>telephone</TableHeadCell>
-            <TableHeadCell>company name</TableHeadCell>
-            <TableHeadCell>
-              <span className="sr-only">Edit</span>
-            </TableHeadCell>
-          </TableHead>
-          <TableBody className="divide-y">
-            {data.map((item) => (
-              <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  {item.id}
-                </TableCell>
-                <TableCell>{item.order_number}</TableCell>
-                <TableCell>{item.created}</TableCell>
+      <div className="overflow-x-auto rounded-md h-full flex flex-col">
+        <TableHeaderComponent>
+          <div className="flex space-x-2">
+            <Button onClick={() => setOpenedModal("edit-modal")}>
+              <HiPlus className="mr-2 h-5 w-5" />
+              Add Payment
+            </Button>
+            <Button outline>
+              <BiUpload className="mr-2 h-5 w-5" />
+              Export
+            </Button>
+          </div>
+        </TableHeaderComponent>
+        <div className="h-full overflow-y-auto">
+          <Table hoverable theme={tableTheme} className="table-fixed">
+            <TableHead>
+              <Table.HeadCell className="p-4 w-14">
+                <Checkbox />
+              </Table.HeadCell>
+              <TableHeadCell className="w-20">id</TableHeadCell>
+              <TableHeadCell>order #</TableHeadCell>
+              <TableHeadCell>order date</TableHeadCell>
+              <TableHeadCell>customer name</TableHeadCell>
+              <TableHeadCell>telephone</TableHeadCell>
+              <TableHeadCell>company name</TableHeadCell>
+              <TableHeadCell className="w-24">
+                <span className="sr-only">actions</span>
+              </TableHeadCell>
+            </TableHead>
 
-                <TableCell>
-                  {item.customer.last_name} {item.customer.first_name}
-                </TableCell>
-                <TableCell>{item.telephone}</TableCell>
-                <TableCell>{item.company}</TableCell>
-                <TableCell>
-                  <a
-                    href="#"
-                    className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                  >
-                    Edit
-                  </a>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            <TableBody className="divide-y">
+              {loading ? (
+                <ListSkeletalComponent />
+              ) : (
+                <>
+                  {data.map((item) => (
+                    <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                      <Table.Cell className="p-4">
+                        <Checkbox />
+                      </Table.Cell>
+                      <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                        {item.id}
+                      </TableCell>
+                      <TableCell>{item.order_number}</TableCell>
+                      <TableCell>{item.created}</TableCell>
+
+                      <TableCell>
+                        {item.customer.last_name} {item.customer.first_name}
+                      </TableCell>
+                      <TableCell>{item.telephone}</TableCell>
+                      <TableCell>{item.company}</TableCell>
+                      <TableCell>
+                        <TableActionsComponent>
+                          <>
+                            <Dropdown.Item
+                              icon={HiPencil}
+                              onClick={() => setOpenedModal("edit-modal")}
+                            >
+                              Edit
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              icon={HiTrash}
+                              onClick={() => setOpenedModal("confirm-modal")}
+                            >
+                              Delete
+                            </Dropdown.Item>
+                          </>
+                        </TableActionsComponent>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </>
+              )}
+            </TableBody>
+          </Table>
+        </div>
+        <TableFooterComponent
+          setCurrentPage={setCurrentPage}
+          currentPage={currentPage}
+        />
       </div>
 
-      <Modal show={openModal} onClose={() => setOpenModal(false)} size={"2xl"}>
-        <Modal.Header>Add new supplier</Modal.Header>
-        <Modal.Body>
-          <form className="flex flex-col gap-4">
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="email1" value="Name" />
-                </div>
-                <TextInput
-                  id="email1"
-                  type="email"
-                  placeholder="name@flowbite.com"
-                  required
-                />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Email" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Telephone" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Address" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Contact Person" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Website URL" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="VAT Registration" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Company Reg. Number" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-          </form>
-        </Modal.Body>
-        <Modal.Footer className="justify-end">
-          <Button onClick={() => setOpenModal(false)}>Save</Button>
-        </Modal.Footer>
-      </Modal>
+      <PaymentEditModalComponent
+        openedModal={openedModal}
+        setOpenedModal={setOpenedModal}
+      />
+
+      <ConfirmActionModalComponent
+        openedModal={openedModal}
+        setOpenedModal={setOpenedModal}
+      />
     </>
   );
 }

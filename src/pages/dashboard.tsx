@@ -26,7 +26,7 @@ export function DashboardPage() {
 
 
   return (
-    <>
+    <div className="h-full">
       <div className="flex space-x-2 mb-5">
         <Card className="basis-1/4" horizontal theme={card_theme}>
           <div className="flex space-x-4 justify-between text-gray-700 dark:text-gray-400">
@@ -178,6 +178,6 @@ export function DashboardPage() {
           </Table>
         </div>
       </div>
-    </>
+    </div>
   );
 }

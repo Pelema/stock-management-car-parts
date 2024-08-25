@@ -7,10 +7,10 @@ import {
   HiViewBoards,
   HiCog,
   HiTruck,
-  HiInformationCircle,
   HiDatabase,
   HiCurrencyDollar,
 } from "react-icons/hi";
+import { BiSupport } from "react-icons/bi";
 import { theme } from "./theme";
 import { NavLink } from "react-router-dom";
 
@@ -47,7 +47,7 @@ export function SidebarComponent() {
           <Sidebar.Item as={NavLink} to="/payments" icon={HiCurrencyDollar}>
             Payments
           </Sidebar.Item>
-          <Sidebar.Item as={NavLink} to="/support" icon={HiInformationCircle}>
+          <Sidebar.Item as={NavLink} to="/support" icon={BiSupport}>
             Support
           </Sidebar.Item>
 
