@@ -1,21 +1,26 @@
-import { Label, TextInput, Checkbox, Button } from "flowbite-react";
+import { Label, TextInput, Checkbox, Button, Spinner } from "flowbite-react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { UserInputs } from "../types";
+import useAuth from "../hooks/auth";
 
-type Inputs = {
-  example: string;
-  exampleRequired: string;
-};
 
 export function LoginPage() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>();
-  const onSubmit: SubmitHandler<Inputs> = (data) => {console.log(data);
+  } = useForm<UserInputs>();
 
-    localStorage.setItem("logged_in", "true");
-    window.location.href = "/"
+  const { data, loading, error, signIn } = useAuth();
+
+  const onSubmit: SubmitHandler<UserInputs> = async (values) => {
+    await signIn(values);
+    if (data) {
+      localStorage.setItem("logged_in", "true");
+      console.log("User Data");
+
+      window.location.href = "/"
+    }
   };
 
   return (
@@ -26,29 +31,32 @@ export function LoginPage() {
       >
         <div>
           <div className="mb-2 block">
-            <Label htmlFor="email1" value="Your email" />
+            <Label htmlFor="email" value="Your email" />
           </div>
           <TextInput
-            id="email1"
+            id="email"
             type="email"
-            placeholder="name@flowbite.com"
+            placeholder="name@mail.com"
             required
-            {...register("example")}
+            {...register("email")}
           />
-          {errors.exampleRequired && <span>This field is required</span>}
+          {errors.email && <span>email is required</span>}
         </div>
         <div>
           <div className="mb-2 block">
-            <Label htmlFor="password1" value="Your password" />
+            <Label htmlFor="password" value="Your password" />
           </div>
-          <TextInput id="password1" type="password" required />
+          <TextInput id="password" type="password" required {...register("password")} />
+          {errors.password && <span>password is required</span>}
         </div>
         <div className="flex items-center gap-2">
           <Checkbox id="remember" />
           <Label htmlFor="remember">Remember me</Label>
         </div>
-        <Button type="submit">Submit</Button>
+        <Button type="submit">Sign In &nbsp; {loading && <Spinner size={"sm"} />}</Button>
+        {error && <span className="text-sm text-red-600">Invalid emal or password!</span>}
       </form>
+
     </div>
   );
 }

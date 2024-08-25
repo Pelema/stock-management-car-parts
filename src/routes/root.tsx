@@ -2,11 +2,11 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { SidebarComponent } from "../components/sidebar";
 import { NavbarComponent } from "../components";
+import useAuth from "../hooks/auth";
 
 export function RootRoute() {
-  const user = localStorage.getItem("logged_in");
-
-  if (!user) {
+  const { data: user, loading } = useAuth();
+  if (!user && !loading) {
     return <Navigate to="/login" replace />;
   }
 

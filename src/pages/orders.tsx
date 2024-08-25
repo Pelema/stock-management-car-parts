@@ -22,11 +22,19 @@ import {
   TableHeaderComponent,
 } from "../components";
 import { ConfirmActionModalComponent } from "../modals";
+import { useForm } from "react-hook-form";
 
 export function OrdersPage() {
   const [openedModal, setOpenedModal] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm()
 
   useEffect(() => {
     setTimeout(() => {
