@@ -72,7 +72,7 @@ import {
         </div>
   
         <Modal show={openModal} onClose={() => setOpenModal(false)} size={"2xl"}>
-          <Modal.Header>Add new supplier</Modal.Header>
+          <Modal.Header>Add new stock</Modal.Header>
           <Modal.Body>
             <form className="flex flex-col gap-4">
               <div className="flex space-x-2">
