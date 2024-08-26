@@ -21,20 +21,17 @@ import {
   TableFooterComponent,
   TableHeaderComponent,
 } from "../components";
-import { ConfirmActionModalComponent } from "../modals";
+import { AddOrderModal, ConfirmActionModalComponent } from "../modals";
 import { useForm } from "react-hook-form";
+import useQuery from "../hooks/query";
+import { Order } from "../types";
 
 export function OrdersPage() {
   const [openedModal, setOpenedModal] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm()
+  const { data: suppliers, loading: isLoading, error: isError, refresh } = useQuery<Order[]>({ table: 'orders', from: 0, to: 10 });
 
   useEffect(() => {
     setTimeout(() => {
@@ -116,81 +113,13 @@ export function OrdersPage() {
         />
       </div>
 
-      <Modal
-        show={openedModal === "order-modal"}
-        onClose={() => setOpenedModal("")}
-        size={"2xl"}
-      >
-        <Modal.Header>Add new order</Modal.Header>
-        <Modal.Body>
-          <form className="flex flex-col gap-4">
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="email1" value="Name" />
-                </div>
-                <TextInput
-                  id="email1"
-                  type="email"
-                  placeholder="name@flowbite.com"
-                  required
-                />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Email" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Telephone" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Address" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Contact Person" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Website URL" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="VAT Registration" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Company Reg. Number" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-          </form>
-        </Modal.Body>
-        <Modal.Footer className="justify-end">
-          <Button onClick={() => setOpenedModal("")}>Save</Button>
-        </Modal.Footer>
-      </Modal>
+
+
+      <AddOrderModal
+        openedModal={openedModal}
+        setOpenedModal={setOpenedModal}
+        refresh={refresh}
+      />
 
       <ConfirmActionModalComponent
         openedModal={openedModal}

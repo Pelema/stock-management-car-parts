@@ -1,15 +1,11 @@
 import { Button, Modal } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
-
-type TConfirmModal = {
-  openedModal: string;
-  setOpenedModal: React.Dispatch<React.SetStateAction<string>>;
-};
+import { TModalProps } from "../types";
 
 export function ConfirmActionModalComponent({
   openedModal,
   setOpenedModal,
-}: TConfirmModal) {
+}: TModalProps) {
   return (
     <Modal
       show={openedModal === "confirm-modal"}

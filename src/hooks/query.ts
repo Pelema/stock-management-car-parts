@@ -1,7 +1,16 @@
 import { useEffect, useState } from "react";
 import supabase from "../config/supaBaseClient";
+import { QueryProps } from "../types";
 
-export default function useQuery<T>(table: string, isSingle: boolean, from: number, to: number, _id?: number, filter?: string, modifier?: string): { loading: boolean, data: T, error?: string, refresh?: () => any } {
+export default function useQuery<T>({
+    _id,
+    is_single = false,
+    table,
+    from = 0,
+    to = 10,
+    filter,
+    modifier
+}: QueryProps): { loading: boolean, data: T, error?: string, refresh: () => any } {
 
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState(true);
@@ -13,9 +22,9 @@ export default function useQuery<T>(table: string, isSingle: boolean, from: numb
 
     const getData = async () => {
         setLoading(true);
-        const { data, error } = isSingle ?
+        const { data, error } = is_single ?
             await supabase.from(table).select(filter).limit(1).single()
-            : await supabase.from(table).select(filter).range(from, to);
+            : await supabase.from(table).select(filter).range(from as number, to as number);
         setLoading(false);
         if (data) {
             setData(data as T);

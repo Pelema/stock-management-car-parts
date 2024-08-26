@@ -8,7 +8,7 @@ import {
   TableHeadCell,
   TableRow
 } from "flowbite-react";
-import { useState } from "react";
+import { Key, useState } from "react";
 import {
   ListSkeletalComponent,
   TableActionsComponent,
@@ -26,8 +26,7 @@ export function SuppliersPage() {
   const [openedModal, setOpenedModal] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: suppliers, loading: isLoading, error: isError } = useQuery<Supplier[]>('suppliers', false, 0, 10);
-
+  const { data: suppliers, loading: isLoading, error: isError, refresh } = useQuery<Supplier[]>({ table: 'suppliers', is_single: false, from: 0, to: 10 });
 
   return (
     <>
@@ -58,8 +57,8 @@ export function SuppliersPage() {
                 <ListSkeletalComponent cols={4} />
               ) : (
                 <>
-                  {suppliers?.map((item) => (
-                    <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                  {suppliers?.map((item, key: Key) => (
+                    <TableRow key={key} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                       <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                         {item.id}
                       </TableCell>
@@ -96,16 +95,17 @@ export function SuppliersPage() {
                 </>
               )}
             </TableBody>
-            <TableFooterComponent
-              currentPage={currentPage}
-              setCurrentPage={setCurrentPage}
-            />
           </Table >
+          <TableFooterComponent
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
         </div >
       </div >
       <AddSupplierModal
         openedModal={openedModal}
         setOpenedModal={setOpenedModal}
+        refresh={refresh}
       />
     </>
   );

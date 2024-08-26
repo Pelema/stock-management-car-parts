@@ -13,7 +13,7 @@ export default function ListSkeletalComponent({
     <>
       {[...Array(rows).keys()].map((_, index) => (
         <TableRow
-          key={index}
+          key={index + "rows"}
           className="dark:bg-gray-800  dark:border-gray-700"
         >
           <Table.Cell className="p-4">
@@ -21,14 +21,12 @@ export default function ListSkeletalComponent({
           </Table.Cell>
 
           {[...Array(cols).keys()].map((_, index) => (
-            <>
-              <Table.Cell>
-                <div
-                  key={index}
-                  className="h-4 bg-gray-300 rounded-sm dark:bg-gray-600 w-full animate-pulse"
-                ></div>
-              </Table.Cell>
-            </>
+            <Table.Cell key={index + 'cols'}>
+              <div
+                key={index}
+                className="h-4 bg-gray-300 rounded-sm dark:bg-gray-600 w-full animate-pulse"
+              ></div>
+            </Table.Cell>
           ))}
           <Table.Cell>
             <div className="h-4 bg-gray-300 rounded-sm dark:bg-gray-600 w-10 animate-pulse"></div>

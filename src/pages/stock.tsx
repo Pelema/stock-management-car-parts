@@ -12,7 +12,7 @@ import {
   Dropdown,
 } from "flowbite-react";
 import { tableTheme } from "./table_theme";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 
 import { HiPencil, HiTrash } from "react-icons/hi";
 import {
@@ -21,11 +21,19 @@ import {
   TableFooterComponent,
   TableHeaderComponent,
 } from "../components";
+import { AddStockModal } from "../modals";
+import useQuery from "../hooks/query";
+import { CarModel, StockItem, Supplier, VAT } from "../types";
 
 export function StockPage() {
   const [openedModal, setOpenedModal] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+
+  const { data: stock, loading: isLoading, error: isError, refresh } = useQuery<StockItem[]>({
+    table: 'stock', from: 0, to: 10,
+    filter: "id,OEM_number,VIN,engine_number,manufacturer,model_range,cost,gross_price,supplier(name,email),car_model(make,model)"
+  });
 
   useEffect(() => {
     setTimeout(() => {
@@ -55,6 +63,7 @@ export function StockPage() {
               <TableHeadCell>model range</TableHeadCell>
               <TableHeadCell>manufacturer</TableHeadCell>
               <TableHeadCell>price (N$)</TableHeadCell>
+              {/* <TableHeadCell>Other</TableHeadCell> */}
               <TableHeadCell className="w-24">
                 <span className="sr-only">Actions</span>
               </TableHeadCell>
@@ -64,17 +73,21 @@ export function StockPage() {
                 <ListSkeletalComponent cols={6} />
               ) : (
                 <>
-                  {data.map((item) => (
+                  {stock?.map((item) => (
                     <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
                       <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                         {item.id}
                       </TableCell>
-                      <TableCell>{item.oem_number}</TableCell>
-                      <TableCell>{item.make}</TableCell>
-                      <TableCell>{item.model}</TableCell>
+                      <TableCell>{item.OEM_number}</TableCell>
+                      <TableCell>{typeof item.car_model !== 'number' && item.car_model?.make}</TableCell>
+                      <TableCell>{typeof item.car_model !== 'number' && item.car_model?.model}</TableCell>
                       <TableCell>{item.model_range}</TableCell>
                       <TableCell>{item.manufacturer}</TableCell>
-                      <TableCell>{item.price}</TableCell>
+                      <TableCell>{item.gross_price}</TableCell>
+                      {/* <TableCell>
+                        <div className="rounded-lg border text-xs px-2 overflow-auto">{item.VIN}</div>
+                        <div className="rounded-lg border">{item.engine_number}</div>
+                      </TableCell> */}
                       <TableCell>
                         <TableActionsComponent>
                           <>
@@ -107,81 +120,7 @@ export function StockPage() {
         />
       </div>
 
-      <Modal
-        show={openedModal === "stock-modal"}
-        onClose={() => setOpenedModal("")}
-        size={"2xl"}
-      >
-        <Modal.Header>Add new item</Modal.Header>
-        <Modal.Body>
-          <form className="flex flex-col gap-4">
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="email1" value="Name" />
-                </div>
-                <TextInput
-                  id="email1"
-                  type="email"
-                  placeholder="name@flowbite.com"
-                  required
-                />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Email" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Telephone" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Address" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Contact Person" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Website URL" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="VAT Registration" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Company Reg. Number" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-          </form>
-        </Modal.Body>
-        <Modal.Footer className="justify-end">
-          <Button onClick={() => setOpenedModal("")}>Save</Button>
-        </Modal.Footer>
-      </Modal>
+      <AddStockModal refresh={refresh} openedModal={openedModal} setOpenedModal={setOpenedModal} />
     </>
   );
 }
