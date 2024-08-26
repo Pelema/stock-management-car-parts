@@ -38,3 +38,42 @@ export type VAT = {
     label: string;
     percentage: number;
 }
+
+export type TModalProps = {
+    openedModal: string;
+    setOpenedModal: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export type CarModel = {
+    id?: number;
+    make: string;
+    model: string;
+    price: number;
+}
+
+export type StockItem = {
+    id?: number;
+    OEM_number: string;
+    VIN: string;
+    car_model: number | CarModel;
+    engine_number: string;
+    manufacturer: string;
+    model_range: string;
+    cost: number;
+    supplier: number | Supplier;
+    VAT: number | VAT;
+    available_stock: number;
+    min_stock_level: number;
+    net_price: number;
+    gross_price: number;
+}
+
+export type QueryProps = {
+    table: string;
+    is_single?: boolean;
+    from?: number;
+    to?: number;
+    _id?: number;
+    filter?: string;
+    modifier?: string;
+}

@@ -9,108 +9,145 @@ import {
   Card,
   Label,
   TextInput,
+  Spinner,
 } from "flowbite-react";
 import { tableTheme } from "./table_theme";
-import { TableFooterComponent, TableHeaderComponent } from "../components";
-import { useState } from "react";
+import { ListSkeletalComponent, TableFooterComponent, TableHeaderComponent } from "../components";
+import { Key, useState } from "react";
+import useQuery from "../hooks/query";
+import useMutation from "../hooks/mutation";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { CarModel } from "../types";
+import { toast } from "sonner";
 
 export function CarModelPage() {
   const [currentPage, setCurrentPage] = useState(1);
+  const { insert, data: fetchData, loading, error } = useMutation();
+  const { data: cars, loading: isLoading, error: isError, refresh } = useQuery<CarModel[]>({ table: 'car_model', from: 0, to: 10 });
+  const {
+    register,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<CarModel>()
+
+  const onSubmit: SubmitHandler<CarModel> = async (values) => {
+    await insert('car_model', values);
+    if (error) {
+      toast.error(error);
+    }
+    if (fetchData) {
+      toast.success("car added");
+      refresh();
+    }
+  }
 
   return (
-      <div className="flex space-x-2 h-full">
-        <div className="overflow-x-auto rounded-md grow">
+    <div className="flex space-x-2 h-full">
+      <div className="overflow-x-auto rounded-md grow">
         <TableHeaderComponent />
-          <Table hoverable theme={tableTheme}>
-            <TableHead>
-              <TableHeadCell>id</TableHeadCell>
-              <TableHeadCell>make</TableHeadCell>
-              <TableHeadCell>model</TableHeadCell>
-              <TableHeadCell>price</TableHeadCell>
-              <TableHeadCell>
-                <span className="sr-only">Edit</span>
-              </TableHeadCell>
-            </TableHead>
-            <TableBody className="divide-y">
-              {data.map((item) => (
-                <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                    {item.id}
-                  </TableCell>
-                  <TableCell>{item.make}</TableCell>
-                  <TableCell>{item.model}</TableCell>
-                  <TableCell>{item.price}</TableCell>
-                  <TableCell>
-                    <a
-                      href="#"
-                      className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                    >
-                      Edit
-                    </a>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          <TableFooterComponent setCurrentPage={setCurrentPage} currentPage={currentPage}/>
-        </div>
-
-        <div className="basis-1/3">
-          <Card className="w-full">
-            <form className="flex flex-col gap-4">
-              <legend className="uppercase text-gray-900 dark:text-white">
-                Add new car model
-              </legend>
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="email1" value="Make" />
-                </div>
-                <TextInput
-                  id="email1"
-                  type="email"
-                  placeholder="name@flowbite.com"
-                  required
-                />
-              </div>
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Model" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div>
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Price" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <Button type="submit">Save</Button>
-            </form>
-          </Card>
-        </div>
+        <Table hoverable theme={tableTheme}>
+          <TableHead>
+            <TableHeadCell>id</TableHeadCell>
+            <TableHeadCell>make</TableHeadCell>
+            <TableHeadCell>model</TableHeadCell>
+            <TableHeadCell>price</TableHeadCell>
+            <TableHeadCell>
+              <span className="sr-only">Edit</span>
+            </TableHeadCell>
+          </TableHead>
+          <TableBody className="divide-y">
+            {
+              isLoading ?
+                <ListSkeletalComponent cols={3} /> :
+                <>
+                  {cars.map((item, key: Key) => (
+                    <TableRow key={key} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                      <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                        {item.id}
+                      </TableCell>
+                      <TableCell>{item.make}</TableCell>
+                      <TableCell>{item.model}</TableCell>
+                      <TableCell>{item.price}</TableCell>
+                      <TableCell>
+                        <a
+                          href="#"
+                          className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
+                        >
+                          Edit
+                        </a>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </>
+            }
+          </TableBody>
+        </Table>
+        <TableFooterComponent setCurrentPage={setCurrentPage} currentPage={currentPage} />
       </div>
+
+      <div className="basis-1/3">
+        <Card className="w-full">
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+            <legend className="uppercase text-gray-900 dark:text-white">
+              Add new car model
+            </legend>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="make" value="Make" />
+              </div>
+              <TextInput
+                id="make"
+                type="text"
+                placeholder="Volkswagen"
+                required
+                {...register("make", { required: "make is required" })}
+                // color={errors.label ? "failure" : ""}
+                helperText={
+                  <>
+                    {errors.make && <span className="font-medium text-sm">{errors.make.message}</span>}
+                  </>
+                }
+              />
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="model" value="Model" />
+              </div>
+              <TextInput
+                id="model"
+                type="text"
+                placeholder="Polo"
+                required
+                {...register("model", { required: "model is required" })}
+                // color={errors.label ? "failure" : ""}
+                helperText={
+                  <>
+                    {errors.model && <span className="font-medium text-sm">{errors.model.message}</span>}
+                  </>
+                }
+              />
+            </div>
+            <div>
+              <div className="mb-2 block">
+                <Label htmlFor="price" value="Price(N$)" />
+              </div>
+              <TextInput id="price" type="number"
+                {...register("price", {
+                  min: { value: 0, message: "value should be >= 0" },
+                  required: "price is required"
+                })}
+                helperText={
+                  <>
+                    {errors.price && <span className="font-medium text-sm">{errors.price.message}</span>}
+                  </>
+                }
+              />
+            </div>
+            <Button type="submit">Save {" "} {loading && <Spinner size={'sm'} />}</Button>
+          </form>
+        </Card>
+      </div>
+    </div>
   );
 }
 
-const data = [
-  { id: 1, make: "Chevrolet", model: "Camaro", price: 61435.88 },
-  { id: 2, make: "Honda", model: "Accord", price: 89209.63 },
-  { id: 3, make: "Volvo", model: "C70", price: 13210.24 },
-  { id: 4, make: "BMW", model: "8 Series", price: 12034.51 },
-  { id: 5, make: "Saab", model: "900", price: 6696.86 },
-  { id: 6, make: "Chevrolet", model: "Express 1500", price: 69812.75 },
-  { id: 7, make: "Bentley", model: "Mulsanne", price: 67448.93 },
-  { id: 8, make: "Chevrolet", model: "Suburban 1500", price: 67464.79 },
-  { id: 9, make: "Buick", model: "Enclave", price: 31564.94 },
-  { id: 10, make: "Plymouth", model: "Prowler", price: 24825.74 },
-  { id: 11, make: "GMC", model: "Savana 2500", price: 67453.45 },
-  { id: 12, make: "Saab", model: "9-5", price: 16133.49 },
-  { id: 13, make: "Chevrolet", model: "Prizm", price: 63654.43 },
-  { id: 14, make: "Mazda", model: "CX-9", price: 41101.75 },
-  { id: 15, make: "Bentley", model: "Continental GTC", price: 27718.73 },
-  { id: 16, make: "Dodge", model: "Viper", price: 31782.07 },
-  { id: 17, make: "BMW", model: "7 Series", price: 55560.48 },
-  { id: 18, make: "Nissan", model: "240SX", price: 79440.31 },
-  { id: 19, make: "Cadillac", model: "CTS-V", price: 68753.47 },
-  { id: 20, make: "Nissan", model: "Pathfinder", price: 58058.25 },
-];

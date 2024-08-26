@@ -1,22 +1,18 @@
 import { Modal, Label, TextInput, Button, Spinner } from "flowbite-react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Supplier } from "../types";
+import { Supplier, TModalProps } from "../types";
 import { toast } from "sonner";
 import useMutation from "../hooks/mutation";
-
-type TAddSupplierModalProps = {
-  openedModal: string;
-  setOpenedModal: React.Dispatch<React.SetStateAction<string>>;
-};
 
 export default function AddSupplierModal({
   openedModal,
   setOpenedModal,
-}: TAddSupplierModalProps) {
+  refresh
+}: TModalProps & { refresh: () => void }) {
 
   const { insert, data: fetchData, loading, error } = useMutation();
   const { register, handleSubmit } = useForm<Supplier>()
- 
+
   const onSubmit: SubmitHandler<Supplier> = async (values) => {
     await insert('suppliers', values);
     if (error) {
@@ -24,6 +20,7 @@ export default function AddSupplierModal({
     }
     if (fetchData) {
       toast.success("supplier added");
+      refresh();
     }
   }
 

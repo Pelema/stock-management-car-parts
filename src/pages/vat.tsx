@@ -17,6 +17,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import useMutation from "../hooks/mutation";
 import useQuery from "../hooks/query";
+import { ListSkeletalComponent } from "../components";
+import { Key } from "react";
 
 export function VATPage() {
 
@@ -27,7 +29,7 @@ export function VATPage() {
   } = useForm<VAT>()
 
   const { insert, data: fetchData, loading, error } = useMutation();
-  const { data: VAT, loading: isLoading, error: isError, refresh } = useQuery<VAT[]>('VAT', false, 0, 10);
+  const { data: VAT, loading: isLoading, error: isError, refresh } = useQuery<VAT[]>({ table: 'VAT', is_single: false, from: 0, to: 10 });
 
   const onSubmit: SubmitHandler<VAT> = async (values) => {
     await insert('VAT', values);
@@ -36,7 +38,7 @@ export function VATPage() {
     }
     if (fetchData) {
       toast.success("VAT added");
-      // refresh;
+      refresh();
     }
   }
 
@@ -44,22 +46,23 @@ export function VATPage() {
     <>
       <div className="flex space-x-2">
         <div className="overflow-x-auto rounded-md grow">
-          {
-            isLoading ? <span>Loading...</span>
-              :
-              <Table hoverable theme={tableTheme}>
-                <TableHead>
-                  <TableHeadCell>id</TableHeadCell>
-                  <TableHeadCell>label</TableHeadCell>
-                  <TableHeadCell>vat amount</TableHeadCell>
-                  <TableHeadCell>
-                    <span className="sr-only">Edit</span>
-                  </TableHeadCell>
-                </TableHead>
-                <TableBody className="divide-y">
+          <Table hoverable theme={tableTheme}>
+            <TableHead>
+              <TableHeadCell>id</TableHeadCell>
+              <TableHeadCell>label</TableHeadCell>
+              <TableHeadCell>vat amount</TableHeadCell>
+              <TableHeadCell>
+                <span className="sr-only">Edit</span>
+              </TableHeadCell>
+            </TableHead>
+            <TableBody className="divide-y">
+              {isLoading ?
+                <ListSkeletalComponent cols={2} />
+                :
+                <>
                   {
-                    VAT?.map((item) => (
-                      <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                    VAT?.map((item, key: Key) => (
+                      <TableRow key={key} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                         <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                           {item.id}
                         </TableCell>
@@ -80,9 +83,10 @@ export function VATPage() {
                       </TableRow>
                     ))
                   }
-                </TableBody>
-              </Table>
-          }
+                </>
+              }
+            </TableBody>
+          </Table>
         </div>
 
         <div className="basis-1/3">

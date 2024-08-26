@@ -25,7 +25,7 @@ export default function TableHeaderComponent({ children }: TTableHeaderProps) {
             <TextInput
               id="search"
               type="search"
-              placeholder="Search for payment..."
+              placeholder="Search ..."
               required
               className="w-full"
               icon={HiSearch}
