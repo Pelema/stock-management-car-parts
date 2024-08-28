@@ -50,7 +50,7 @@ export function VATPage() {
             <TableHead>
               <TableHeadCell>id</TableHeadCell>
               <TableHeadCell>label</TableHeadCell>
-              <TableHeadCell>vat amount</TableHeadCell>
+              <TableHeadCell>vat amount(%)</TableHeadCell>
               <TableHeadCell>
                 <span className="sr-only">Edit</span>
               </TableHeadCell>

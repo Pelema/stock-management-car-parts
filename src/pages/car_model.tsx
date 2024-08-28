@@ -19,6 +19,7 @@ import useMutation from "../hooks/mutation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CarModel } from "../types";
 import { toast } from "sonner";
+import { formatCurrency } from "../functions";
 
 export function CarModelPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -67,7 +68,7 @@ export function CarModelPage() {
                       </TableCell>
                       <TableCell>{item.make}</TableCell>
                       <TableCell>{item.model}</TableCell>
-                      <TableCell>{item.price}</TableCell>
+                      <TableCell>{formatCurrency(item.price)}</TableCell>
                       <TableCell>
                         <a
                           href="#"

@@ -8,8 +8,11 @@ export type Order = {
     id: number;
     order_number: string;
     customer_name: string;
+    sale_type: string;
+    contact: string;
     company_name: string;
-    customer_phone: string;
+    company_reg?: string;
+    VAT_reg?: string;
     date: string;
     invoice?: string;
 }
@@ -66,6 +69,7 @@ export type StockItem = {
     min_stock_level: number;
     net_price: number;
     gross_price: number;
+    quantity?: number;
 }
 
 export type QueryProps = {

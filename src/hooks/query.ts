@@ -10,7 +10,7 @@ export default function useQuery<T>({
     to = 10,
     filter,
     modifier
-}: QueryProps): { loading: boolean, data: T, error?: string, refresh: () => any } {
+}: QueryProps): { loading: boolean, data: T, error?: string, refresh: () => any, search: (text: string) => any } {
 
     const [data, setData] = useState<T | null>(null);
     const [loading, setLoading] = useState(true);
@@ -34,7 +34,22 @@ export default function useQuery<T>({
         }
     }
 
+    const search = async (searchText: string) => {
+        const { data, error } = await supabase
+            .from(table)
+            .select('*')
+            .or(searchText)
+
+        if (error) {
+            setError(error.message)
+            return
+        }
+        console.log("Data ", data);
+        setData(data as T);
+        return data
+    }
+
     const refresh = () => getData();
 
-    return { data: data as T, loading, error, refresh }
+    return { data: data as T, loading, error, refresh, search }
 }
