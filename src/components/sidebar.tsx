@@ -12,42 +12,86 @@ import {
 } from "react-icons/hi";
 import { BiSupport } from "react-icons/bi";
 import { theme } from "./theme";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 
 export function SidebarComponent() {
+  const location = useLocation();
+
   return (
     <Sidebar theme={theme}>
-      {/* <Sidebar.Logo href="#" img="/favicon.svg" imgAlt="Flowbite logo">
-        Flowbite
-      </Sidebar.Logo> */}
       <Sidebar.Items>
         <Sidebar.ItemGroup>
-          <Sidebar.Item as={NavLink} to="/dashboard" icon={HiChartPie}>
+          <Sidebar.Item
+            as={NavLink}
+            to="/dashboard"
+            active={location.pathname === "/dashboard"}
+            icon={HiChartPie}
+          >
             Dashboard
           </Sidebar.Item>
-          <Sidebar.Item as={NavLink} to="/vat" icon={HiViewBoards}>
+          <Sidebar.Item
+            as={NavLink}
+            to="/vat"
+            active={location.pathname === "/vat"}
+            icon={HiViewBoards}
+          >
             VAT
           </Sidebar.Item>
-          <Sidebar.Item as={NavLink} to="/car-model" icon={HiInbox}>
+          <Sidebar.Item
+            as={NavLink}
+            to="/car-model"
+            active={location.pathname === "/car-model"}
+            icon={HiInbox}
+          >
             Car Model
           </Sidebar.Item>
 
-          <Sidebar.Item as={NavLink} to="/suppliers" icon={HiTruck}>
+          <Sidebar.Item
+            as={NavLink}
+            to="/suppliers"
+            active={location.pathname === "/suppliers"}
+            icon={HiTruck}
+          >
             Suppliers
           </Sidebar.Item>
-          <Sidebar.Item as={NavLink} to="/users" icon={HiUsers}>
+          <Sidebar.Item
+            as={NavLink}
+            to="/users"
+            active={location.pathname === "/users"}
+            icon={HiUsers}
+          >
             Users
           </Sidebar.Item>
-          <Sidebar.Item as={NavLink} to="/stock" icon={HiDatabase}>
+          <Sidebar.Item
+            as={NavLink}
+            to="/stock"
+            active={location.pathname === "/stock"}
+            icon={HiDatabase}
+          >
             Stock
           </Sidebar.Item>
-          <Sidebar.Item as={NavLink} to="/orders" icon={HiShoppingBag}>
+          <Sidebar.Item
+            as={NavLink}
+            to="/orders"
+            active={location.pathname === "/orders"}
+            icon={HiShoppingBag}
+          >
             Orders
           </Sidebar.Item>
-          <Sidebar.Item as={NavLink} to="/payments" icon={HiCurrencyDollar}>
+          <Sidebar.Item
+            as={NavLink}
+            to="/payments"
+            active={location.pathname === "/payments"}
+            icon={HiCurrencyDollar}
+          >
             Payments
           </Sidebar.Item>
-          <Sidebar.Item as={NavLink} to="/support" icon={BiSupport}>
+          <Sidebar.Item
+            as={NavLink}
+            to="/support"
+            active={location.pathname === "/support"}
+            icon={BiSupport}
+          >
             Support
           </Sidebar.Item>
 
