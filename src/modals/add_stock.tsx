@@ -177,10 +177,6 @@ export function AddStockModalComponent({
                             </div>
                             <Select id="vat"
                                 {...register("VAT", { required: "VAT is required" })}
-                                onChange={(e) => {
-                                    const vat = VATData?.find((item) => item.id === parseInt(e.target.value))
-                                    if (net_price) setValue("gross_price", (vat?.percentage as number + 100) / 100 * net_price ?? 0)
-                                }}
                                 helperText={
                                     <>
                                         {errors.VAT && <span className="font-medium text-sm">{errors.VAT.message}</span>}
@@ -202,7 +198,6 @@ export function AddStockModalComponent({
                                 id="net_price"
                                 type="number"
                                 placeholder="20,000"
-                                disabled
                                 {...register("net_price", { required: "net_price field is required" })}
                                 helperText={
                                     <>
@@ -220,8 +215,7 @@ export function AddStockModalComponent({
                                 id="gross_price"
                                 type="number"
                                 placeholder="20,000"
-                                disabled
-                                {...register("gross_price", { required: "gross_price field is required" })}
+                                {...register("gross_price", { required: "gross price field is required" })}
                                 helperText={
                                     <>
                                         {errors.gross_price && <span className="font-medium text-sm">{errors.gross_price.message}</span>}

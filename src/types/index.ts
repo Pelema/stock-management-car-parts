@@ -7,12 +7,8 @@ export type UserInputs = {
 export type Order = {
     id: number;
     order_number: string;
-    customer_name: string;
+    customer: number;
     sale_type: string;
-    contact: string;
-    company_name: string;
-    company_reg?: string;
-    VAT_reg?: string;
     date: string;
     invoice?: string;
 }
@@ -69,7 +65,7 @@ export type StockItem = {
     min_stock_level: number;
     net_price: number;
     gross_price: number;
-    quantity?: number;
+    quantity: number;
 }
 
 export type QueryProps = {
@@ -80,4 +76,14 @@ export type QueryProps = {
     _id?: number;
     filter?: string;
     modifier?: string;
+}
+
+export type Customer = {
+    id?: string;
+    name: string;
+    contact: string;
+    address: string;
+    company_name: string;
+    company_reg?: string;
+    VAT_reg: string;
 }
