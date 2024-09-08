@@ -43,7 +43,7 @@ export function UsersPage() {
             className="uppercase"
             onClick={() => setOpenedModal("user-modal")}
           >
-            add user
+            add customer
           </Button>
         </TableHeaderComponent>
         <div className="h-full overflow-y-auto">
@@ -112,7 +112,7 @@ export function UsersPage() {
         onClose={() => setOpenedModal("")}
         size={"2xl"}
       >
-        <Modal.Header>Add new user</Modal.Header>
+        <Modal.Header>Add new customer</Modal.Header>
         <Modal.Body>
           <form className="flex flex-col gap-4">
             <div className="flex space-x-2">

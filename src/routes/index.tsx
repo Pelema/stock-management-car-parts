@@ -44,7 +44,7 @@ export const router = createBrowserRouter([
         element: <SuppliersPage />,
       },
       {
-        path: "users",
+        path: "customers",
         element: <UsersPage />,
       },
       {

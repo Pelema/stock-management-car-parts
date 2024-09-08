@@ -56,11 +56,11 @@ export function SidebarComponent() {
           </Sidebar.Item>
           <Sidebar.Item
             as={NavLink}
-            to="/users"
-            active={location.pathname === "/users"}
+            to="/customers"
+            active={location.pathname === "/customers"}
             icon={HiUsers}
           >
-            Users
+            Customers
           </Sidebar.Item>
           <Sidebar.Item
             as={NavLink}
