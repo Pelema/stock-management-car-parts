@@ -6,27 +6,36 @@ import {
   TableCell,
   TableHead,
   TableHeadCell,
-  TableRow
+  TableRow,
 } from "flowbite-react";
 import { Key, useState } from "react";
 import {
   ListSkeletalComponent,
   TableActionsComponent,
   TableFooterComponent,
-  TableHeaderComponent
+  TableHeaderComponent,
 } from "../components";
 import useQuery from "../hooks/query";
-import { AddSupplierModal } from "../modals";
+import { AddSupplierModal, ConfirmActionModalComponent } from "../modals";
 import { Supplier } from "../types";
 import { tableTheme } from "./table_theme";
 import { HiPencil, HiTrash } from "react-icons/hi";
 
 export function SuppliersPage() {
-
   const [openedModal, setOpenedModal] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const { data: suppliers, loading: isLoading, error: isError, refresh } = useQuery<Supplier[]>({ table: 'suppliers', is_single: false, from: 0, to: 10 });
+  const {
+    data: suppliers,
+    loading: isLoading,
+    error: isError,
+    refresh,
+  } = useQuery<Supplier[]>({
+    table: "suppliers",
+    is_single: false,
+    from: 0,
+    to: 10,
+  });
 
   return (
     <>
@@ -35,7 +44,7 @@ export function SuppliersPage() {
           <Button
             type="submit"
             className="uppercase"
-            onClick={() => setOpenedModal("add-supplier-modal")}
+            onClick={() => setOpenedModal("supplier-modal")}
           >
             add supplier
           </Button>
@@ -51,43 +60,40 @@ export function SuppliersPage() {
               <TableHeadCell className="w-24">
                 <span className="sr-only">Actions</span>
               </TableHeadCell>
-            </TableHead >
+            </TableHead>
             <TableBody className="divide-y">
               {isLoading ? (
                 <ListSkeletalComponent cols={4} />
               ) : (
                 <>
                   {suppliers?.map((item, key: Key) => (
-                    <TableRow key={key} className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                    <TableRow
+                      key={key}
+                      className="bg-white dark:border-gray-700 dark:bg-gray-800"
+                    >
                       <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                         {item.id}
                       </TableCell>
-                      <TableCell>
-                        {item.name}
-                      </TableCell>
+                      <TableCell>{item.name}</TableCell>
                       <TableCell>{item.email}</TableCell>
                       <TableCell>{item.telephone}</TableCell>
-                      <TableCell>
-                        {item.contact_person}
-                      </TableCell>
+                      <TableCell>{item.contact_person}</TableCell>
                       <TableCell>
                         <TableActionsComponent>
-                          <TableActionsComponent>
-                            <>
-                              <Dropdown.Item
-                                icon={HiPencil}
-                                onClick={() => setOpenedModal("edit-modal")}
-                              >
-                                Edit
-                              </Dropdown.Item>
-                              <Dropdown.Item
-                                icon={HiTrash}
-                                onClick={() => setOpenedModal("confirm-modal")}
-                              >
-                                Delete
-                              </Dropdown.Item>
-                            </>
-                          </TableActionsComponent>
+                          <>
+                            <Dropdown.Item
+                              icon={HiPencil}
+                              onClick={() => setOpenedModal("supplier-modal")}
+                            >
+                              Edit
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              icon={HiTrash}
+                              onClick={() => setOpenedModal("confirm-modal")}
+                            >
+                              Delete
+                            </Dropdown.Item>
+                          </>
                         </TableActionsComponent>
                       </TableCell>
                     </TableRow>
@@ -95,18 +101,20 @@ export function SuppliersPage() {
                 </>
               )}
             </TableBody>
-          </Table >
+          </Table>
           <TableFooterComponent
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
           />
-        </div >
-      </div >
+        </div>
+      </div>
       <AddSupplierModal
         openedModal={openedModal}
         setOpenedModal={setOpenedModal}
         refresh={refresh}
       />
+
+      <ConfirmActionModalComponent openedModal={openedModal} setOpenedModal={setOpenedModal}/>
     </>
   );
 }

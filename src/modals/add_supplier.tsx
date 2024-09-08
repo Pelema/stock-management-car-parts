@@ -26,7 +26,7 @@ export default function AddSupplierModal({
 
   return (
     <Modal
-      show={openedModal === "add-supplier-modal"}
+      show={openedModal === "supplier-modal"}
       onClose={() => setOpenedModal("")}
       size={"2xl"}
     >
