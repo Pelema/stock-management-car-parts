@@ -44,7 +44,6 @@ export default function useQuery<T>({
             setError(error.message)
             return
         }
-        console.log("Data ", data);
         setData(data as T);
         return data
     }
