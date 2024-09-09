@@ -10,6 +10,7 @@ import {
   StockPage,
   SupportPage,
   PaymentsPage,
+  CustomersPage,
 } from "../pages";
 import { SuppliersPage } from "../pages/suppliers";
 
@@ -45,6 +46,10 @@ export const router = createBrowserRouter([
       },
       {
         path: "customers",
+        element: <CustomersPage />,
+      },
+      {
+        path: "users",
         element: <UsersPage />,
       },
       {

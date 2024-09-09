@@ -7,6 +7,7 @@ import { SupportPage } from "./support";
 import { StockPage } from "./stock";
 import { OrdersPage } from "./orders";
 import { PaymentsPage } from "./payments";
+import { CustomersPage } from "./customers";
 
 export {
   LoginPage,
@@ -18,4 +19,6 @@ export {
   StockPage,
   SupportPage,
   PaymentsPage,
+  CustomersPage
 };
+
