@@ -22,9 +22,11 @@ import { toast } from "sonner";
 import { formatCurrency } from "../functions";
 
 export function CarModelPage() {
-  const [currentPage, setCurrentPage] = useState(1);
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(10);
+  
   const { insert, data: fetchData, loading, error } = useMutation();
-  const { data: cars, loading: isLoading, error: isError, refresh } = useQuery<CarModel[]>({ table: 'car_model', from: 0, to: 10 });
+  const { data: cars, loading: isLoading, error: isError, refresh, count } = useQuery<CarModel[]>({ table: 'car_model', from: 0, to: 10 });
   const {
     register,
     handleSubmit,
@@ -83,7 +85,12 @@ export function CarModelPage() {
             }
           </TableBody>
         </Table>
-        <TableFooterComponent setCurrentPage={setCurrentPage} currentPage={currentPage} />
+        <TableFooterComponent
+          count={count}
+          setStart={setStart}
+          setEnd={setEnd}
+          start={start}
+        />
       </div>
 
       <div className="basis-1/3">

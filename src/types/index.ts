@@ -73,6 +73,8 @@ export type QueryProps = {
     is_single?: boolean;
     from?: number;
     to?: number;
+    pageSize?: number;
+    offset?: number;
     _id?: number;
     filter?: string;
     modifier?: string;

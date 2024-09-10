@@ -1,31 +1,59 @@
 import { Button, Dropdown, Pagination } from "flowbite-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type TTableFooterProps = {
-  currentPage: number;
-  setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  count: number;
+  start?: number;
+  setStart: React.Dispatch<React.SetStateAction<number>>;
+  end?: number;
+  setEnd: React.Dispatch<React.SetStateAction<number>>;
 };
 
 export default function TableFooterComponent({
-  currentPage,
-  setCurrentPage,
+  count,
+  start = 0,
+  setStart,
+  setEnd
 }: TTableFooterProps) {
-  const onPageChange = (page: number) => setCurrentPage(page);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [totalRows, setTotalRows] = useState(19);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const onPageChange = (page: number) => {
+    setCurrentPage(page)
+    const st = (page - 1) * rowsPerPage
+    setStart(st)
+    const en = Math.min(st + rowsPerPage - 1, count);
+    setEnd(en)
+  };
+
+  useEffect(() => {
+    const st = (currentPage - 1) * rowsPerPage
+    setStart(st)
+    const en = Math.min(st + rowsPerPage - 1, count);
+    setEnd(en)
+  }, [rowsPerPage])
+
+  const onPageSizeChange = (rows: number) => {
+    if (rows > count) {
+      setRowsPerPage(rows);
+      setCurrentPage(1)
+    } else {
+      setRowsPerPage(rows);
+    }
+  }
 
   return (
     <div className="flex justify-between items-center mt-2">
       <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
         Showing &nbsp;
         <span className="font-semibold text-gray-900 dark:text-white">
-          {currentPage * rowsPerPage - rowsPerPage + 1}-
-          {Math.min(currentPage * rowsPerPage, totalRows)}
+          {(currentPage - 1) * rowsPerPage + 1}-
+          {Math.min((currentPage) * rowsPerPage, count)}
           &nbsp;
         </span>
         of &nbsp;
         <span className="font-semibold text-gray-900 dark:text-white">
-          {totalRows}
+          {count}
         </span>
       </span>
       <div className="flex overflow-x-auto sm:justify-center items-center space-x-4">
@@ -41,19 +69,15 @@ export default function TableFooterComponent({
             )}
             className="w-32"
           >
-            <Dropdown.Item onClick={() => setRowsPerPage(10)}>10</Dropdown.Item>
-            <Dropdown.Item onClick={() => setRowsPerPage(50)}>50</Dropdown.Item>
-            <Dropdown.Item onClick={() => setRowsPerPage(100)}>
-              100
-            </Dropdown.Item>
-            <Dropdown.Item onClick={() => setRowsPerPage(1000)}>
-              1000
-            </Dropdown.Item>
+            <Dropdown.Item onClick={() => onPageSizeChange(10)}>10</Dropdown.Item>
+            <Dropdown.Item onClick={() => onPageSizeChange(50)}>50</Dropdown.Item>
+            <Dropdown.Item onClick={() => onPageSizeChange(100)}>100</Dropdown.Item>
+            <Dropdown.Item onClick={() => onPageSizeChange(1000)}>1000</Dropdown.Item>
           </Dropdown>
         </div>
         <Pagination
           currentPage={currentPage}
-          totalPages={Math.ceil(totalRows / rowsPerPage)}
+          totalPages={Math.ceil(count / rowsPerPage)}
           onPageChange={onPageChange}
           showIcons
           previousLabel=""

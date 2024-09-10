@@ -23,18 +23,20 @@ import { HiPencil, HiTrash } from "react-icons/hi";
 
 export function SuppliersPage() {
   const [openedModal, setOpenedModal] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(10);
 
   const {
     data: suppliers,
+    count,
     loading: isLoading,
     error: isError,
     refresh,
   } = useQuery<Supplier[]>({
     table: "suppliers",
     is_single: false,
-    from: 0,
-    to: 10,
+    from: start,
+    to: end,
   });
 
   return (
@@ -103,8 +105,10 @@ export function SuppliersPage() {
             </TableBody>
           </Table>
           <TableFooterComponent
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
+            count={count}
+            setStart={setStart}
+            setEnd={setEnd}
+            start={start}
           />
         </div>
       </div>
@@ -114,7 +118,7 @@ export function SuppliersPage() {
         refresh={refresh}
       />
 
-      <ConfirmActionModalComponent openedModal={openedModal} setOpenedModal={setOpenedModal}/>
+      <ConfirmActionModalComponent openedModal={openedModal} setOpenedModal={setOpenedModal} />
     </>
   );
 }

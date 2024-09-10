@@ -30,8 +30,10 @@ export function StockPage() {
   const [openedModal, setOpenedModal] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(10);
 
-  const { data: stock, loading: isLoading, error: isError, refresh } = useQuery<StockItem[]>({
+  const { data: stock, loading: isLoading, error: isError, refresh, count } = useQuery<StockItem[]>({
     table: 'stock', from: 0, to: 10,
     filter: "id,OEM_number,VIN,engine_number,manufacturer,model_range,cost,gross_price,supplier(name,email),car_model(make,model)"
   });
@@ -116,8 +118,10 @@ export function StockPage() {
         </div>
 
         <TableFooterComponent
-          setCurrentPage={setCurrentPage}
-          currentPage={currentPage}
+            count={count}
+            setStart={setStart}
+            setEnd={setEnd}
+            start={start}
         />
       </div>
 

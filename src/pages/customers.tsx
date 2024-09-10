@@ -22,17 +22,26 @@ import {
   TableFooterComponent,
   TableHeaderComponent,
 } from "../components";
+import useQuery from "../hooks/query";
+import { Customer } from "../types";
 
 export function CustomersPage() {
   const [openedModal, setOpenedModal] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(10);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, []);
+  const {
+    data: customers,
+    count,
+    loading,
+    error,
+    refresh,
+  } = useQuery<Customer[]>({
+    table: "customers",
+    is_single: false,
+    from: start,
+    to: end,
+  });
 
   return (
     <>
@@ -51,31 +60,29 @@ export function CustomersPage() {
             <TableHead>
               <TableHeadCell className="w-14">id</TableHeadCell>
               <TableHeadCell>name</TableHeadCell>
-              <TableHeadCell>email</TableHeadCell>
-              <TableHeadCell>username</TableHeadCell>
+              <TableHeadCell>company</TableHeadCell>
               <TableHeadCell>telephone</TableHeadCell>
-              <TableHeadCell>type</TableHeadCell>
+              <TableHeadCell>address</TableHeadCell>
               <TableHeadCell className="w-24">
                 <span className="sr-only">Actions</span>
               </TableHeadCell>
             </TableHead>
             <TableBody className="divide-y">
               {loading ? (
-                <ListSkeletalComponent cols={5}/>
+                <ListSkeletalComponent cols={4}/>
               ) : (
                 <>
-                  {data.map((item) => (
+                  {customers?.map((item) => (
                     <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
                       <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                         {item.id}
                       </TableCell>
                       <TableCell>
-                        {item.last_name} {item.first_name}
+                        {item?.name} 
                       </TableCell>
-                      <TableCell>{item.email}</TableCell>
-                      <TableCell>{item.username}</TableCell>
-                      <TableCell>{item.telephone}</TableCell>
-                      <TableCell>{item.type}</TableCell>
+                      <TableCell>{item.company_name}</TableCell>
+                      <TableCell>{item.contact}</TableCell>
+                      <TableCell>{item.address}</TableCell>
                       <TableCell>
                         <TableActionsComponent>
                           <>
@@ -102,9 +109,11 @@ export function CustomersPage() {
           </Table>
         </div>
         <TableFooterComponent
-          setCurrentPage={setCurrentPage}
-          currentPage={currentPage}
-        />
+            count={count}
+            setStart={setStart}
+            setEnd={setEnd}
+            start={start}
+          />
       </div>
 
       <Modal

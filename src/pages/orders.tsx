@@ -30,14 +30,17 @@ export function OrdersPage() {
   const [openedModal, setOpenedModal] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(10);
 
-  const { data: suppliers, loading: isLoading, error: isError, refresh } = useQuery<Order[]>({ table: 'orders', from: 0, to: 10 });
+  const { data: orders, loading: isLoading, error: isError, refresh, count } = useQuery<Order[]>({ table: 'orders', from: 0, to: 10 });
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 1000);
   }, []);
+  
   return (
     <>
       <div className="overflow-x-auto rounded-md h-full flex flex-col">
@@ -108,8 +111,10 @@ export function OrdersPage() {
         </div>
 
         <TableFooterComponent
-          setCurrentPage={setCurrentPage}
-          currentPage={currentPage}
+            count={count}
+            setStart={setStart}
+            setEnd={setEnd}
+            start={start}
         />
       </div>
 

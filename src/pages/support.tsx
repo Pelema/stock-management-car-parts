@@ -93,10 +93,10 @@ export function SupportPage() {
           </TableBody>
         </Table>
  </div>
-        <TableFooterComponent
+        {/* <TableFooterComponent
           setCurrentPage={setCurrentPage}
           currentPage={currentPage}
-        />
+        /> */}
       </div>
 
       <Modal

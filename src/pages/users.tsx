@@ -22,17 +22,27 @@ import {
   TableFooterComponent,
   TableHeaderComponent,
 } from "../components";
+import useQuery from "../hooks/query";
+import { User } from "../types";
 
 export function UsersPage() {
   const [openedModal, setOpenedModal] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(10);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, []);
+  const {
+    data: suppliers,
+    count,
+    loading: isLoading,
+    error: isError,
+    refresh,
+  } = useQuery<User[]>({
+    table: "users",
+    is_single: false,
+    from: start,
+    to: end,
+  });
 
   return (
     <>
@@ -60,7 +70,7 @@ export function UsersPage() {
               </TableHeadCell>
             </TableHead>
             <TableBody className="divide-y">
-              {loading ? (
+              {isLoading ? (
                 <ListSkeletalComponent cols={5}/>
               ) : (
                 <>
@@ -102,9 +112,11 @@ export function UsersPage() {
           </Table>
         </div>
         <TableFooterComponent
-          setCurrentPage={setCurrentPage}
-          currentPage={currentPage}
-        />
+            count={count}
+            setStart={setStart}
+            setEnd={setEnd}
+            start={start}
+          />
       </div>
 
       <Modal

@@ -31,17 +31,25 @@ import {
   ConfirmActionModalComponent,
   PaymentEditModalComponent,
 } from "../modals";
+import useQuery from "../hooks/query";
 
 export function PaymentsPage() {
   const [openedModal, setOpenedModal] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(10);
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, []);
+  const {
+    data: invoices,
+    count,
+    loading,
+    error: isError,
+    refresh
+  } = useQuery<any[]>({
+    table: "invoices",
+    is_single: false,
+    from: start,
+    to: end,
+  });
 
   return (
     <>
@@ -122,8 +130,10 @@ export function PaymentsPage() {
           </Table>
         </div>
         <TableFooterComponent
-          setCurrentPage={setCurrentPage}
-          currentPage={currentPage}
+          count={count}
+          setStart={setStart}
+          setEnd={setEnd}
+          start={start}
         />
       </div>
 
