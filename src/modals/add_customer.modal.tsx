@@ -31,7 +31,7 @@ export function AddCustomerModalComponent({
         <Modal
             show={openedModal === "user-modal"}
             onClose={() => setOpenedModal("")}
-            size={"2xl"}
+            size={"xl"}
         >
             <Modal.Header>Add new customer</Modal.Header>
             <Modal.Body>
