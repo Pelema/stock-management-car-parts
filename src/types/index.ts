@@ -1,7 +1,9 @@
 export type UserInputs = {
     email: string;
     password: string;
+    phone?: string;
     role?: string;
+    fullname?: string;
 }
 
 export type Order = {

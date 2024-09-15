@@ -64,8 +64,8 @@ export function SidebarComponent() {
           </Sidebar.Item>
           <Sidebar.Item
             as={NavLink}
-            to="/customers"
-            active={location.pathname === "/customers"}
+            to="/users"
+            active={location.pathname === "/users"}
             icon={HiUsers}
           >
             Users
