@@ -52,6 +52,16 @@ export type CarModel = {
     price: number;
 }
 
+export type ReStockItem = {
+    id?: number;
+    invoice_number: string;
+    supplier_id: string;
+    markup_perc: number | VAT;
+    quantity_received: number;
+    purchase_price: number;
+    markup_price: number;
+}
+
 export type StockItem = {
     id?: number;
     OEM_number: string;
@@ -60,14 +70,15 @@ export type StockItem = {
     engine_number: string;
     manufacturer: string;
     model_range: string;
-    cost: number;
+    selling_price: number;
     supplier: number | Supplier;
-    VAT: number | VAT;
-    available_stock: number;
+    // VAT: number | VAT;
+    // available_stock: number;
     min_stock_level: number;
-    net_price: number;
-    gross_price: number;
-    quantity: number;
+    quantity_on_hand: number;
+    // net_price: number;
+    // gross_price: number;
+    // quantity: number;
 }
 
 export type QueryProps = {
