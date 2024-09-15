@@ -35,7 +35,7 @@ export function SidebarComponent() {
             active={location.pathname === "/vat"}
             icon={HiViewBoards}
           >
-            VAT
+            Markup
           </Sidebar.Item>
           <Sidebar.Item
             as={NavLink}
