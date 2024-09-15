@@ -57,8 +57,7 @@ export default function useAuth() {
             setError(error.message);
             return
         }
-        getUser();
-        // setData(null);
+        setData(null);
     }
 
     const refresh = async () => {

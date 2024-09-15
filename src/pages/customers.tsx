@@ -12,7 +12,7 @@ import {
   Dropdown,
 } from "flowbite-react";
 import { tableTheme } from "./table_theme";
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 
 import { HiPencil, HiTrash } from "react-icons/hi";
 
@@ -24,6 +24,7 @@ import {
 } from "../components";
 import useQuery from "../hooks/query";
 import { Customer } from "../types";
+import { AddCustomerModalComponent } from "../modals/add_customer.modal";
 
 export function CustomersPage() {
   const [openedModal, setOpenedModal] = useState("");
@@ -116,7 +117,7 @@ export function CustomersPage() {
         />
       </div>
 
-
+      <AddCustomerModalComponent refresh={refresh} openedModal={openedModal} setOpenedModal={setOpenedModal} />
     </>
   );
 }

@@ -21,7 +21,7 @@ export function AddCustomerModalComponent({
             toast.error(error);
         }
         if (fetchData) {
-            toast.success("supplier added");
+            toast.success("customer added");
             refresh();
             setOpenedModal("");
         }
@@ -29,7 +29,7 @@ export function AddCustomerModalComponent({
 
     return (
         <Modal
-            show={openedModal === "user-modal"}
+            show={openedModal === "customer-modal"}
             onClose={() => setOpenedModal("")}
             size={"xl"}
         >
