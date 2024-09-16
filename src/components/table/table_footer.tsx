@@ -44,11 +44,14 @@ export default function TableFooterComponent({
 
   return (
     <div className="flex justify-between items-center mt-2">
-      <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+      <span className="text-xs font-normal text-gray-500 dark:text-gray-400">
         Showing &nbsp;
-        <span className="font-semibold text-gray-900 dark:text-white">
-          {(currentPage - 1) * rowsPerPage + 1}-
-          {Math.min((currentPage) * rowsPerPage, count)}
+        <span className="text-gray-900 dark:text-white">
+          <b>{(currentPage - 1) * rowsPerPage + 1}</b>
+          &nbsp;
+          to
+          &nbsp;
+          <b>{Math.min((currentPage) * rowsPerPage, count)}</b>
           &nbsp;
         </span>
         of &nbsp;
@@ -57,7 +60,7 @@ export default function TableFooterComponent({
         </span>
       </span>
       <div className="flex overflow-x-auto sm:justify-center items-center space-x-4">
-        <div className="flex items-center space-x-4 text-sm font-normal text-gray-500 dark:text-gray-400">
+        <div className="flex text-xs items-center space-x-4 font-normal text-gray-500 dark:text-gray-400">
           <div>Rows per page:</div>
           <Dropdown
             label={rowsPerPage}
@@ -67,7 +70,7 @@ export default function TableFooterComponent({
                 {rowsPerPage}
               </Button>
             )}
-            className="w-32"
+            className="w-32 !text-xs"
           >
             <Dropdown.Item onClick={() => onPageSizeChange(10)}>10</Dropdown.Item>
             <Dropdown.Item onClick={() => onPageSizeChange(50)}>50</Dropdown.Item>

@@ -1,48 +1,61 @@
 import {
-  Table,
-  TableHead,
-  TableHeadCell,
-  TableBody,
-  TableRow,
-  TableCell,
   Button,
   Card,
+  Dropdown,
   Label,
-  TextInput,
-  Spinner,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableRow,
+  TextInput
 } from "flowbite-react";
-import { tableTheme } from "./table_theme";
-import { ListSkeletalComponent, TableFooterComponent, TableHeaderComponent } from "../components";
-import { Key, useState } from "react";
-import useQuery from "../hooks/query";
-import useMutation from "../hooks/mutation";
+import { Key, useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { CarModel } from "../types";
+import { HiPencil, HiTrash } from "react-icons/hi";
 import { toast } from "sonner";
+import { ListSkeletalComponent, TableActionsComponent, TableFooterComponent, TableHeaderComponent } from "../components";
 import { formatCurrency } from "../functions";
+import useMutation from "../hooks/mutation";
+import useQuery from "../hooks/query";
+import { CarModel } from "../types";
+import { tableTheme } from "./table_theme";
 
 export function CarModelPage() {
-  const [start, setStart] = useState(0);
-  const [end, setEnd] = useState(10);
-  
-  const { insert, data: fetchData, loading, error } = useMutation();
-  const { data: cars, loading: isLoading, error: isError, refresh, count } = useQuery<CarModel[]>({ table: 'car_model', from: 0, to: 10 });
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    setValue,
+    reset
   } = useForm<CarModel>()
+  const [start, setStart] = useState(0);
+  const [end, setEnd] = useState(10);
+  const [selectedCar, setSelectedCar] = useState<CarModel | null>(null);
+
+  const { insert, update, loading, error, onDelete } = useMutation();
+  const { data: cars, loading: isLoading, refresh, count } = useQuery<CarModel[]>({ table: 'car_model', from: 0, to: 10 });
 
   const onSubmit: SubmitHandler<CarModel> = async (values) => {
-    await insert('car_model', values);
+    const { data, error } = selectedCar ? await update('car_model', selectedCar.id, values) : await insert('car_model', values);
     if (error) {
-      toast.error(error);
+      toast.error(error.message);
     }
-    if (fetchData) {
-      toast.success("car added");
+    if (data) {
+      reset();
       refresh();
+      toast.success(`selectedCar ${selectedCar ? "updated" : "added"}`);
     }
   }
+
+  useEffect(() => {
+    if (selectedCar?.id) {
+      setValue("make", selectedCar.make);
+      setValue("model", selectedCar.model);
+      setValue("price", selectedCar.price);
+    }
+  }, [selectedCar])
 
   return (
     <div className="flex space-x-2 h-full">
@@ -72,12 +85,26 @@ export function CarModelPage() {
                       <TableCell>{item.model}</TableCell>
                       <TableCell>{formatCurrency(item.price)}</TableCell>
                       <TableCell>
-                        <a
-                          href="#"
-                          className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                        >
-                          Edit
-                        </a>
+                        <TableActionsComponent>
+                          <>
+                            <Dropdown.Item
+                              icon={HiPencil}
+                              onClick={() => {
+                                setSelectedCar(item);
+                              }}
+                            >
+                              Edit
+                            </Dropdown.Item>
+                            <Dropdown.Item
+                              icon={HiTrash}
+                              onClick={() => {
+                                setSelectedCar(item);
+                              }}
+                            >
+                              Delete
+                            </Dropdown.Item>
+                          </>
+                        </TableActionsComponent>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -97,7 +124,7 @@ export function CarModelPage() {
         <Card className="w-full">
           <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
             <legend className="uppercase text-gray-900 dark:text-white">
-              Add new car model
+              {selectedCar ? "Update " : "Add new"} car model
             </legend>
             <div>
               <div className="mb-2 block">
@@ -151,7 +178,7 @@ export function CarModelPage() {
                 }
               />
             </div>
-            <Button type="submit">Save {" "} {loading && <Spinner size={'sm'} />}</Button>
+            <Button disabled={loading} isProcessing={loading} type="submit">Save</Button>
           </form>
         </Card>
       </div>

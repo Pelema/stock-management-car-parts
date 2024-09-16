@@ -13,9 +13,7 @@ import {
 } from "flowbite-react";
 import { tableTheme } from "./table_theme";
 import { SetStateAction, useEffect, useState } from "react";
-
 import { HiPencil, HiTrash } from "react-icons/hi";
-
 import {
   ListSkeletalComponent,
   TableActionsComponent,
@@ -24,12 +22,13 @@ import {
 } from "../components";
 import useQuery from "../hooks/query";
 import { Customer } from "../types";
-import { AddCustomerModalComponent } from "../modals/add_customer.modal";
+import { AddCustomerModalComponent } from "../modals/add_customer";
 
 export function CustomersPage() {
   const [openedModal, setOpenedModal] = useState("");
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(10);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
 
   const {
     data: customers,
@@ -51,7 +50,7 @@ export function CustomersPage() {
           <Button
             type="submit"
             className="uppercase"
-            onClick={() => setOpenedModal("user-modal")}
+            onClick={() => {setOpenedModal("customer-modal"); setSelectedCustomer(null)}}
           >
             add customer
           </Button>
@@ -89,13 +88,19 @@ export function CustomersPage() {
                           <>
                             <Dropdown.Item
                               icon={HiPencil}
-                              onClick={() => setOpenedModal("user-modal")}
+                              onClick={() => {
+                                setSelectedCustomer(item);
+                                setOpenedModal("customer-modal")
+                              }}
                             >
                               Edit
                             </Dropdown.Item>
                             <Dropdown.Item
                               icon={HiTrash}
-                              onClick={() => setOpenedModal("confirm-modal")}
+                              onClick={() => {
+                                setSelectedCustomer(item);
+                                setOpenedModal("confirm-modal")
+                              }}
                             >
                               Delete
                             </Dropdown.Item>
@@ -117,7 +122,7 @@ export function CustomersPage() {
         />
       </div>
 
-      <AddCustomerModalComponent refresh={refresh} openedModal={openedModal} setOpenedModal={setOpenedModal} />
+      <AddCustomerModalComponent refresh={refresh} openedModal={openedModal} setOpenedModal={setOpenedModal} customer={selectedCustomer} />
     </>
   );
 }

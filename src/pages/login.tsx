@@ -11,14 +11,13 @@ export function LoginPage() {
     formState: { errors },
   } = useForm<UserInputs>();
 
-  const { data, loading, error, signIn } = useAuth();
+  const { loading, error, signIn } = useAuth();
 
   const onSubmit: SubmitHandler<UserInputs> = async (values) => {
-    await signIn(values);
+    const data = await signIn(values);
     if (data) {
       localStorage.setItem("logged_in", "true");
       console.log("User Data");
-
       window.location.href = "/"
     }
   };

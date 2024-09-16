@@ -9,7 +9,8 @@ import { motion } from "framer-motion";
 import useQuery from "../hooks/query";
 import { animateItem, container } from "../constants";
 import { formatCurrency } from "../functions";
-import AddCustomer from "./add_customer";
+import AddCustomer from "../components/popover/add_customer";
+import { AddCustomerModalComponent } from "./add_customer";
 
 export function AddOrderModalComponent({
     openedModal,
@@ -245,8 +246,8 @@ export function AddOrderModalComponent({
                                     placeholder="Search customer ..."
                                     onChange={(event) => setSearchQueryCus(event.target.value.trim())}
                                 />
-
-                                <AddCustomer refresh={refreshCustomer} />
+                                {/* <AddCustomer refresh={refreshCustomer} /> */}
+                                <Button size={"sm"} onClick={() => setOpenedModal('customer-modal')}>Add Customer</Button>
                             </div>
                         </div>
 
@@ -325,7 +326,7 @@ export function AddOrderModalComponent({
 
 
                 {/* items */}
-                <div className="grow space-y-2 flex flex-col rounded-lg p-4 bg-gray-700/40 backdrop-blur-sm">
+                <div className="grow !z-10 space-y-2 flex flex-col rounded-lg p-4 bg-gray-700/40 backdrop-blur-sm">
                     <div className="">
                         <div className="block">
                             <Label className="" htmlFor="search" value="Search for items" />
@@ -470,6 +471,9 @@ export function AddOrderModalComponent({
                 <Button outline onClick={onClose}>Cancel</Button>
                 <Button>Save</Button>
             </div>
+
+            <AddCustomerModalComponent refresh={refresh} openedModal={openedModal} setOpenedModal={setOpenedModal} customer={null} />
+
         </Drawer >
     )
 }

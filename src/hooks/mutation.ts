@@ -13,10 +13,10 @@ export default function useMutation() {
         setLoading(false);
         if (error) {
             setError(error.message);
-            return error;
+            return { data: null, error: error };
         }
         setData({ status, statusText });
-        return { status, statusText };
+        return { data: { status, statusText }, error: null };
     }
 
     const update = async (table: string, _id: number, fields: any) => {
@@ -25,10 +25,10 @@ export default function useMutation() {
         setLoading(false);
         if (error) {
             setError(error.message);
-            return error;
+            return { data: null, error };
         }
         setData({ status, statusText });
-        return { status, statusText };
+        return { data: { status, statusText }, error: null };
     }
 
     const upsert = async (table: string, _id: number, fields: JSON) => {
@@ -37,10 +37,11 @@ export default function useMutation() {
         setLoading(false);
         if (error) {
             setError(error.message);
-            return error;
+            return { data: null, error };
         }
         setData(data);
-        return data;
+        return { data, error: null };
+
     }
 
     const onDelete = async (table: string, _id: number) => {
@@ -49,10 +50,10 @@ export default function useMutation() {
         setLoading(false);
         if (error) {
             setError(error.message);
-            return error;
+            return { data: null, error };
         }
         setData({ status, statusText });
-        return { status, statusText };
+        return { data: { status, statusText }, error: null };
     }
 
     return { data, loading, error, insert, update, upsert, onDelete }

@@ -16,7 +16,7 @@ import {
   TableHeaderComponent,
 } from "../components";
 import useQuery from "../hooks/query";
-import { AddSupplierModal, ConfirmActionModalComponent } from "../modals";
+import { AddSupplierModal, ConfirmModal } from "../modals";
 import { Supplier } from "../types";
 import { tableTheme } from "./table_theme";
 import { HiPencil, HiTrash } from "react-icons/hi";
@@ -25,12 +25,13 @@ export function SuppliersPage() {
   const [openedModal, setOpenedModal] = useState("");
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(10);
+  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
 
   const {
     data: suppliers,
     count,
     loading: isLoading,
-    error: isError,
+    // error: isError,
     refresh,
   } = useQuery<Supplier[]>({
     table: "suppliers",
@@ -85,13 +86,19 @@ export function SuppliersPage() {
                           <>
                             <Dropdown.Item
                               icon={HiPencil}
-                              onClick={() => setOpenedModal("supplier-modal")}
+                              onClick={() => {
+                                setSelectedSupplier(item)
+                                setOpenedModal("supplier-modal")
+                              }}
                             >
                               Edit
                             </Dropdown.Item>
                             <Dropdown.Item
                               icon={HiTrash}
-                              onClick={() => setOpenedModal("confirm-modal")}
+                              onClick={() => {
+                                setSelectedSupplier(item)
+                                setOpenedModal("confirm-modal")
+                              }}
                             >
                               Delete
                             </Dropdown.Item>
@@ -116,9 +123,10 @@ export function SuppliersPage() {
         openedModal={openedModal}
         setOpenedModal={setOpenedModal}
         refresh={refresh}
+        supplier={selectedSupplier}
       />
 
-      <ConfirmActionModalComponent openedModal={openedModal} setOpenedModal={setOpenedModal} />
+      <ConfirmModal openedModal={openedModal} setOpenedModal={setOpenedModal} confirm={undefined} loading={false} />
     </>
   );
 }

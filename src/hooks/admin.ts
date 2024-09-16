@@ -36,7 +36,7 @@ export default function useAdmin() {
         setLoading(true);
         const { data: { users }, error } = await supabase.auth.admin.listUsers()
         setLoading(false);
-        if (data) {
+        if (users) {
             setData(users);
         }
     }
@@ -55,34 +55,45 @@ export default function useAdmin() {
         setLoading(false);
         if (error) {
             setError(error.message);
-            return
+            return { data: null, error: error }
         }
         getUsers()
-        return data;
+        return { data, error: error };
     }
 
-    const updateUser = async (id: string, user: UserInputs) => {
+    const updateUser = async (id: string, { email, password, phone, role, fullname }: UserInputs) => {
         setLoading(true);
-        const { error } = await supabase.auth.admin.updateUserById(
-            id, { ...user }
+        const { data, error } = await supabase.auth.admin.updateUserById(
+            id, {
+            email,
+            password,
+            phone,
+            user_metadata: { fullname, role },
+            email_confirm: true,
+            phone_confirm: true
+        }
         );
         setLoading(false);
         if (error) {
             setError(error.message);
-            return
+            return { data: null, error: error }
         }
-        setData(null);
+        getUsers();
+        return { data, error: null }
     }
 
     const deleteUser = async (id: string) => {
         setLoading(true);
         const { data, error } = await supabase.auth.admin.deleteUser(id);
+        setLoading(false);
         if (error) {
             setError(error.message);
-            return
+            return { data: null, error: error }
         }
-        return data;
+        return { data, error: null }
     }
 
-    return { data, loading, error, createUser, deleteUser, updateUser }
+    const refresh = () => getUsers();
+
+    return { data, loading, error, createUser, deleteUser, updateUser, refresh }
 }

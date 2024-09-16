@@ -21,7 +21,7 @@ import {
   TableFooterComponent,
   TableHeaderComponent,
 } from "../components";
-import { AddOrderModal, ConfirmActionModalComponent } from "../modals";
+import { AddOrderModal, ConfirmModal } from "../modals";
 import { useForm } from "react-hook-form";
 import useQuery from "../hooks/query";
 import { Order } from "../types";
@@ -40,7 +40,7 @@ export function OrdersPage() {
       setLoading(false);
     }, 1000);
   }, []);
-  
+
   return (
     <>
       <div className="overflow-x-auto rounded-md h-full flex flex-col">
@@ -111,10 +111,10 @@ export function OrdersPage() {
         </div>
 
         <TableFooterComponent
-            count={count}
-            setStart={setStart}
-            setEnd={setEnd}
-            start={start}
+          count={count}
+          setStart={setStart}
+          setEnd={setEnd}
+          start={start}
         />
       </div>
 
@@ -126,10 +126,9 @@ export function OrdersPage() {
         refresh={refresh}
       />
 
-      <ConfirmActionModalComponent
+      <ConfirmModal
         openedModal={openedModal}
-        setOpenedModal={setOpenedModal}
-      />
+        setOpenedModal={setOpenedModal} confirm={undefined} loading={false} />
     </>
   );
 }

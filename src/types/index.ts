@@ -1,9 +1,16 @@
 export type UserInputs = {
+    id?: string;
     email: string;
     password: string;
     phone?: string;
-    role?: string;
+    role?: Roles;
     fullname?: string;
+}
+
+enum Roles {
+    admin = "admin",
+    sales = "sales",
+    stock = "stock",
 }
 
 export type Order = {
@@ -46,7 +53,7 @@ export type TModalProps = {
 };
 
 export type CarModel = {
-    id?: number;
+    id: number;
     make: string;
     model: string;
     price: number;
@@ -83,7 +90,7 @@ export type QueryProps = {
 }
 
 export type Customer = {
-    id?: string;
+    id: number;
     name: string;
     contact: string;
     address: string;

@@ -1,11 +1,13 @@
-import { Button, Modal } from "flowbite-react";
+import { Button, Modal, Spinner } from "flowbite-react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { TModalProps } from "../types";
 
 export function ConfirmActionModalComponent({
   openedModal,
   setOpenedModal,
-}: TModalProps) {
+  confirm,
+  loading
+}: TModalProps & { confirm: any, loading: boolean }) {
   return (
     <Modal
       show={openedModal === "confirm-modal"}
@@ -21,8 +23,8 @@ export function ConfirmActionModalComponent({
             Are you sure you want to delete this product?
           </h3>
           <div className="flex justify-center gap-4">
-            <Button color="failure" onClick={() => setOpenedModal("")}>
-              {"Yes, I'm sure"}
+            <Button isProcessing={loading} color="failure" onClick={() => { confirm() }}>
+              {"Yes, I'm sure"} &nbsp;
             </Button>
             <Button color="gray" onClick={() => setOpenedModal("")}>
               No, cancel

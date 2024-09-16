@@ -10,37 +10,50 @@ import {
   Label,
   TextInput,
   Spinner,
+  Dropdown,
 } from "flowbite-react";
+import { HiPencil, HiTrash } from "react-icons/hi";
 import { tableTheme } from "./table_theme";
 import { VAT } from "../types";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import useMutation from "../hooks/mutation";
 import useQuery from "../hooks/query";
-import { ListSkeletalComponent } from "../components";
-import { Key } from "react";
+import { ListSkeletalComponent, TableActionsComponent } from "../components";
+import { Key, useEffect, useState } from "react";
 
 export function VATPage() {
 
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    setValue,
+    reset
   } = useForm<VAT>()
 
-  const { insert, data: fetchData, loading, error } = useMutation();
-  const { data: VAT, loading: isLoading, error: isError, refresh } = useQuery<VAT[]>({ table: 'VAT', is_single: false, from: 0, to: 10 });
+  const { insert, update, loading } = useMutation();
+  const { data: VAT, loading: isLoading, refresh } = useQuery<VAT[]>({ table: 'VAT', is_single: false, from: 0, to: 10 });
+  const [selectedVAT, setSelectedVAT] = useState<VAT | null>(null);
 
   const onSubmit: SubmitHandler<VAT> = async (values) => {
-    await insert('VAT', values);
+    const { data, error } = selectedVAT ? await update('VAT', selectedVAT.id, values) : await insert('VAT', values);
     if (error) {
-      toast.error(error);
+      toast.error(error.message);
     }
-    if (fetchData) {
-      toast.success("VAT added");
+    if (data) {
+      reset();
       refresh();
+      toast.success(`selectedVAT ${selectedVAT ? "updated" : "added"}`);
     }
   }
+
+  useEffect(() => {
+    if (selectedVAT?.id) {
+      setValue("label", selectedVAT.label);
+      setValue("percentage", selectedVAT.percentage);
+    }
+  }, [selectedVAT])
 
   return (
     <>
@@ -73,12 +86,26 @@ export function VATPage() {
                           {item.percentage}
                         </TableCell>
                         <TableCell>
-                          <a
-                            href="#"
-                            className="font-medium text-cyan-600 hover:underline dark:text-cyan-500"
-                          >
-                            Edit
-                          </a>
+                          <TableActionsComponent>
+                            <>
+                              <Dropdown.Item
+                                icon={HiPencil}
+                                onClick={() => {
+                                  setSelectedVAT(item);
+                                }}
+                              >
+                                Edit
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                icon={HiTrash}
+                                onClick={() => {
+                                  setSelectedVAT(item);
+                                }}
+                              >
+                                Delete
+                              </Dropdown.Item>
+                            </>
+                          </TableActionsComponent>
                         </TableCell>
                       </TableRow>
                     ))

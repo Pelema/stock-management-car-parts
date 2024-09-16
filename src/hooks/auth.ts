@@ -14,16 +14,6 @@ export default function useAuth() {
         getUser();
     }, [])
 
-    // useEffect(() => {
-    //     (async () => {
-    //         const { data, error } = await supabase.auth.getSession();
-    //         if (data) {
-    //             setSession(data.session);
-    //         }
-    //     })
-
-    // }, [])
-
     const getUser = async () => {
         setLoading(true);
         const { data } = await supabase.auth.getUser();
@@ -43,10 +33,9 @@ export default function useAuth() {
         setLoading(false);
         if (error) {
             setError(error.message);
-            return
+            return { data: null, error: error }
         }
-        getUser()
-        return data;
+        return { data, error: null };
     }
 
     const signOut = async () => {
@@ -55,9 +44,9 @@ export default function useAuth() {
         setLoading(false);
         if (error) {
             setError(error.message);
-            return
+            return { data: null, error: error }
         }
-        setData(null);
+        return { data: null, error: error }
     }
 
     const refresh = async () => {

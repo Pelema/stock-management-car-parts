@@ -64,14 +64,6 @@ export function SidebarComponent() {
           </Sidebar.Item>
           <Sidebar.Item
             as={NavLink}
-            to="/users"
-            active={location.pathname === "/users"}
-            icon={HiUsers}
-          >
-            Users
-          </Sidebar.Item>
-          <Sidebar.Item
-            as={NavLink}
             to="/stock"
             active={location.pathname === "/stock"}
             icon={HiDatabase}
@@ -104,10 +96,19 @@ export function SidebarComponent() {
           </Sidebar.Item>
 
           <Sidebar.Collapse icon={HiCog} label="Settings">
+            <Sidebar.Item
+              as={NavLink}
+              to="/users"
+              active={location.pathname === "/users"}
+              // icon={HiUsers}
+            >
+              Users
+            </Sidebar.Item>
             <Sidebar.Item href="#">Products</Sidebar.Item>
             <Sidebar.Item href="#">Sales</Sidebar.Item>
             <Sidebar.Item href="#">Refunds</Sidebar.Item>
             <Sidebar.Item href="#">Shipping</Sidebar.Item>
+
           </Sidebar.Collapse>
         </Sidebar.ItemGroup>
       </Sidebar.Items>

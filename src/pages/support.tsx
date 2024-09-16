@@ -22,7 +22,7 @@ import {
   TableFooterComponent,
   TableHeaderComponent,
 } from "../components";
-import { ConfirmActionModalComponent } from "../modals";
+import { ConfirmModal } from "../modals";
 
 export function SupportPage() {
   const [openedModal, setOpenedModal] = useState("");
@@ -176,10 +176,9 @@ export function SupportPage() {
       </Modal>
 
 
-      <ConfirmActionModalComponent
+      <ConfirmModal
         openedModal={openedModal}
-        setOpenedModal={setOpenedModal}
-      />
+        setOpenedModal={setOpenedModal} confirm={undefined} loading={false}      />
     </>
   );
 }

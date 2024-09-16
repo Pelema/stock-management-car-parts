@@ -28,7 +28,7 @@ import {
 } from "../components";
 
 import {
-  ConfirmActionModalComponent,
+  ConfirmModal,
   PaymentEditModalComponent,
 } from "../modals";
 import useQuery from "../hooks/query";
@@ -142,10 +142,9 @@ export function PaymentsPage() {
         setOpenedModal={setOpenedModal}
       />
 
-      <ConfirmActionModalComponent
+      <ConfirmModal
         openedModal={openedModal}
-        setOpenedModal={setOpenedModal}
-      />
+        setOpenedModal={setOpenedModal} confirm={undefined} loading={false}      />
     </>
   );
 }

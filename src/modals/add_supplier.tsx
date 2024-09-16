@@ -3,34 +3,51 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Supplier, TModalProps } from "../types";
 import { toast } from "sonner";
 import useMutation from "../hooks/mutation";
+import { useEffect } from "react";
 
 export default function AddSupplierModal({
   openedModal,
   setOpenedModal,
-  refresh
-}: TModalProps & { refresh: () => void }) {
+  refresh,
+  supplier
+}: TModalProps & { refresh: () => void, supplier: Supplier | null }) {
 
-  const { insert, data: fetchData, loading, error } = useMutation();
-  const { register, handleSubmit } = useForm<Supplier>()
+  const { insert, update, loading } = useMutation();
+  const { register, handleSubmit, reset, setValue } = useForm<Supplier>()
 
   const onSubmit: SubmitHandler<Supplier> = async (values) => {
-    await insert('suppliers', values);
+    const { data, error } = supplier ? await update('suppliers', supplier.id, values) : await insert('suppliers', values);
     if (error) {
-      toast.error(error);
+      toast.error(error.message);
     }
-    if (fetchData) {
-      toast.success("supplier added");
+    if (data) {
+      reset();
       refresh();
+      setOpenedModal("");
+      toast.success(`supplier ${supplier ? "updated" : "added"}`);
     }
   }
+
+  useEffect(() => {
+    if (supplier?.id) {
+      setValue("email", supplier.email);
+      setValue("name", supplier.name);
+      setValue("telephone", supplier.telephone);
+      setValue("VAT_reg", supplier.VAT_reg);
+      setValue("contact_person", supplier.contact_person);
+      setValue("company_reg", supplier.company_reg);
+      setValue("website", supplier.website);
+      setValue("address", supplier.address);
+    }
+  }, [supplier])
 
   return (
     <Modal
       show={openedModal === "supplier-modal"}
-      onClose={() => setOpenedModal("")}
+      onClose={() => { setOpenedModal(""); reset(); }}
       size={"2xl"}
     >
-      <Modal.Header>Add new supplier</Modal.Header>
+      <Modal.Header>{supplier ? "Update" : "Add new"} supplier</Modal.Header>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <Modal.Body>
           <div className="flex space-x-2">
@@ -113,7 +130,7 @@ export default function AddSupplierModal({
           </div>
         </Modal.Body>
         <Modal.Footer className="justify-end">
-          <Button type="submit">Save &nbsp; {loading && <Spinner size={'sm'} />}</Button>
+          <Button isProcessing={loading} type="submit">Save</Button>
         </Modal.Footer>
       </form>
     </Modal>

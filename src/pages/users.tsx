@@ -16,21 +16,35 @@ import {
   TableHeaderComponent
 } from "../components";
 import useAdmin from "../hooks/admin";
-import { AddUserModal } from "../modals";
+import { AddUserModal, ConfirmModal } from "../modals";
 import { tableTheme } from "./table_theme";
+import { UserInputs } from "../types";
+import { User } from "@supabase/supabase-js";
+import { toast } from "sonner";
 
 export function UsersPage() {
   const [openedModal, setOpenedModal] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [start, setStart] = useState(0);
-  const [end, setEnd] = useState(10);
+  const [user, setUser] = useState<UserInputs | null>(null);
+  const [selectedUser, setSectedUser] = useState<string>("");
 
   const {
     data,
     loading,
     error,
+    refresh,
     deleteUser
   } = useAdmin();
+
+  const confirmDelete = async () => {
+    const { error } = await deleteUser(selectedUser);
+    if (error) {
+      toast.error(error.message);
+    } else {
+      refresh();
+      setOpenedModal("")
+      toast.success("user deleted");
+    }
+  }
 
   return (
     <>
@@ -39,7 +53,10 @@ export function UsersPage() {
           <Button
             type="submit"
             className="uppercase"
-            onClick={() => setOpenedModal("user-modal")}
+            onClick={() => {
+              setUser(null);
+              setOpenedModal("user-modal");
+            }}
           >
             add user
           </Button>
@@ -58,13 +75,13 @@ export function UsersPage() {
             </TableHead>
             <TableBody className="divide-y">
               {loading ? (
-                <ListSkeletalComponent cols={5} />
+                <ListSkeletalComponent cols={4} />
               ) : (
                 <>
-                  {data?.map((item) => (
-                    <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                  {data?.map((item, key) => (
+                    <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800" key={item.id}>
                       <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        {item.id}
+                        {(key + 1)}
                       </TableCell>
                       <TableCell>{item.email}</TableCell>
                       <TableCell>
@@ -77,13 +94,19 @@ export function UsersPage() {
                           <>
                             <Dropdown.Item
                               icon={HiPencil}
-                              onClick={() => setOpenedModal("user-modal")}
+                              onClick={() => {
+                                setUser({ id: item.id, email: item.email as string, fullname: item.user_metadata?.fullname, role: item.user_metadata?.role, password: "" })
+                                setOpenedModal("user-modal");
+                              }}
                             >
                               Edit
                             </Dropdown.Item>
                             <Dropdown.Item
                               icon={HiTrash}
-                              onClick={() => deleteUser(item.id)}
+                              onClick={() => {
+                                setSectedUser(item.id);
+                                setOpenedModal('confirm-modal');
+                              }}
                             >
                               Delete
                             </Dropdown.Item>
@@ -104,9 +127,8 @@ export function UsersPage() {
           start={start}
         /> */}
       </div>
-
-      <AddUserModal openedModal={openedModal} setOpenedModal={setOpenedModal} />
-
+      <AddUserModal user={user} openedModal={openedModal} setOpenedModal={setOpenedModal} />
+      <ConfirmModal openedModal={openedModal} setOpenedModal={setOpenedModal} confirm={confirmDelete} loading={loading} />
     </>
   );
 }

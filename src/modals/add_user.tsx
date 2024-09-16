@@ -1,38 +1,66 @@
-import { Button, Label, Modal, Select, Spinner, Textarea, TextInput } from "flowbite-react";
-import { CarModel, Customer, StockItem, Supplier, TModalProps, UserInputs, VAT } from "../types";
-import useMutation from "../hooks/mutation";
+import { Button, Label, Modal, Select, Spinner, TextInput } from "flowbite-react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import useQuery from "../hooks/query";
-import { Key } from "react";
 import useAdmin from "../hooks/admin";
+import { TModalProps, UserInputs } from "../types";
+import { useEffect } from "react";
 
 export function AddUserModalComponent({
     openedModal,
-    setOpenedModal
-}: TModalProps) {
+    setOpenedModal,
+    user
+}: TModalProps & { user: UserInputs | null }) {
 
-    const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<UserInputs>();
+    const { register, reset, handleSubmit, formState: { errors }, setValue, watch } = useForm<UserInputs>({
+        defaultValues: {
+            ...user
+        }
+    });
     const { createUser, updateUser, data: fetchData, loading, error } = useAdmin();
 
     const onSubmit: SubmitHandler<UserInputs> = async (values) => {
-        await createUser(values);
-        if (error) {
-            toast.error(error);
-        }
-        if (fetchData) {
-            toast.success("user added");
-            setOpenedModal("");
+        if (user?.id) {
+            const { error, data } = await updateUser(user.id, { ...values })
+            if (error) {
+                toast.error(error.message);
+            }
+            if (data) {
+                reset();
+                toast.success("user updated");
+                setOpenedModal("");
+            }
+        } else {
+            const { error, data } = await createUser(values);
+            if (error) {
+                toast.error(error.message);
+            }
+            if (data) {
+                reset();
+                toast.success("user added");
+                setOpenedModal("");
+            }
         }
     }
+
+    useEffect(() => {
+        if (user?.id) {
+            setValue("email", user.email);
+            setValue("fullname", user.fullname);
+            setValue("phone", user.phone);
+            setValue("role", user.role);
+        }
+    }, [user])
 
     return (
         <Modal
             show={openedModal === "user-modal"}
-            onClose={() => setOpenedModal("")}
+            onClose={() => {
+                setOpenedModal("");
+                reset();
+            }}
             size={"lg"}
         >
-            <Modal.Header>Add new user</Modal.Header>
+            <Modal.Header>{user ? "Update " : "Add new"} user</Modal.Header>
             <Modal.Body>
                 <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
                     <div className="grow">
@@ -99,6 +127,7 @@ export function AddUserModalComponent({
                                 </>
                             }
                         >
+                            <option value="admin">Admin</option>
                             <option value="sales">Sales</option>
                             <option value="stock">Stock</option>
                         </Select>
