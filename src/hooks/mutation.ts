@@ -9,20 +9,20 @@ export default function useMutation() {
 
     const insert = async (table: string, fields: any) => {
         setLoading(true);
-        const { status, statusText, error } = await supabase.from(table).insert(fields)
+        const { data, status, statusText, error } = await supabase.from(table).insert(fields).select()
         setLoading(false);
         if (error) {
             setError(error.message);
             return { data: null, error: error };
         }
-        setData({ status, statusText });
-        return { data: { status, statusText }, error: null };
+        setData({ status, statusText, ...data });
+        return { data, error: null };
     }
 
     const update = async (table: string, _id: number, fields: any) => {
         console.log(fields, ' fields')
         setLoading(true);
-        const { status, statusText, error } = await supabase.from(table).update(fields).eq('id', _id)
+        const { status, statusText, error } = await supabase.from(table).update(fields).eq('id', _id).select()
         setLoading(false);
         if (error) {
             setError(error.message);

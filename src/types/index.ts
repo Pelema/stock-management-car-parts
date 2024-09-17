@@ -13,15 +13,6 @@ enum Roles {
     stock = "stock",
 }
 
-export type Order = {
-    id: number;
-    order_number: string;
-    customer: number;
-    sale_type: string;
-    date: string;
-    invoice?: string;
-}
-
 export type Supplier = {
     id: number;
     name: string;
@@ -75,6 +66,7 @@ export type StockItem = {
     VIN: string;
     car_model: number | CarModel;
     engine_number: string;
+    description: string;
     manufacturer: string;
     model_range: string;
     selling_price: number;
@@ -85,7 +77,7 @@ export type StockItem = {
     quantity_on_hand: number;
     // net_price: number;
     // gross_price: number;
-    // quantity: number;
+    quantity: number;
 }
 
 export type QueryProps = {
@@ -103,9 +95,54 @@ export type QueryProps = {
 export type Customer = {
     id: number;
     name: string;
-    contact: string;
+    email: string;
+    telephone: string;
     address: string;
     company_name: string;
     company_reg?: string;
     VAT_reg: string;
+}
+
+export type Order = {
+    id: number;
+    order_number: string;
+    customer_id: number;
+    order_date: Date;
+    status: 'pending' | 'confirmed' | 'shipped';
+    total_amount?: number;
+    created_at: any;
+    customer?: Customer;
+    sales_order_items?: OrderItem[];
+}
+
+export type OrderItem = {
+    id: number;
+    sales_order_id: number;
+    product_id: number;
+    product?: StockItem;
+    quantity: number;
+    unit_price: number;
+    total_price: number;
+    created_at: any;
+}
+
+export type Invoice = {
+    id: number;
+    invoice_number: string;
+    sales_order_id: number;
+    issue_date: any;
+    due_date: any;
+    status: 'unpaid' | 'partially_paid' | 'paid' | 'overdue';
+    total_amount: number;
+    created_at: any;
+}
+
+export type Payment = {
+    id: number;
+    payment_reference: string;
+    invoice_id: number;
+    payement_date: any;
+    amount_paid: number;
+    payment_method: 'credit-card' | 'bank-transfer' | 'cash';
+    created_at: any;
 }

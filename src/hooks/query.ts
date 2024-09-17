@@ -8,10 +8,7 @@ export default function useQuery<T>({
     table,
     from = 0,
     to = 10,
-    filter,
-    // modifier,
-    // pageSize = 10,
-    // offset = 0
+    filter
 }: QueryProps): { loading: boolean, data: T, error?: string, refresh: () => any, search: (text: string) => any, count: number } {
 
     const [data, setData] = useState<T | null>(null);
@@ -28,7 +25,7 @@ export default function useQuery<T>({
         const { data, error, count } = is_single ?
             await supabase.from(table).select(filter).limit(1).single()
             : await supabase.from(table).select(filter, { count: 'exact' }).range(from as number, to as number);
-        setLoading(false);
+        setLoading(false);        
         if (data) {
             setData(data as T);
             setCount(count as number);
@@ -41,7 +38,7 @@ export default function useQuery<T>({
     const search = async (searchText: string) => {
         const { data, error } = await supabase
             .from(table)
-            .select('*')
+            .select(filter)
             .or(searchText)
 
         if (error) {

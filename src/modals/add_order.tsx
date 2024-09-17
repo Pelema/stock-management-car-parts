@@ -1,15 +1,14 @@
-import { Avatar, Badge, Button, Datepicker, Drawer, Dropdown, Label, List, Modal, Popover, Select, Spinner, TextInput, theme } from "flowbite-react";
-import { Customer, Order, StockItem, TModalProps } from "../types";
-import { SubmitHandler, useForm } from "react-hook-form";
-import useMutation from "../hooks/mutation";
-import { toast } from "sonner";
-import { HiUserAdd, HiUser, HiSearch, HiPlus, HiX } from "react-icons/hi";
-import { Key, useEffect, useState } from "react";
+import { Badge, Button, Datepicker, Drawer, Label, List, TextInput } from "flowbite-react";
 import { motion } from "framer-motion";
-import useQuery from "../hooks/query";
+import { Key, useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { HiPlus, HiSearch, HiUser, HiX } from "react-icons/hi";
+import { toast } from "sonner";
 import { animateItem, container } from "../constants";
 import { formatCurrency } from "../functions";
-import AddCustomer from "../components/popover/add_customer";
+import useMutation from "../hooks/mutation";
+import useQuery from "../hooks/query";
+import { Customer, Order, StockItem, TModalProps } from "../types";
 import { AddCustomerModalComponent } from "./add_customer";
 
 export function AddOrderModalComponent({
@@ -32,12 +31,12 @@ export function AddOrderModalComponent({
     const [searchQueryCus, setSearchQueryCus] = useState('');
     const [debouncedQueryCus, setDebouncedQueryCus] = useState(searchQuery);
 
-    const { insert, data: fetchData, loading, error } = useMutation();
-    const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm<Order>();
+    const { insert, loading } = useMutation();
+    const { handleSubmit, setValue } = useForm<Order>();
     const { data: stock, loading: isStockLoading, error: isStockError, search } = useQuery<StockItem[]>({
         table: 'stock',
         from: 0, to: 10,
-        filter: "id,OEM_number,VIN,engine_number,manufacturer,model_range,cost,gross_price,supplier(name,email),car_model(make,model)",
+        filter: "id,OEM_number,VIN,engine_number,manufacturer,model_range,selling_price,quantity_on_hand,supplier(name,email),car_model(make,model)",
     });
 
     const { data: customers, loading: isCustomerLoading, error: isCustomerError, search: searchCustomer, refresh: refreshCustomer } = useQuery<Customer[]>({
@@ -88,23 +87,12 @@ export function AddOrderModalComponent({
     }, [debouncedQueryCus]);
 
     const onSearch = async (text: string) => {
-        await search(`OEM_number.ilike.%${text}%,engine_number.ilike.%${text}%,manufacturer.ilike.%${text}%,VIN.ilike.%${text}%`);
+        await search(`OEM_number.ilike.%${text}%,engine_number.ilike.%${text}%,manufacturer.ilike.%${text}%,VIN.ilike.%${text}%,car_model.make.ilike.%${text}%,car_model.model.ilike.%${text}%`);
         // ,car_model.make.ilike.%${text}%,car_model.model.ilike.%${text}%
     }
 
     const onSearchCusomer = async (text: string) => {
         await searchCustomer(`name.ilike.%${text}%,company_name.ilike.%${text}%`);
-    }
-
-    const onSubmit: SubmitHandler<Order> = async (values) => {
-        await insert('order', values);
-        if (error) {
-            toast.error(error);
-        }
-        if (fetchData) {
-            toast.success("order added");
-            refresh();
-        }
     }
 
     const onSelectItem = (item: StockItem) => {
@@ -130,7 +118,8 @@ export function AddOrderModalComponent({
                     if (value.id === selectedItem.id) {
                         const count = action === '+' ? value.quantity + 1 : value.quantity - 1;
                         if (count > 0) {
-                            return { ...value, quantity: count }
+
+                            return { ...value, quantity: count <= value.quantity_on_hand ? count : value.quantity_on_hand }
                         }
                         return null;
                     } else {
@@ -150,14 +139,50 @@ export function AddOrderModalComponent({
         setHeightCustomer("0vh")
     }
 
-    const sub_total = items.reduce((total, item: StockItem) => total + (item.gross_price * item.quantity), 0)
+    const sub_total = items.reduce((total, item: StockItem) => total + (item.selling_price * item.quantity_on_hand), 0)
+
+    const onSubmit: SubmitHandler<Order> = async (values) => {
+
+
+
+        if (items.length < 1) return
+
+        const { data: order, error: orderError } = await insert('sales_orders', { ...values, customer_id: selectedCustomer?.id, status: 'pending', total_amount: sub_total * 1.15 });
+
+        if (orderError) {
+            toast.error(orderError.message);
+        }
+
+        if (order) {
+            console.log("order ", order[0]?.id);
+
+            const orderItems = items.map(item => {
+                return {
+                    sales_order_id: order[0]?.id,
+                    product_id: item.id,
+                    quantity: item.quantity,
+                    unit_price: item.selling_price
+                }
+            })
+
+            const { data: orderItem, error: orderItemError } = await insert('sales_order_items', orderItems);
+
+            if (orderItemError) {
+                toast.error(orderItemError.message);
+            }
+            if (orderItem) {
+                toast.success("order added");
+                refresh();
+            }
+        }
+    }
 
     return (
         <Drawer
             open={openedModal === "order-modal"}
             onClose={onClose}
             position="right"
-            className="w-1/2 flex flex-col gap-2"
+            className="w-full sm:w-5/6 md:w-3/4 lg:w-1/2 flex flex-col gap-2"
         >
             <Drawer.Header title="Add new order" titleIcon={HiPlus} />
 
@@ -172,9 +197,9 @@ export function AddOrderModalComponent({
                         damping: 20
                     }}
                 >
-                    <form className="flex flex-col gap-2 bg-gray-700/40 backdrop-blur-sm rounded-lg p-4" onSubmit={handleSubmit(onSubmit)}>
+                    <form className="z-50 flex flex-col gap-2 bg-gray-700/40 backdrop-blur-sm rounded-lg p-4">
                         <Label className="text-xl" value="#Order" />
-                        <div className="flex space-x-2">
+                        {/* <div className="flex space-x-2">
                             <div className="grow">
                                 <div className="mb-2 block">
                                     <Label htmlFor="order_number" value="Order Number" />
@@ -191,7 +216,7 @@ export function AddOrderModalComponent({
                                     }
                                 />
                             </div>
-                        </div>
+                        </div> */}
 
                         <div className="flex space-x-2">
                             <div className="grow">
@@ -199,16 +224,23 @@ export function AddOrderModalComponent({
                                     <Label htmlFor="date" value="Date" />
                                 </div>
                                 <Datepicker
+                                    // inline
+                                    title="Order Date"
                                     id="date"
-                                    {...register("date", { required: "date is required" })}
-                                    helperText={
-                                        <>
-                                            {errors.date && <span className="font-medium text-sm">{errors.date.message}</span>}
-                                        </>
-                                    }
+                                    onSelectedDateChanged={(e) => {
+                                        setValue('order_date', e)
+                                    }}
+                                // {...register("order_date", 
+                                //     // { required: "date is required" }
+                                // )}
+                                // helperText={
+                                //     <>
+                                //         {errors.order_date && <span className="font-medium text-sm text-red-600">{errors.order_date.message}</span>}
+                                //     </>
+                                // }
                                 />
                             </div>
-                            <div className="grow">
+                            {/* <div className="grow">
                                 <div className="mb-2 block">
                                     <Label htmlFor="sales_type" value="Sales Type" />
                                 </div>
@@ -225,12 +257,10 @@ export function AddOrderModalComponent({
                                     <option value="laybye">Laybye</option>
                                     <option value="credit">Credit</option>
                                 </Select>
-                            </div>
+                            </div> */}
 
                         </div>
                     </form>
-
-                    {/* <hr /> */}
 
                     <div className="space-y-2 bg-gray-700/40 backdrop-blur-sm grow rounded-lg p-4">
                         <div className="space-y-2">
@@ -283,7 +313,7 @@ export function AddOrderModalComponent({
                                                 </div>
                                                 <div className="grow">
                                                     <span className="truncate text-sm font-medium text-gray-900 dark:text-white capitalize">{item.name}</span>
-                                                    <div className="text-gray-500 dark:text-white text-xs">{item.company_name} - {item.contact}</div>
+                                                    <div className="text-gray-500 dark:text-white text-xs">{item.company_name} - {item.telephone}</div>
                                                 </div>
                                             </div>
                                         </List.Item>
@@ -315,8 +345,8 @@ export function AddOrderModalComponent({
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <span className="text-xs">{selectedCustomer.contact}</span>
-                                        <p className="text-xs text-gray-500 font-semibold">{selectedCustomer.address}</p>
+                                        <span className="text-xs">{selectedCustomer.telephone}</span>
+                                        <p className="text-xs text-gray-300 font-semibold">{selectedCustomer.address}</p>
                                     </div>
                                 </div>
 
@@ -377,13 +407,14 @@ export function AddOrderModalComponent({
                                                         <p className="truncate text-sm font-medium text-gray-900 dark:text-white capitalize">{item.OEM_number} - {typeof item.car_model !== 'number' && item.car_model?.make}</p>
                                                         <div className="flex justify-between">
                                                             <p className="truncate text-xs text-gray-500 dark:text-gray-400">{item.manufacturer}</p>
-                                                            <div className="font-semibold text-gray-900 dark:text-white text-xs">{formatCurrency(item.gross_price)}</div>
+                                                            <div className="font-semibold text-gray-900 dark:text-white text-xs"><span className={`${item.quantity_on_hand < 1 ? 'text-red-600' : ''}`}>{item.quantity_on_hand < 1 ? 'out of stock' : `Qty: ${item.quantity_on_hand}`}</span> | {formatCurrency(item.selling_price)}</div>
                                                         </div>
                                                     </div>
                                                     <div className="inline-flex space-x-1 rounded-lg bg-gray-700 pl-0.5 items-center">
-                                                        <TextInput type="number" className="w-12 !rounded-r-none border-none" sizing={"sm"} defaultValue={1} placeholder="0" onChange={(e) => setSelectedAmount(parseInt(e.target.value))} />
+                                                        <TextInput disabled={item.quantity_on_hand < 1} min={1} max={item.quantity_on_hand} type="number" className="w-14 !rounded-r-none border-none" sizing={"sm"} defaultValue={1} placeholder="0" onChange={(e) => setSelectedAmount(parseInt(e.target.value))} />
                                                         <motion.button
                                                             whileTap={{ scale: .8, borderRadius: "30%" }}
+                                                            disabled={item.quantity_on_hand < 1}
                                                             className="!rounded-r-lg rounded-l-none p-2 bg-gray-900" onClick={() => {
                                                                 onSelectItem(item)
                                                             }} >select
@@ -421,7 +452,7 @@ export function AddOrderModalComponent({
                                     <div className="w-24 h-20 rounded-lg bg-gray-50/50 dark:bg-gray-400/40"></div>
                                     <div className="space-y-1 grow">
                                         <h5 className="font-bold">{typeof item.car_model !== 'number' && item.car_model?.make}</h5>
-                                        <span className="font-thin">{formatCurrency(item.gross_price * (typeof (item.quantity) == "number" ? item.quantity : 0))}</span>
+                                        <span className="font-thin">{formatCurrency(item.selling_price * (typeof (item.quantity_on_hand) == "number" ? item.quantity_on_hand : 0))}</span>
                                         <div className="flex justify-between items-center">
                                             <Badge>{item.manufacturer}</Badge>
                                             <div className="rounded-full flex gap-3 items-center bg-gray-50 dark:bg-gray-400 p-1">
@@ -469,7 +500,7 @@ export function AddOrderModalComponent({
 
             <div className="footer p-2 flex items-center justify-end gap-2 rounded-lg bg-gray-700/40 backdrop-blur-sm">
                 <Button outline onClick={onClose}>Cancel</Button>
-                <Button>Save</Button>
+                <Button isProcessing={loading} onClick={handleSubmit(onSubmit)}>Save</Button>
             </div>
 
             <AddCustomerModalComponent refresh={refresh} openedModal={openedModal} setOpenedModal={setOpenedModal} customer={null} />

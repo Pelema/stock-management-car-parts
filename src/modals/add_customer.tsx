@@ -31,7 +31,7 @@ export function AddCustomerModalComponent({
     useEffect(() => {
         if (customer?.id) {
             setValue("name", customer.name);
-            setValue("contact", customer.contact);
+            setValue("telephone", customer.telephone);
             setValue("company_name", customer.company_name);
             setValue("company_reg", customer.company_reg);
             setValue("VAT_reg", customer.VAT_reg);
@@ -67,16 +67,33 @@ export function AddCustomerModalComponent({
 
                     <div className="grow">
                         <div className="mb-2 block">
+                            <Label htmlFor="email" value="Email" />
+                        </div>
+                        <TextInput
+                            id="email"
+                            type="email"
+                            placeholder="im@mail.com"
+                            {...register("email", { required: "customer email is required" })}
+                            helperText={
+                                <>
+                                    {errors.telephone && <span className="font-medium text-sm">{errors.telephone.message}</span>}
+                                </>
+                            }
+                        />
+                    </div>
+
+                    <div className="grow">
+                        <div className="mb-2 block">
                             <Label htmlFor="customer_phone" value="Contact Number" />
                         </div>
                         <TextInput
                             id="customer_phone"
                             type="tel"
                             placeholder="customer phone"
-                            {...register("contact", { required: "customer phone name is required" })}
+                            {...register("telephone", { required: "customer phone number is required" })}
                             helperText={
                                 <>
-                                    {errors.contact && <span className="font-medium text-sm">{errors.contact.message}</span>}
+                                    {errors.telephone && <span className="font-medium text-sm">{errors.telephone.message}</span>}
                                 </>
                             }
                         />
