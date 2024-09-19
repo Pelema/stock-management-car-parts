@@ -49,10 +49,10 @@ export default function AddCustomer({ refresh }: { refresh: () => void }) {
                         id="customer_phone"
                         type="tel"
                         placeholder="customer_phone"
-                        {...regCustomer("contact", { required: "customer phone name is required" })}
+                        {...regCustomer("telephone", { required: "customer phone name is required" })}
                         helperText={
                             <>
-                                {customerFormError.contact && <span className="font-medium text-sm">{customerFormError.contact.message}</span>}
+                                {customerFormError.telephone && <span className="font-medium text-sm">{customerFormError.contact.message}</span>}
                             </>
                         }
                     />
