@@ -9,6 +9,7 @@ import {
   HiTruck,
   HiDatabase,
   HiCurrencyDollar,
+  HiDocument
 } from "react-icons/hi";
 import { BiSupport } from "react-icons/bi";
 import { theme } from "./theme";
@@ -77,6 +78,14 @@ export function SidebarComponent() {
             icon={HiShoppingBag}
           >
             Orders
+          </Sidebar.Item>
+          <Sidebar.Item
+            as={NavLink}
+            to="/invoices"
+            active={location.pathname === "/invoices"}
+            icon={HiDocument}
+          >
+            Invoices
           </Sidebar.Item>
           <Sidebar.Item
             as={NavLink}

@@ -1,6 +1,6 @@
+import { User } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import supabase from "../config/supaBaseClient";
-import { Session, User } from "@supabase/supabase-js";
 import { UserInputs } from "../types";
 
 export default function useAdmin() {
@@ -13,29 +13,14 @@ export default function useAdmin() {
         getUsers();
     }, [])
 
-    // useEffect(() => {
-    //     (async () => {
-    //         const { data, error } = await supabase.auth.getSession();
-    //         if (data) {
-    //             setSession(data.session);
-    //         }
-    //     })
-
-    // }, [])
-
-    // const getUser = async () => {
-    //     setLoading(true);
-    //     const { data } = await supabase.auth.getUser();
-    //     setLoading(false);
-    //     if (data) {
-    //         setData(data.user);
-    //     }
-    // }
-
     const getUsers = async () => {
         setLoading(true);
         const { data: { users }, error } = await supabase.auth.admin.listUsers()
         setLoading(false);
+        if(error) {
+            setError(error.message);
+            return
+        }
         if (users) {
             setData(users);
         }

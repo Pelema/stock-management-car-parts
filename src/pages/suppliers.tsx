@@ -20,6 +20,8 @@ import { AddSupplierModal, ConfirmModal } from "../modals";
 import { Supplier } from "../types";
 import { tableTheme } from "./table_theme";
 import { HiPencil, HiTrash } from "react-icons/hi";
+import useMutation from "../hooks/mutation";
+import { toast } from "sonner";
 
 export function SuppliersPage() {
   const [openedModal, setOpenedModal] = useState("");
@@ -32,6 +34,7 @@ export function SuppliersPage() {
     count,
     loading: isLoading,
     // error: isError,
+    search,
     refresh,
   } = useQuery<Supplier[]>({
     table: "suppliers",
@@ -40,10 +43,30 @@ export function SuppliersPage() {
     to: end,
   });
 
+  const { onDelete, loading } = useMutation();
+
+  const confirmDelete = async () => {
+    const { data, error } = await onDelete("suppliers", selectedSupplier?.id as number);
+    if (data) {
+      toast.success(`${selectedSupplier?.name} deleted`);
+      setOpenedModal("");
+      refresh();
+    }
+
+    if (error) {
+      toast.error(error.message);
+    }
+  }
+
+  const onSearch = async (text: string) => {
+    if (text.length > 0)
+      search(`email.ilike.%${text}%,telephone.ilike.%${text}%,contact_person.ilike.%${text}%,name.ilike.%${text}%`);
+  }
+
   return (
     <>
       <div className="overflow-x-auto rounded-md grow">
-        <TableHeaderComponent>
+        <TableHeaderComponent onSearch={onSearch}>
           <Button
             type="submit"
             className="uppercase"
@@ -126,7 +149,7 @@ export function SuppliersPage() {
         supplier={selectedSupplier}
       />
 
-      <ConfirmModal openedModal={openedModal} setOpenedModal={setOpenedModal} confirm={undefined} loading={false} />
+      <ConfirmModal openedModal={openedModal} setOpenedModal={setOpenedModal} confirm={confirmDelete} loading={loading} />
     </>
   );
 }

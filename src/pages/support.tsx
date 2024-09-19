@@ -1,43 +1,61 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  Button,
   Table,
+  TableBody,
+  TableCell,
   TableHead,
   TableHeadCell,
-  TableBody,
-  TableRow,
-  TableCell,
-  Button,
-  Label,
-  TextInput,
-  Modal,
-  Dropdown,
+  TableRow
 } from "flowbite-react";
-import { tableTheme } from "./table_theme";
-
 import { useEffect, useState } from "react";
-
-import { HiTrash } from "react-icons/hi";
 import {
   ListSkeletalComponent,
   TableActionsComponent,
-  TableFooterComponent,
-  TableHeaderComponent,
+  TableHeaderComponent
 } from "../components";
+import useMutation from "../hooks/mutation";
 import { ConfirmModal } from "../modals";
+import { tableTheme } from "./table_theme";
 
 export function SupportPage() {
   const [openedModal, setOpenedModal] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  // const [selectedSupport, setSelectedSupport] = useState();
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 1000);
   }, []);
+
+  const onSearch = async (text: string) => {
+    if (text.length > 0) {
+      console.log("Support Ticket");
+    }
+    // search(`name.ilike.%${text}%,company_name.ilike.%${text}%,telephone.ilike.%${text}%,email.ilike.%${text}%`);
+  }
+
+  const { loading: isLoading } = useMutation();
+
+
+  const confirmDelete = async () => {
+    // const { data, error } = await onDelete("supports", selectedSupport);
+    // if (data) {
+    //   toast.success(`${selectedSupport} deleted`);
+    //   setOpenedModal("");
+    //   // refresh();
+    // }
+
+    // if (error) {
+    //   toast.error(error.message);
+    // }
+  }
+
   return (
     <>
       <div className="overflow-x-auto rounded-md h-full flex flex-col">
-        <TableHeaderComponent>
+        <TableHeaderComponent onSearch={onSearch}>
           <Button
             type="submit"
             className="uppercase"
@@ -47,138 +65,61 @@ export function SupportPage() {
           </Button>
         </TableHeaderComponent>
         <div className="h-full overflow-y-auto">
-        <Table hoverable theme={tableTheme} className="table-fixed">
-          <TableHead>
-            <TableHeadCell className="w-20">id</TableHeadCell>
-            <TableHeadCell>name</TableHeadCell>
-            <TableHeadCell>subject</TableHeadCell>
-            <TableHeadCell>created date</TableHeadCell>
-            <TableHeadCell>status</TableHeadCell>
-            <TableHeadCell className="w-24">
-              <span className="sr-only">Actions</span>
-            </TableHeadCell>
-          </TableHead>
-          <TableBody className="divide-y">
-            {loading ? (
-              <ListSkeletalComponent cols={4}/>
-            ) : (
-              <>
-                {data.map((item) => (
-                  <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                    <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                      {item.id}
-                    </TableCell>
-                    <TableCell>
-                      {item.last_name} {item.first_name}
-                    </TableCell>
-                    <TableCell>{item.subject}</TableCell>
-                    <TableCell>{item.created}</TableCell>
-                    <TableCell>{item.status}</TableCell>
-                    <TableCell>
-                      <TableActionsComponent>
-                        <>
-                          <Dropdown.Item
-                            icon={HiTrash}
-                            onClick={() => setOpenedModal("confirm-modal")}
-                          >
-                            Delete
-                          </Dropdown.Item>
-                        </>
-                      </TableActionsComponent>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </>
-            )}
-          </TableBody>
-        </Table>
- </div>
+          <Table hoverable theme={tableTheme} className="table-fixed">
+            <TableHead>
+              <TableHeadCell className="w-20">id</TableHeadCell>
+              <TableHeadCell>name</TableHeadCell>
+              <TableHeadCell>subject</TableHeadCell>
+              <TableHeadCell>created date</TableHeadCell>
+              <TableHeadCell>status</TableHeadCell>
+              <TableHeadCell className="w-24">
+                <span className="sr-only">Actions</span>
+              </TableHeadCell>
+            </TableHead>
+            <TableBody className="divide-y">
+              {loading ? (
+                <ListSkeletalComponent cols={4} />
+              ) : (
+                <>
+                  {data.map((item) => (
+                    <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                      <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                        {item.id}
+                      </TableCell>
+                      <TableCell>
+                        {item.last_name} {item.first_name}
+                      </TableCell>
+                      <TableCell>{item.subject}</TableCell>
+                      <TableCell>{item.created}</TableCell>
+                      <TableCell>{item.status}</TableCell>
+                      <TableCell>
+                        <TableActionsComponent>
+                          <>
+                            {/* <Dropdown.Item
+                              icon={HiTrash}
+                              onClick={() => { setOpenedModal("confirm-modal"); setSelectedSupport(item as any) }}
+                            >
+                              Delete
+                            </Dropdown.Item> */}
+                          </>
+                        </TableActionsComponent>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </>
+              )}
+            </TableBody>
+          </Table>
+        </div>
         {/* <TableFooterComponent
           setCurrentPage={setCurrentPage}
           currentPage={currentPage}
         /> */}
       </div>
 
-      <Modal
-        show={openedModal === "create-ticket-modal"}
-        onClose={() => setOpenedModal("")}
-        size={"2xl"}
-      >
-        <Modal.Header>Create new ticket</Modal.Header>
-        <Modal.Body>
-          <form className="flex flex-col gap-4">
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="email1" value="Name" />
-                </div>
-                <TextInput
-                  id="email1"
-                  type="email"
-                  placeholder="name@flowbite.com"
-                  required
-                />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Email" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Telephone" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Address" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Contact Person" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Website URL" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-            <div className="flex space-x-2">
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="VAT Registration" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-              <div className="grow">
-                <div className="mb-2 block">
-                  <Label htmlFor="password1" value="Company Reg. Number" />
-                </div>
-                <TextInput id="password1" type="password" required />
-              </div>
-            </div>
-          </form>
-        </Modal.Body>
-        <Modal.Footer className="justify-end">
-          <Button onClick={() => setOpenedModal("")}>Save</Button>
-        </Modal.Footer>
-      </Modal>
-
-
       <ConfirmModal
         openedModal={openedModal}
-        setOpenedModal={setOpenedModal} confirm={undefined} loading={false}      />
+        setOpenedModal={setOpenedModal} confirm={confirmDelete} loading={isLoading} />
     </>
   );
 }

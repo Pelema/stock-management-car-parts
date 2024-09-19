@@ -1,18 +1,14 @@
 import {
+  Button,
+  Dropdown,
   Table,
+  TableBody,
+  TableCell,
   TableHead,
   TableHeadCell,
-  TableBody,
-  TableRow,
-  TableCell,
-  Button,
-  Label,
-  TextInput,
-  Modal,
-  Dropdown,
+  TableRow
 } from "flowbite-react";
-import { tableTheme } from "./table_theme";
-import { SetStateAction, useEffect, useState } from "react";
+import { useState } from "react";
 import { HiPencil, HiTrash } from "react-icons/hi";
 import {
   ListSkeletalComponent,
@@ -21,8 +17,9 @@ import {
   TableHeaderComponent,
 } from "../components";
 import useQuery from "../hooks/query";
-import { Customer } from "../types";
 import { AddCustomerModalComponent } from "../modals/add_customer";
+import { Customer } from "../types";
+import { tableTheme } from "./table_theme";
 
 export function CustomersPage() {
   const [openedModal, setOpenedModal] = useState("");
@@ -34,7 +31,7 @@ export function CustomersPage() {
     data: customers,
     count,
     loading,
-    error,
+    search,
     refresh,
   } = useQuery<Customer[]>({
     table: "customers",
@@ -43,14 +40,19 @@ export function CustomersPage() {
     to: end,
   });
 
+  const onSearch = async (text: string) => {
+    if (text.length > 0)
+      search(`name.ilike.%${text}%,company_name.ilike.%${text}%,telephone.ilike.%${text}%,email.ilike.%${text}%`);
+  }
+
   return (
     <>
       <div className="overflow-x-auto rounded-md h-full flex flex-col">
-        <TableHeaderComponent>
+        <TableHeaderComponent onSearch={onSearch}>
           <Button
             type="submit"
             className="uppercase"
-            onClick={() => {setOpenedModal("customer-modal"); setSelectedCustomer(null)}}
+            onClick={() => { setOpenedModal("customer-modal"); setSelectedCustomer(null) }}
           >
             add customer
           </Button>
@@ -81,7 +83,7 @@ export function CustomersPage() {
                         {item?.name}
                       </TableCell>
                       <TableCell>{item.company_name}</TableCell>
-                      <TableCell>{item.contact}</TableCell>
+                      <TableCell>{item.telephone}</TableCell>
                       <TableCell>{item.address}</TableCell>
                       <TableCell>
                         <TableActionsComponent>

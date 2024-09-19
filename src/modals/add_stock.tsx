@@ -4,6 +4,7 @@ import {
   Modal,
   Select,
   Spinner,
+  Textarea,
   TextInput,
 } from "flowbite-react";
 import { CarModel, StockItem, TModalProps } from "../types";
@@ -22,12 +23,9 @@ export function AddStockModalComponent({
     register,
     handleSubmit,
     formState: { errors },
-    setValue,
   } = useForm<StockItem>();
   const {
     data: cars,
-    loading: isCarsLoading,
-    error: isCarError,
   } = useQuery<CarModel[]>({ table: "car_model", from: 0, to: 10 });
 
   const { insert, data: fetchData, loading, error } = useMutation();
@@ -48,12 +46,12 @@ export function AddStockModalComponent({
     <Modal
       show={openedModal === "stock-modal"}
       onClose={() => setOpenedModal("")}
-      size={"3xl"}
+      size={"xl"}
     >
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <Modal.Header>Add new item</Modal.Header>
         <Modal.Body>
-          <div className="flex space-x-2">
+          <div className="flex">
             <div className="grow">
               <div className="mb-2 block">
                 <Label htmlFor="oem" value="OEM Number" />
@@ -71,6 +69,31 @@ export function AddStockModalComponent({
                     {errors.OEM_number && (
                       <span className="font-medium text-sm">
                         {errors.OEM_number.message}
+                      </span>
+                    )}
+                  </>
+                }
+              />
+            </div>
+          </div>
+          <div className="flex space-x-2">
+            <div className="grow">
+              <div className="mb-2 block">
+                <Label htmlFor="name" value="Name" />
+              </div>
+              <TextInput
+                id="name"
+                type="text"
+                placeholder="name"
+                {...register("name", {
+                  required: "name is required",
+                })}
+                // color={errors.label ? "failure" : ""}
+                helperText={
+                  <>
+                    {errors.name && (
+                      <span className="font-medium text-sm">
+                        {errors.name.message}
                       </span>
                     )}
                   </>
@@ -158,12 +181,6 @@ export function AddStockModalComponent({
                 {...register("car_model", {
                   required: "car model is required",
                 })}
-                onChange={(e) => {
-                  const car = cars?.find(
-                    (item) => item.id === parseInt(e.target.value)
-                  );
-                  setValue("net_price", car?.price as number);
-                }}
                 helperText={
                   <>
                     {errors.car_model && (
@@ -246,6 +263,30 @@ export function AddStockModalComponent({
                     {errors.min_stock_level && (
                       <span className="font-medium text-sm">
                         {errors.min_stock_level.message}
+                      </span>
+                    )}
+                  </>
+                }
+              />
+            </div>
+          </div>
+          <div className="flex">
+            <div className="grow">
+              <div className="mb-2 block">
+                <Label htmlFor="description" value="Description" />
+              </div>
+              <Textarea
+                id="description"
+                rows={3}
+                placeholder="description"
+                {...register("description", {
+                  required: "reorder qnty is required",
+                })}
+                helperText={
+                  <>
+                    {errors.description && (
+                      <span className="font-medium text-sm">
+                        {errors.description.message}
                       </span>
                     )}
                   </>

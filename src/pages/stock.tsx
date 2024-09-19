@@ -1,15 +1,15 @@
 import {
-  Table,
-  TableHead,
-  TableHeadCell,
-  TableBody,
-  TableRow,
-  TableCell,
   Button,
   Dropdown,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableRow,
 } from "flowbite-react";
+import { Key, useState } from "react";
 import { tableTheme } from "./table_theme";
-import { Key, useEffect, useState } from "react";
 
 import { HiPencil, HiTrash } from "react-icons/hi";
 import {
@@ -18,15 +18,13 @@ import {
   TableFooterComponent,
   TableHeaderComponent,
 } from "../components";
-import { AddStockModal, RestockModal } from "../modals";
-import useQuery from "../hooks/query";
-import { StockItem } from "../types";
 import { formatCurrency } from "../functions";
+import useQuery from "../hooks/query";
+import { AddStockModal, RestockModal } from "../modals";
+import { StockItem } from "../types";
 
 export function StockPage() {
   const [openedModal, setOpenedModal] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true);
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(10);
   const [selectedItem, setSelectedItem] = useState<StockItem>();
@@ -34,27 +32,26 @@ export function StockPage() {
   const {
     data: stock,
     loading: isLoading,
-    error: isError,
+    search,
     refresh,
     count,
   } = useQuery<StockItem[]>({
     table: "stock",
-    from: 0,
-    to: 10,
+    from: start,
+    to: end,
     filter:
       "id,OEM_number,VIN,engine_number,manufacturer,model_range,selling_price, quantity_on_hand,supplier(name,email),car_model(make,model)",
   });
 
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, []);
+  const onSearch = async (text: string) => {
+    if (text.length > 0)
+      search(`OEM_number.ilike.%${text}%,VIN.ilike.%${text}%,engine_number.ilike.%${text}%,manufacturer.ilike.%${text}%,model_range.ilike.%${text}%`);
+  }
 
   return (
     <>
       <div className="overflow-x-auto rounded-md h-full flex flex-col">
-        <TableHeaderComponent>
+        <TableHeaderComponent onSearch={onSearch}>
           <Button
             type="submit"
             className="uppercase"
@@ -79,7 +76,7 @@ export function StockPage() {
               </TableHeadCell>
             </TableHead>
             <TableBody className="divide-y">
-              {loading ? (
+              {isLoading ? (
                 <ListSkeletalComponent cols={7} />
               ) : (
                 <>

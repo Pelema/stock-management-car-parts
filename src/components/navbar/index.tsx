@@ -11,8 +11,8 @@ export function NavbarComponent() {
     <Navbar theme={theme}>
       <Navbar.Brand href="/">
         <img
-          src="/vite.svg"
-          className="mr-3 h-6 sm:h-9"
+          src="/logo.webp"
+          className="mr-3 h-6 sm:h-9 rounded-lg"
           alt="Flowbite React Logo"
         />
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
@@ -33,8 +33,8 @@ export function NavbarComponent() {
           }
         >
           <Dropdown.Header>
-            <span className="block text-sm capitalize">{data?.email}</span>
-            <span className="block truncate text-sm font-medium">
+            <span className="block text-base capitalize">{data?.user_metadata?.fullname}</span>
+            <span className="block truncate text-xs">
               {data?.email}
             </span>
           </Dropdown.Header>

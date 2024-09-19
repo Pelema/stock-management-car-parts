@@ -34,8 +34,8 @@ export function CarModelPage() {
   const [end, setEnd] = useState(10);
   const [selectedCar, setSelectedCar] = useState<CarModel | null>(null);
 
-  const { insert, update, loading, error, onDelete } = useMutation();
-  const { data: cars, loading: isLoading, refresh, count } = useQuery<CarModel[]>({ table: 'car_model', from: 0, to: 10 });
+  const { insert, update, loading } = useMutation();
+  const { data: cars, search, loading: isLoading, refresh, count } = useQuery<CarModel[]>({ table: 'car_model', from: start, to: end });
 
   const onSubmit: SubmitHandler<CarModel> = async (values) => {
     const { data, error } = selectedCar ? await update('car_model', selectedCar.id, values) : await insert('car_model', values);
@@ -57,10 +57,15 @@ export function CarModelPage() {
     }
   }, [selectedCar])
 
+  const onSearch = async (text: string) => {
+    if (text.length > 0)
+      search(`make.ilike.%${text}%,model.ilike.%${text}%`);
+  }
+
   return (
     <div className="flex space-x-2 h-full">
       <div className="overflow-x-auto rounded-md grow">
-        <TableHeaderComponent />
+        <TableHeaderComponent onSearch={onSearch} />
         <Table hoverable theme={tableTheme}>
           <TableHead>
             <TableHeadCell>id</TableHeadCell>

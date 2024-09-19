@@ -11,26 +11,25 @@ type TTableFooterProps = {
 
 export default function TableFooterComponent({
   count,
-  start = 0,
   setStart,
   setEnd
 }: TTableFooterProps) {
-  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const onPageChange = (page: number) => {
     setCurrentPage(page)
-    const st = (page - 1) * rowsPerPage
-    setStart(st)
-    const en = Math.min(st + rowsPerPage - 1, count);
-    setEnd(en)
+    const start = (page - 1) * rowsPerPage
+    setStart(start)
+    const end = Math.min(start + rowsPerPage - 1, count);
+    setEnd(end)
   };
 
   useEffect(() => {
-    const st = (currentPage - 1) * rowsPerPage
-    setStart(st)
-    const en = Math.min(st + rowsPerPage - 1, count);
-    setEnd(en)
+    const start = (currentPage - 1) * rowsPerPage
+    setStart(start)
+    const end = Math.min(start + rowsPerPage - 1, count);
+    setEnd(end)
   }, [rowsPerPage])
 
   const onPageSizeChange = (rows: number) => {

@@ -8,11 +8,8 @@ import {
   TableRow,
 } from "flowbite-react";
 import { HiUsers } from "react-icons/hi";
-import useQuery from "../hooks/query";
 import { card_theme } from "./card_theme";
 import { tableTheme } from "./table_theme";
-import { Order } from "../types";
-import { User } from "@supabase/supabase-js";
 
 export function DashboardPage() {
 

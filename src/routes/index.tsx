@@ -11,6 +11,7 @@ import {
   SupportPage,
   PaymentsPage,
   CustomersPage,
+  InvoicePage,
 } from "../pages";
 import { SuppliersPage } from "../pages/suppliers";
 
@@ -55,6 +56,10 @@ export const router = createBrowserRouter([
       {
         path: "orders",
         element: <OrdersPage />,
+      },
+      {
+        path: "invoices",
+        element: <InvoicePage />,
       },
       {
         path: "stock",

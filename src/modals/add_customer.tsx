@@ -1,9 +1,9 @@
-import { Button, Label, Modal, Spinner, Textarea, TextInput } from "flowbite-react";
+import { Button, Label, Modal, Textarea, TextInput } from "flowbite-react";
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import useMutation from "../hooks/mutation";
 import { Customer, TModalProps } from "../types";
-import { useEffect } from "react";
 
 export function AddCustomerModalComponent({
     openedModal,

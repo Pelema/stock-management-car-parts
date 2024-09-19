@@ -1,9 +1,9 @@
-import { Modal, Label, TextInput, Button, Spinner } from "flowbite-react";
+import { Button, Label, Modal, TextInput } from "flowbite-react";
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Supplier, TModalProps } from "../types";
 import { toast } from "sonner";
 import useMutation from "../hooks/mutation";
-import { useEffect } from "react";
+import { Supplier, TModalProps } from "../types";
 
 export default function AddSupplierModal({
   openedModal,

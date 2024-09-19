@@ -1,13 +1,13 @@
+import { Session, User } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import supabase from "../config/supaBaseClient";
-import { Session, User } from "@supabase/supabase-js";
 import { UserInputs } from "../types";
 
 export default function useAuth() {
 
     const [data, setData] = useState<User | null>(null);
     const [loading, setLoading] = useState(true);
-    const [session, setSession] = useState<Session | null>(null);
+    const [session] = useState<Session | null>(null);
     const [error, setError] = useState("");
 
     useEffect(() => {

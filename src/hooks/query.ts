@@ -1,9 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import supabase from "../config/supaBaseClient";
 import { QueryProps } from "../types";
 
 export default function useQuery<T>({
-    _id,
     is_single = false,
     table,
     from = 0,
@@ -25,7 +25,7 @@ export default function useQuery<T>({
         const { data, error, count } = is_single ?
             await supabase.from(table).select(filter).limit(1).single()
             : await supabase.from(table).select(filter, { count: 'exact' }).range(from as number, to as number);
-        setLoading(false);        
+        setLoading(false);
         if (data) {
             setData(data as T);
             setCount(count as number);
@@ -36,15 +36,18 @@ export default function useQuery<T>({
     }
 
     const search = async (searchText: string) => {
+        setLoading(true);
         const { data, error } = await supabase
             .from(table)
             .select(filter)
             .or(searchText)
-
+            
         if (error) {
             setError(error.message)
+            setLoading(false)
             return
         }
+        setLoading(false)
         setData(data as T);
         return data
     }

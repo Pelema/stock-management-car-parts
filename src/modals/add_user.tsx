@@ -1,9 +1,9 @@
 import { Button, Label, Modal, Select, Spinner, TextInput } from "flowbite-react";
+import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import useAdmin from "../hooks/admin";
 import { TModalProps, UserInputs } from "../types";
-import { useEffect } from "react";
 
 export function AddUserModalComponent({
     openedModal,
@@ -11,13 +11,12 @@ export function AddUserModalComponent({
     user
 }: TModalProps & { user: UserInputs | null }) {
 
-    const { register, reset, handleSubmit, formState: { errors }, setValue, watch } = useForm<UserInputs>({
+    const { register, reset, handleSubmit, formState: { errors }, setValue } = useForm<UserInputs>({
         defaultValues: {
             ...user
         }
     });
-    const { createUser, updateUser, data: fetchData, loading, error } = useAdmin();
-
+    const { createUser, updateUser, loading } = useAdmin();
     const onSubmit: SubmitHandler<UserInputs> = async (values) => {
         if (user?.id) {
             const { error, data } = await updateUser(user.id, { ...values })

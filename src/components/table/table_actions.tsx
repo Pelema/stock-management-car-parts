@@ -1,7 +1,7 @@
 import { Dropdown } from "flowbite-react";
 import { ReactNode } from "react";
 
-import { HiOutlineDotsHorizontal } from "react-icons/hi";
+import { HiOutlineEllipsisVertical } from "react-icons/hi2";
 
 type TTAbleActionsProps = {
   children: ReactNode;
@@ -15,7 +15,7 @@ function TableActionsComponent({ children }: TTAbleActionsProps) {
       placement="bottom-start"
       renderTrigger={() => (
         <div>
-          <HiOutlineDotsHorizontal className="cursor-pointer" />
+          <HiOutlineEllipsisVertical className="cursor-pointer" />
         </div>
       )}
     >

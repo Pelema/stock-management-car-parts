@@ -63,6 +63,7 @@ export type ReStockItem = {
 export type StockItem = {
     id?: number;
     OEM_number: string;
+    name: string;
     VIN: string;
     car_model: number | CarModel;
     engine_number: string;
@@ -110,7 +111,7 @@ export type Order = {
     order_date: Date;
     status: 'pending' | 'confirmed' | 'shipped';
     total_amount?: number;
-    created_at: any;
+    created_at: Date;
     customer?: Customer;
     sales_order_items?: OrderItem[];
 }
@@ -123,26 +124,33 @@ export type OrderItem = {
     quantity: number;
     unit_price: number;
     total_price: number;
-    created_at: any;
+    created_at: Date;
 }
 
 export type Invoice = {
     id: number;
     invoice_number: string;
     sales_order_id: number;
-    issue_date: any;
-    due_date: any;
+    order?: Order;
+    issue_date: Date;
+    due_date: Date;
     status: 'unpaid' | 'partially_paid' | 'paid' | 'overdue';
     total_amount: number;
-    created_at: any;
+    created_at: Date;
 }
 
 export type Payment = {
     id: number;
     payment_reference: string;
     invoice_id: number;
-    payement_date: any;
+    payement_date: Date;
     amount_paid: number;
     payment_method: 'credit-card' | 'bank-transfer' | 'cash';
-    created_at: any;
+    created_at: Date;
+    invoice?: Invoice;
+}
+
+export type PaymentInput = {
+    amount: number;
+    method: 'credit-card' | 'bank-transfer' | 'cash';
 }

@@ -23,7 +23,6 @@ export function AddOrderModalComponent({
     const [heightCustomer, setHeightCustomer] = useState<number | string>(0);
     const [items, setItems] = useState<StockItem[]>([]);
     const [selectedAmount, setSelectedAmount] = useState(0);
-
     const [selectedCustomer, setSelectedCustomer] = useState<Customer>();
 
     const [searchQuery, setSearchQuery] = useState('');
@@ -31,15 +30,16 @@ export function AddOrderModalComponent({
     const [searchQueryCus, setSearchQueryCus] = useState('');
     const [debouncedQueryCus, setDebouncedQueryCus] = useState(searchQuery);
 
-    const { insert, loading } = useMutation();
     const { handleSubmit, setValue } = useForm<Order>();
-    const { data: stock, loading: isStockLoading, error: isStockError, search } = useQuery<StockItem[]>({
+
+    const { insert, loading } = useMutation();
+    const { data: stock, search } = useQuery<StockItem[]>({
         table: 'stock',
         from: 0, to: 10,
         filter: "id,OEM_number,VIN,engine_number,manufacturer,model_range,selling_price,quantity_on_hand,supplier(name,email),car_model(make,model)",
     });
 
-    const { data: customers, loading: isCustomerLoading, error: isCustomerError, search: searchCustomer, refresh: refreshCustomer } = useQuery<Customer[]>({
+    const { data: customers, search: searchCustomer } = useQuery<Customer[]>({
         table: 'customers',
         from: 0, to: 10
     });
@@ -87,7 +87,7 @@ export function AddOrderModalComponent({
     }, [debouncedQueryCus]);
 
     const onSearch = async (text: string) => {
-        await search(`OEM_number.ilike.%${text}%,engine_number.ilike.%${text}%,manufacturer.ilike.%${text}%,VIN.ilike.%${text}%,car_model.make.ilike.%${text}%,car_model.model.ilike.%${text}%`);
+        await search(`OEM_number.ilike.%${text}%,engine_number.ilike.%${text}%,manufacturer.ilike.%${text}%,VIN.ilike.%${text}%`);
         // ,car_model.make.ilike.%${text}%,car_model.model.ilike.%${text}%
     }
 
@@ -142,20 +142,14 @@ export function AddOrderModalComponent({
     const sub_total = items.reduce((total, item: StockItem) => total + (item.selling_price * item.quantity_on_hand), 0)
 
     const onSubmit: SubmitHandler<Order> = async (values) => {
-
-
-
         if (items.length < 1) return
-
-        const { data: order, error: orderError } = await insert('sales_orders', { ...values, customer_id: selectedCustomer?.id, status: 'pending', total_amount: sub_total * 1.15 });
+        const { data: order, error: orderError } = await insert('sales_orders', { ...values, customer_id: selectedCustomer?.id, status: 'pending', total_amount: (sub_total * 1.15 )});
 
         if (orderError) {
             toast.error(orderError.message);
         }
 
         if (order) {
-            console.log("order ", order[0]?.id);
-
             const orderItems = items.map(item => {
                 return {
                     sales_order_id: order[0]?.id,

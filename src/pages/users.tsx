@@ -10,6 +10,7 @@ import {
 } from "flowbite-react";
 import { useState } from "react";
 import { HiPencil, HiTrash } from "react-icons/hi";
+import { toast } from "sonner";
 import {
   ListSkeletalComponent,
   TableActionsComponent,
@@ -17,10 +18,8 @@ import {
 } from "../components";
 import useAdmin from "../hooks/admin";
 import { AddUserModal, ConfirmModal } from "../modals";
-import { tableTheme } from "./table_theme";
 import { UserInputs } from "../types";
-import { User } from "@supabase/supabase-js";
-import { toast } from "sonner";
+import { tableTheme } from "./table_theme";
 
 export function UsersPage() {
   const [openedModal, setOpenedModal] = useState("");
@@ -30,7 +29,6 @@ export function UsersPage() {
   const {
     data,
     loading,
-    error,
     refresh,
     deleteUser
   } = useAdmin();
@@ -46,10 +44,18 @@ export function UsersPage() {
     }
   }
 
+  const onSearch = async (text: string) => {
+    if (text.length > 0){
+      console.log("Text");
+      
+    }
+      // search(`OEM_number.ilike.%${text}%,VIN.ilike.%${text}%,engine_number.ilike.%${text}%,manufacturer.ilike.%${text}%,model_range.ilike.%${text}%`);
+  }
+
   return (
     <>
       <div className="overflow-x-auto rounded-md h-full flex flex-col">
-        <TableHeaderComponent>
+        <TableHeaderComponent onSearch={onSearch}>
           <Button
             type="submit"
             className="uppercase"
