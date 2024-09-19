@@ -23,23 +23,23 @@ export function ReStockModalComponent({
     register,
     handleSubmit,
     formState: { errors },
-    watch,
+    // watch,
   } = useForm<ReStockItem>();
 
   const {
     data: suppliers,
-    loading: isSuppliersLoading,
-    error: isSupplierError,
+    // loading: isSuppliersLoading,
+    // error: isSupplierError,
   } = useQuery<Supplier[]>({ table: "suppliers", from: 0, to: 10 });
 
   const {
     data: VATData,
-    loading: isVATLoading,
-    error: isVATError,
+    // loading: isVATLoading,
+    // error: isVATError,
   } = useQuery<VAT[]>({ table: "VAT", from: 0, to: 10 });
 
   const { insert, update, data: fetchData, loading, error } = useMutation();
-  const purchase_price = watch("purchase_price");
+  // const purchase_price = watch("purchase_price");
 
   const onSubmit: SubmitHandler<ReStockItem> = async (values) => {
     console.log("called..");
@@ -49,7 +49,6 @@ export function ReStockModalComponent({
       return toast.error(error);
     }
 
-    console.log(item, ' ---');
     if (item?.id) {
       console.log("updating stock ", item.id);
       await update("stock", item?.id, {

@@ -1,11 +1,11 @@
 import { Avatar, Dropdown, Navbar } from "flowbite-react";
-import { theme } from "./theme";
 import { useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/auth";
+import { theme } from "./theme";
 
 export function NavbarComponent() {
   const navigate = useNavigate();
-  const { loading, error, data, signOut } = useAuth();
+  const { data, signOut } = useAuth();
 
   return (
     <Navbar theme={theme}>

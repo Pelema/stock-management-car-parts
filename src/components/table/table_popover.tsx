@@ -6,7 +6,7 @@ type TTAbleActionsProps = {
   children: ReactNode;
   customer: Customer;
 };
-function TablePopoverComponent({ children, customer }: TTAbleActionsProps) {
+function TablePopoverComponent({ children }: TTAbleActionsProps) {
 
   return (
     <p>
