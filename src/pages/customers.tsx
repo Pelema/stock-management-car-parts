@@ -20,6 +20,9 @@ import useQuery from "../hooks/query";
 import { AddCustomerModalComponent } from "../modals/add_customer";
 import { Customer } from "../types";
 import { tableTheme } from "./table_theme";
+import useMutation from "../hooks/mutation";
+import { toast } from "sonner";
+import { ConfirmModal } from "../modals";
 
 export function CustomersPage() {
   const [openedModal, setOpenedModal] = useState("");
@@ -43,6 +46,21 @@ export function CustomersPage() {
   const onSearch = async (text: string) => {
     if (text.length > 0)
       search(`name.ilike.%${text}%,company_name.ilike.%${text}%,telephone.ilike.%${text}%,email.ilike.%${text}%`);
+  }
+
+  const { onDelete } = useMutation();
+
+  const confirmDelete = async () => {
+    const { data, error } = await onDelete("customers", selectedCustomer?.id as number);
+    if (data) {
+      toast.success(`${selectedCustomer?.name} deleted`);
+      setOpenedModal("");
+      refresh();
+    }
+
+    if (error) {
+      toast.error(error.message);
+    }
   }
 
   return (
@@ -125,6 +143,7 @@ export function CustomersPage() {
       </div>
 
       <AddCustomerModalComponent refresh={refresh} openedModal={openedModal} setOpenedModal={setOpenedModal} customer={selectedCustomer} />
+      <ConfirmModal openedModal={openedModal} setOpenedModal={setOpenedModal} confirm={confirmDelete} loading={loading} />
     </>
   );
 }
