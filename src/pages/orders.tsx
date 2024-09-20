@@ -166,19 +166,19 @@ export function OrdersPage() {
                             </Dropdown.Item>
                             <Dropdown.Item
                               icon={HiPencil}
-                              onClick={() => setOpenedModal("order-modal")}
+                              // onClick={() => setOpenedModal("order-modal")}
                             >
                               Edit
                             </Dropdown.Item>
                             <Dropdown.Item
                               icon={HiPrinter}
-                              onClick={() => setOpenedModal("order-modal")}
+                              // onClick={() => setOpenedModal("order-modal")}
                             >
                               Print
                             </Dropdown.Item>
                             <Dropdown.Item
                               icon={HiShare}
-                              onClick={() => setOpenedModal("order-modal")}
+                              // onClick={() => setOpenedModal("order-modal")}
                             >
                               Email
                             </Dropdown.Item>

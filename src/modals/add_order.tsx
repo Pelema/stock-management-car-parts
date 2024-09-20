@@ -143,7 +143,7 @@ export function AddOrderModalComponent({
 
     const onSubmit: SubmitHandler<Order> = async (values) => {
         if (items.length < 1) return
-        const { data: order, error: orderError } = await insert('sales_orders', { ...values, customer_id: selectedCustomer?.id, status: 'pending', total_amount: (sub_total * 1.15 )});
+        const { data: order, error: orderError } = await insert('sales_orders', { ...values, customer_id: selectedCustomer?.id, status: 'pending', total_amount: (sub_total * 1.15) });
 
         if (orderError) {
             toast.error(orderError.message);
@@ -166,6 +166,7 @@ export function AddOrderModalComponent({
             }
             if (orderItem) {
                 toast.success("order added");
+                setOpenedModal("");
                 refresh();
             }
         }
@@ -302,7 +303,7 @@ export function AddOrderModalComponent({
                                     customers?.map((item, key: Key) => (
                                         <List.Item className="p-2 hover:bg-gray-500 cursor-pointer" key={key + item.company_name} onClick={() => { setSelectedCustomer(item); setScaleCustomer(0); setHeightCustomer(0); }}>
                                             <div className="flex items-center space-x-4 rtl:space-x-reverse">
-                                                <div className="grid place-items-center bg-gray-700 rounded-full w-8 h-8">
+                                                <div className="grid place-items-center bg-gray-200 dark:bg-gray-700 rounded-full w-8 h-8">
                                                     <HiUser />
                                                 </div>
                                                 <div className="grow">
@@ -330,7 +331,7 @@ export function AddOrderModalComponent({
                                 <h3 className="text-xl font-bold">Customer</h3>
                                 <div className="rounded-lg bg-gray-50 dark:bg-gray-600 w-fit p-4">
                                     <div className="flex gap-4">
-                                        <div className="w-16 uppercase h-16 rounded-lg bg-gray-500 grid place-items-center">
+                                        <div className="w-16 uppercase h-16 rounded-lg text-xl font-bold bg-gray-100 dark:bg-gray-500 grid place-items-center">
                                             {selectedCustomer.name.slice(0, 2)}
                                         </div>
                                         <div className="flex flex-col gap-2">
@@ -340,7 +341,7 @@ export function AddOrderModalComponent({
                                     </div>
                                     <div className="space-y-2">
                                         <span className="text-xs">{selectedCustomer.telephone}</span>
-                                        <p className="text-xs text-gray-300 font-semibold">{selectedCustomer.address}</p>
+                                        <p className="text-xs text-gray-400 dark:text-gray-300 font-semibold">{selectedCustomer.address}</p>
                                     </div>
                                 </div>
 
@@ -392,7 +393,7 @@ export function AddOrderModalComponent({
                                 stock?.map((item, key: Key) => (
                                     <List.Item className="py-2" key={key + item.OEM_number}>
                                         <div className="flex items-start space-x-2 rtl:space-x-reverse">
-                                            <div className="grid place-items-center bg-gray-700/60 rounded-lg w-10 h-10">
+                                            <div className="grid place-items-center bg-gray-100 dark:bg-gray-700/60 rounded-lg w-10 h-10">
                                                 {(parseInt(key.toString()) + 1)}
                                             </div>
                                             <div className="grow">
@@ -404,12 +405,12 @@ export function AddOrderModalComponent({
                                                             <div className="font-semibold text-gray-900 dark:text-white text-xs"><span className={`${item.quantity_on_hand < 1 ? 'text-red-600' : ''}`}>{item.quantity_on_hand < 1 ? 'out of stock' : `Qty: ${item.quantity_on_hand}`}</span> | {formatCurrency(item.selling_price)}</div>
                                                         </div>
                                                     </div>
-                                                    <div className="inline-flex space-x-1 rounded-lg bg-gray-700 pl-0.5 items-center">
+                                                    <div className="inline-flex space-x-1 rounded-lg bg-gray-200 dark:bg-gray-700 pl-0.5 items-center">
                                                         <TextInput disabled={item.quantity_on_hand < 1} min={1} max={item.quantity_on_hand} type="number" className="w-14 !rounded-r-none border-none" sizing={"sm"} defaultValue={1} placeholder="0" onChange={(e) => setSelectedAmount(parseInt(e.target.value))} />
                                                         <motion.button
                                                             whileTap={{ scale: .8, borderRadius: "30%" }}
                                                             disabled={item.quantity_on_hand < 1}
-                                                            className="!rounded-r-lg rounded-l-none p-2 bg-gray-900" onClick={() => {
+                                                            className="!rounded-r-lg rounded-l-none p-2 bg-gray-200 hover:bg-indigo-600 hover:text-white dark:bg-gray-900" onClick={() => {
                                                                 onSelectItem(item)
                                                             }} >select
                                                         </motion.button>
@@ -443,9 +444,9 @@ export function AddOrderModalComponent({
                                     initial="hidden"
                                     animate="visible"
                                     variants={animateItem} className="flex gap-2 items-center" key={key}>
-                                    <div className="w-24 h-20 rounded-lg bg-gray-50/50 dark:bg-gray-400/40"></div>
+                                    <div className="w-24 h-20 rounded-lg bg-white dark:bg-gray-400/40"></div>
                                     <div className="space-y-1 grow">
-                                        <h5 className="font-bold">{typeof item.car_model !== 'number' && item.car_model?.make}</h5>
+                                        <h5 className="font-bold">{typeof item.car_model !== 'number' && item.car_model?.make} - {item.name}</h5>
                                         <span className="font-thin">{formatCurrency(item.selling_price * (typeof (item.quantity_on_hand) == "number" ? item.quantity_on_hand : 0))}</span>
                                         <div className="flex justify-between items-center">
                                             <Badge>{item.manufacturer}</Badge>
