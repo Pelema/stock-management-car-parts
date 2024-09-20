@@ -10,6 +10,8 @@ import {
 import { HiUsers } from "react-icons/hi";
 import { card_theme } from "./card_theme";
 import { tableTheme } from "./table_theme";
+import useAdmin from "../hooks/admin";
+import { ListSkeletalComponent } from "../components";
 
 export function DashboardPage() {
 
@@ -20,6 +22,11 @@ export function DashboardPage() {
   // const { data: users, loading: isLoading, error: isError } = useQuery<User[]>('auth.users', false, 0, 5);
 
   // console.log("Dashboard Users", users);
+
+  const {
+    data,
+    loading
+  } = useAdmin();
 
 
   return (
@@ -73,7 +80,7 @@ export function DashboardPage() {
 
       <div className="flex space-x-2">
         <div className="overflow-x-auto rounded-md grow">
-          <Table hoverable theme={tableTheme}>
+          {/* <Table hoverable theme={tableTheme}>
             <caption className="p-5 uppercase text-md font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
               Recent Orders
             </caption>
@@ -136,41 +143,36 @@ export function DashboardPage() {
                 </TableCell>
               </TableRow>
             </TableBody>
-          </Table>
+          </Table> */}
         </div>
 
         <div className="overflow-x-auto rounded-md basis-2/5">
-          <Table hoverable theme={tableTheme}>
-            <caption className="p-5 uppercase text-md font-semibold text-left rtl:text-right text-gray-900 bg-white dark:text-white dark:bg-gray-800">
-              Login Activity
-            </caption>
+          <Table hoverable theme={tableTheme} className="table-fixed">
             <TableHead>
-              <TableHeadCell>Email</TableHeadCell>
-              <TableHeadCell>Location</TableHeadCell>
-              <TableHeadCell>Last login</TableHeadCell>
+              <TableHeadCell className="w-14">id</TableHeadCell>
+              <TableHeadCell>email</TableHeadCell>
+              <TableHeadCell>name</TableHeadCell>
+              <TableHeadCell>last login</TableHeadCell>
             </TableHead>
             <TableBody className="divide-y">
-              <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  {'Apple MacBook Pro 17"'}
-                </TableCell>
-                <TableCell>Sliver</TableCell>
-                <TableCell>Laptop</TableCell>
-              </TableRow>
-              <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  Microsoft Surface Pro
-                </TableCell>
-                <TableCell>White</TableCell>
-                <TableCell>Laptop PC</TableCell>
-              </TableRow>
-              <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                  Magic Mouse 2
-                </TableCell>
-                <TableCell>Black</TableCell>
-                <TableCell>Accessories</TableCell>
-              </TableRow>
+              {loading ? (
+                <ListSkeletalComponent cols={3} />
+              ) : (
+                <>
+                  {data?.map((item, key) => (
+                    <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800" key={item.id}>
+                      <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                        {(key + 1)}
+                      </TableCell>
+                      <TableCell>{item.email}</TableCell>
+                      <TableCell>
+                        {item.user_metadata?.fullname}
+                      </TableCell>
+                      <TableCell>{item.last_sign_in_at}</TableCell>
+                    </TableRow>
+                  ))}
+                </>
+              )}
             </TableBody>
           </Table>
         </div>
