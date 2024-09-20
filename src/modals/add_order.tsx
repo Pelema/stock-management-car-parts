@@ -79,7 +79,7 @@ export function AddOrderModalComponent({
         if (searchQueryCus.length > 0) {
             setScaleCustomer(1)
             setHeightCustomer("40vh");
-            onSearchCusomer(debouncedQueryCus);
+            onSearchCustomer(debouncedQueryCus);
         } else {
             setScaleCustomer(0)
             setHeightCustomer(0);
@@ -87,11 +87,11 @@ export function AddOrderModalComponent({
     }, [debouncedQueryCus]);
 
     const onSearch = async (text: string) => {
-        await search(`OEM_number.ilike.%${text}%,engine_number.ilike.%${text}%,manufacturer.ilike.%${text}%,VIN.ilike.%${text}%`);
+        await search(`name.ilike.%${text}%,OEM_number.ilike.%${text}%,engine_number.ilike.%${text}%,manufacturer.ilike.%${text}%,VIN.ilike.%${text}%`);
         // ,car_model.make.ilike.%${text}%,car_model.model.ilike.%${text}%
     }
 
-    const onSearchCusomer = async (text: string) => {
+    const onSearchCustomer = async (text: string) => {
         await searchCustomer(`name.ilike.%${text}%,company_name.ilike.%${text}%`);
     }
 
@@ -176,7 +176,7 @@ export function AddOrderModalComponent({
             open={openedModal === "order-modal"}
             onClose={onClose}
             position="right"
-            className="w-full sm:w-5/6 md:w-3/4 lg:w-1/2 flex flex-col gap-2"
+            className="w-full sm:w-5/6 md:w-3/4 lg:w-3/4 flex flex-col gap-2"
         >
             <Drawer.Header title="Add new order" titleIcon={HiPlus} />
 
@@ -191,7 +191,7 @@ export function AddOrderModalComponent({
                         damping: 20
                     }}
                 >
-                    <form className="z-50 flex flex-col gap-2 bg-gray-700/40 backdrop-blur-sm rounded-lg p-4">
+                    <form className="z-50 flex flex-col gap-2 bg-gray-100 dark:bg-gray-700/40 backdrop-blur-sm rounded-lg p-4">
                         <Label className="text-xl" value="#Order" />
                         {/* <div className="flex space-x-2">
                             <div className="grow">
@@ -256,7 +256,7 @@ export function AddOrderModalComponent({
                         </div>
                     </form>
 
-                    <div className="space-y-2 bg-gray-700/40 backdrop-blur-sm grow rounded-lg p-4">
+                    <div className="space-y-2 bg-gray-100 dark:bg-gray-700/40 backdrop-blur-sm grow rounded-lg p-4">
                         <div className="space-y-2">
                             <div className="block">
                                 <Label className="" htmlFor="searchCustomer" value="Search Customers" />
@@ -350,7 +350,7 @@ export function AddOrderModalComponent({
 
 
                 {/* items */}
-                <div className="grow !z-10 space-y-2 flex flex-col rounded-lg p-4 bg-gray-700/40 backdrop-blur-sm">
+                <div className="grow !z-10 space-y-2 flex flex-col rounded-lg p-4 bg-gray-100 dark:bg-gray-700/40 backdrop-blur-sm">
                     <div className="">
                         <div className="block">
                             <Label className="" htmlFor="search" value="Search for items" />
@@ -492,7 +492,7 @@ export function AddOrderModalComponent({
             </div>
             {/* </Drawer.Items > */}
 
-            <div className="footer p-2 flex items-center justify-end gap-2 rounded-lg bg-gray-700/40 backdrop-blur-sm">
+            <div className="footer p-2 flex items-center justify-end gap-2 rounded-lg bg-gray-100 dark:bg-gray-700/40 backdrop-blur-sm">
                 <Button outline onClick={onClose}>Cancel</Button>
                 <Button isProcessing={loading} onClick={handleSubmit(onSubmit)}>Save</Button>
             </div>
