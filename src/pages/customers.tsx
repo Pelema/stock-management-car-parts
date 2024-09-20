@@ -102,7 +102,7 @@ export function CustomersPage() {
                       </TableCell>
                       <TableCell>{item.company_name}</TableCell>
                       <TableCell>{item.telephone}</TableCell>
-                      <TableCell>{item.address}</TableCell>
+                      <TableCell><p className="line-clamp-2">{item.address}</p></TableCell>
                       <TableCell>
                         <TableActionsComponent>
                           <>
