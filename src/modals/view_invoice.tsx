@@ -76,7 +76,7 @@ export function ViewInvoiceModalComponent({
                 </div>
 
                 <div className="grow mx-auto max-w-xl space-y-4">
-                    <div className="bg-gray-700 p-6 flex justify-between">
+                    <div className="bg-gray-100 dark:bg-gray-700 p-6 flex justify-between">
                         <div className="flex gap-2 items-start">
                             <div className="space-y-2">
                                 <img className="h-14 rounded-lg" src="/logo.webp" alt="signature" />
@@ -122,15 +122,15 @@ export function ViewInvoiceModalComponent({
                             }
                         </div>
 
-                        <div className="overflow-x-auto p-4 rounded-xl bg-gray-700">
+                        <div className="overflow-x-auto p-4 rounded-xl bg-gray-100 dark:bg-gray-700">
                             <div>
                                 <div className="flex gap-3">
                                     <div className="grow text-sm">
-                                        <div className="rounded-full py-1 px-4 bg-gray-900 w-fit font-semibold">Description</div>
+                                        <div className="rounded-full py-1 px-4 bg-gray-200 dark:bg-gray-900 w-fit font-semibold">Description</div>
                                     </div>
-                                    <div className="text-center rounded-full py-1 px-4 w-20 bg-gray-900 font-semibold text-sm">Qty</div>
-                                    <div className="text-center rounded-full py-1 px-4 bg-gray-900 w-32 font-semibold text-sm">Price</div>
-                                    <div className="text-center rounded-full py-1 px-4 bg-gray-900 w-32 font-semibold text-sm">Total</div>
+                                    <div className="text-center rounded-full py-1 px-4 w-20 bg-gray-200 dark:bg-gray-900 font-semibold text-sm">Qty</div>
+                                    <div className="text-center rounded-full py-1 px-4 bg-gray-200 dark:bg-gray-900 w-32 font-semibold text-sm">Price</div>
+                                    <div className="text-center rounded-full py-1 px-4 bg-gray-200 dark:bg-gray-900 w-32 font-semibold text-sm">Total</div>
                                 </div>
                                 <div className="space-y-2 py-2">
                                     {
@@ -193,9 +193,9 @@ export function ViewInvoiceModalComponent({
 
                     </div>
 
-                    <div className="bg-gray-700 p-6 flex justify-between text-xs">
+                    <div className="bg-gray-100 dark:bg-gray-700 p-6 flex justify-between text-xs">
                         <div className="flex flex-col gap-2">
-                            <div className="bg-gray-900 px-3 py-1 rounded-full text-xs">Payment Information</div>
+                            <div className="bg-gray-200 dark:bg-gray-900 px-3 py-1 rounded-full text-xs">Payment Information</div>
                             <div className="flex flex-col gap-0.5 ml-2">
                                 <span className="text-xs">Bank: FNB/NEDBANK</span>
                                 <span className="text-xs">Account Name: I M</span>
