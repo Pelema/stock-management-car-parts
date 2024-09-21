@@ -92,10 +92,10 @@ export function CustomersPage() {
                 <ListSkeletalComponent cols={4} />
               ) : (
                 <>
-                  {customers?.map((item) => (
+                  {customers?.map((item, key) => (
                     <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
                       <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        {item.id}
+                        {start + key + 1}
                       </TableCell>
                       <TableCell>
                         {item?.name}

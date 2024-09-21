@@ -23,7 +23,7 @@ export function ViewInvoiceModalComponent({
             />
 
             <div className="flex justify-between mt-4 container mx-auto grow overflow-y-scroll">
-                <div className="rounded-xl h-fit bg-gray-500 p-4 space-y-2">
+                <div className="rounded-xl h-fit bg-gray-100 dark:bg-gray-500 p-4 space-y-2">
                     <h4 className="text-2xl font-bold">{formatCurrency(invoice?.total_amount as number)}</h4>
                     <div className="bg-gray-500/20 rounded backdrop-blur-sm flex flex-col gap-1 w-fit">
                         <Button>
@@ -58,7 +58,7 @@ export function ViewInvoiceModalComponent({
                         <div className="rounded-lg bg-gray-50 dark:bg-gray-600 w-fit p-4 space-y-1">
                             <h6 className="text-xs">Customer</h6>
                             <div className="flex gap-2 items-center">
-                                <div className="w-12 h-12 uppercase  rounded-full bg-gray-500 grid place-items-center text-2xl font-bold">
+                                <div className="w-12 h-12 uppercase  rounded-full bg-gray-200 dark:bg-gray-500 grid place-items-center text-2xl font-bold">
                                     {invoice?.order?.customer?.name.slice(0, 2)}
                                 </div>
                                 <div className="flex flex-col gap-1">
@@ -68,7 +68,7 @@ export function ViewInvoiceModalComponent({
                             </div>
                             <div className="space-y-2">
                                 <span className="text-xs">{invoice?.order?.customer?.telephone}</span>
-                                <p className="text-xs text-gray-300 font-semibold">{invoice?.order?.customer?.address}</p>
+                                <p className="text-xs text-gray-400 dark:text-gray-300 font-semibold">{invoice?.order?.customer?.address}</p>
                             </div>
                         </div>
                     </motion.div>

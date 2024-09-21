@@ -36,7 +36,7 @@ export function AddOrderModalComponent({
     const { data: stock, search } = useQuery<StockItem[]>({
         table: 'stock',
         from: 0, to: 10,
-        filter: "id,OEM_number,VIN,engine_number,manufacturer,model_range,selling_price,quantity_on_hand,supplier(name,email),car_model(make,model)",
+        filter: "id,OEM_number,VIN,name,description,engine_number,manufacturer,model_range,selling_price,quantity_on_hand,supplier(name,email),car_model(make,model)",
     });
 
     const { data: customers, search: searchCustomer } = useQuery<Customer[]>({
@@ -113,19 +113,18 @@ export function AddOrderModalComponent({
     const onChangeQuantity = (selectedItem: StockItem, action: '+' | '-') => {
         const check = items.find(value => value.id === selectedItem.id);
         if (check?.id) {
-            const newItems = items
-                .map((value) => {
-                    if (value.id === selectedItem.id) {
-                        const count = action === '+' ? value.quantity + 1 : value.quantity - 1;
-                        if (count > 0) {
+            const newItems = items.map((value) => {
+                if (value.id === selectedItem.id) {
+                    const count = action === '+' ? value.quantity + 1 : value.quantity - 1;
+                    if (count > 0) {
 
-                            return { ...value, quantity: count <= value.quantity_on_hand ? count : value.quantity_on_hand }
-                        }
-                        return null;
-                    } else {
-                        return value
+                        return { ...value, quantity: count <= value.quantity_on_hand ? count : value.quantity_on_hand }
                     }
-                })
+                    return null;
+                } else {
+                    return value
+                }
+            })
                 .filter(value => value !== null);
             setItems(newItems);
         }
@@ -139,7 +138,7 @@ export function AddOrderModalComponent({
         setHeightCustomer("0vh")
     }
 
-    const sub_total = items.reduce((total, item: StockItem) => total + (item.selling_price * item.quantity_on_hand), 0)
+    const sub_total = items.reduce((total, item: StockItem) => total + (item.selling_price * item.quantity), 0)
 
     const onSubmit: SubmitHandler<Order> = async (values) => {
         if (items.length < 1) return
@@ -399,7 +398,8 @@ export function AddOrderModalComponent({
                                             <div className="grow">
                                                 <div className="flex items-center gap-4">
                                                     <div className="grow">
-                                                        <p className="truncate text-sm font-medium text-gray-900 dark:text-white capitalize">{item.OEM_number} - {typeof item.car_model !== 'number' && item.car_model?.make}</p>
+                                                        <p className="truncate text-sm font-medium text-gray-900 dark:text-white capitalize">{item.OEM_number} - {item.name} </p>
+                                                        {/* make: {typeof item.car_model !== 'number' && item.car_model?.make} */}
                                                         <div className="flex justify-between">
                                                             <p className="truncate text-xs text-gray-500 dark:text-gray-400">{item.manufacturer}</p>
                                                             <div className="font-semibold text-gray-900 dark:text-white text-xs"><span className={`${item.quantity_on_hand < 1 ? 'text-red-600' : ''}`}>{item.quantity_on_hand < 1 ? 'out of stock' : `Qty: ${item.quantity_on_hand}`}</span> | {formatCurrency(item.selling_price)}</div>
@@ -447,7 +447,8 @@ export function AddOrderModalComponent({
                                     <div className="w-24 h-20 rounded-lg bg-white dark:bg-gray-400/40"></div>
                                     <div className="space-y-1 grow">
                                         <h5 className="font-bold">{typeof item.car_model !== 'number' && item.car_model?.make} - {item.name}</h5>
-                                        <span className="font-thin">{formatCurrency(item.selling_price * (typeof (item.quantity_on_hand) == "number" ? item.quantity_on_hand : 0))}</span>
+                                        <span className="font-thin">{formatCurrency(item.selling_price * (typeof (item.quantity) == "number" ? item.quantity : 0))}</span>
+                                        <span className="text-xs">&nbsp;&nbsp;&nbsp;({item.quantity} X {formatCurrency(item.selling_price)})</span>
                                         <div className="flex justify-between items-center">
                                             <Badge>{item.manufacturer}</Badge>
                                             <div className="rounded-full flex gap-3 items-center bg-gray-50 dark:bg-gray-400 p-1">

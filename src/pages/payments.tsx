@@ -131,7 +131,7 @@ export function PaymentsPage() {
                           <Checkbox />
                         </Table.Cell>
                         <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                          {key + 1}
+                          {start + key + 1}
                         </TableCell>
                         <TableCell>{item.payment_reference}</TableCell>
                         <TableCell>{item?.invoice?.invoice_number} - {item?.invoice?.order?.customer?.name}</TableCell>

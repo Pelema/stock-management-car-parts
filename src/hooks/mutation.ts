@@ -21,7 +21,6 @@ export default function useMutation() {
     }
 
     const update = async (table: string, _id: number, fields: any) => {
-        console.log(fields, ' fields')
         setLoading(true);
         const { status, statusText, error } = await supabase.from(table).update(fields).eq('id', _id).select()
         setLoading(false);

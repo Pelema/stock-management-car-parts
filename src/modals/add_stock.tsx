@@ -12,35 +12,55 @@ import useMutation from "../hooks/mutation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import useQuery from "../hooks/query";
-import { Key } from "react";
+import { Key, useEffect } from "react";
 
 export function AddStockModalComponent({
   openedModal,
   setOpenedModal,
   refresh,
-}: TModalProps & { refresh: () => void }) {
+  product
+}: TModalProps & { refresh: () => void, product: StockItem | null }) {
   const {
     register,
     handleSubmit,
     formState: { errors },
+    setValue,
+    reset
   } = useForm<StockItem>();
+
   const {
     data: cars,
-  } = useQuery<CarModel[]>({ table: "car_model", from: 0, to: 10 });
+  } = useQuery<CarModel[]>({ table: "car_model", from: 0, to: 100 });
 
-  const { insert, data: fetchData, loading, error } = useMutation();
+  const { insert, update, loading } = useMutation();
 
   const onSubmit: SubmitHandler<StockItem> = async (values) => {
-    await insert("stock", values);
+    const { data, error } = product ? await update('stock', product?.id as number, values) : await insert('stock', values);
     if (error) {
-      toast.error(error);
+      toast.error(error.message);
     }
-    if (fetchData) {
-      toast.success("supplier added");
+    if (data) {
+      reset();
       refresh();
       setOpenedModal("");
+      toast.success(`item ${product?.id ? "updated" : "added"}`);
     }
   };
+
+  useEffect(() => {
+    if (product?.id) {
+      setValue("name", product.name);
+      setValue("description", product.description);
+      setValue("engine_number", product.engine_number);
+      setValue("car_model", product.car_model);
+      setValue("engine_number", product.engine_number);
+      setValue("model_range", product.model_range);
+      setValue("OEM_number", product.OEM_number);
+      setValue("manufacturer", product.manufacturer);
+      setValue("min_stock_level", product.min_stock_level);
+      setValue("selling_price", product.selling_price);
+    }
+  }, [product, setValue])
 
   return (
     <Modal
@@ -67,7 +87,7 @@ export function AddStockModalComponent({
                 helperText={
                   <>
                     {errors.OEM_number && (
-                      <span className="font-medium text-sm">
+                      <span className="font-medium text-sm text-red-600">
                         {errors.OEM_number.message}
                       </span>
                     )}
@@ -92,7 +112,7 @@ export function AddStockModalComponent({
                 helperText={
                   <>
                     {errors.name && (
-                      <span className="font-medium text-sm">
+                      <span className="font-medium text-sm text-red-600">
                         {errors.name.message}
                       </span>
                     )}
@@ -115,7 +135,7 @@ export function AddStockModalComponent({
                 helperText={
                   <>
                     {errors.manufacturer && (
-                      <span className="font-medium text-sm">
+                      <span className="font-medium text-sm text-red-600">
                         {errors.manufacturer.message}
                       </span>
                     )}
@@ -140,7 +160,7 @@ export function AddStockModalComponent({
                 helperText={
                   <>
                     {errors.VIN && (
-                      <span className="font-medium text-sm">
+                      <span className="font-medium text-sm text-red-600">
                         {errors.VIN.message}
                       </span>
                     )}
@@ -160,7 +180,7 @@ export function AddStockModalComponent({
                 helperText={
                   <>
                     {errors.engine_number && (
-                      <span className="font-medium text-sm">
+                      <span className="font-medium text-sm text-red-600">
                         {errors.engine_number.message}
                       </span>
                     )}
@@ -184,7 +204,7 @@ export function AddStockModalComponent({
                 helperText={
                   <>
                     {errors.car_model && (
-                      <span className="font-medium text-sm">
+                      <span className="font-medium text-sm text-red-600">
                         {errors.car_model.message}
                       </span>
                     )}
@@ -213,7 +233,7 @@ export function AddStockModalComponent({
                 helperText={
                   <>
                     {errors.model_range && (
-                      <span className="font-medium text-sm">
+                      <span className="font-medium text-sm text-red-600">
                         {errors.model_range.message}
                       </span>
                     )}
@@ -238,7 +258,7 @@ export function AddStockModalComponent({
                 helperText={
                   <>
                     {errors.selling_price && (
-                      <span className="font-medium text-sm">
+                      <span className="font-medium text-sm text-red-600">
                         {errors.selling_price.message}
                       </span>
                     )}
@@ -256,12 +276,12 @@ export function AddStockModalComponent({
                 type="number"
                 placeholder="1,000"
                 {...register("min_stock_level", {
-                  required: "reorder qnty is required",
+                  required: "reorder quantity is required",
                 })}
                 helperText={
                   <>
                     {errors.min_stock_level && (
-                      <span className="font-medium text-sm">
+                      <span className="font-medium text-sm text-red-600">
                         {errors.min_stock_level.message}
                       </span>
                     )}
@@ -279,18 +299,7 @@ export function AddStockModalComponent({
                 id="description"
                 rows={3}
                 placeholder="description"
-                {...register("description", {
-                  required: "reorder qnty is required",
-                })}
-                helperText={
-                  <>
-                    {errors.description && (
-                      <span className="font-medium text-sm">
-                        {errors.description.message}
-                      </span>
-                    )}
-                  </>
-                }
+                {...register("description")}
               />
             </div>
           </div>

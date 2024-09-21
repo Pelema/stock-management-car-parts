@@ -52,20 +52,7 @@ export default function useQuery<T>({
         return data
     }
 
-    const refresh = async () => {
-        setLoading(true);
-        const { data, error, count } = is_single ?
-            await supabase.from(table).select(filter).limit(1).single()
-            : await supabase.from(table).select(filter, { count: 'exact' }).range(0, 10);
-        setLoading(false);
-        if (data) {
-            setData(data as T);
-            setCount(count as number);
-        }
-        if (error) {
-            setError(error.message);
-        }
-    };
+    const refresh = async () => getData();
 
     return { data: data as T, loading, error, refresh, search, count }
 }

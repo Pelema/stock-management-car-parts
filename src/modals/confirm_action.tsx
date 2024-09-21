@@ -1,5 +1,5 @@
 import { Button, Modal } from "flowbite-react";
-import { HiOutlineExclamationCircle } from "react-icons/hi";
+// import { HiOutlineExclamationCircle } from "react-icons/hi";
 import { TModalProps } from "../types";
 
 export function ConfirmActionModalComponent({
@@ -7,27 +7,29 @@ export function ConfirmActionModalComponent({
   setOpenedModal,
   confirm,
   loading,
-  action = " delete this product"
+  action = "to delete the selected item? This action cannot be undone."
 }: TModalProps & { confirm: () => void, loading: boolean, action?: string }) {
   return (
     <Modal
       show={openedModal === "confirm-modal"}
-      size="md"
+      size="sm"
       onClose={() => setOpenedModal("")}
       popup
     >
-      <Modal.Header />
+      <Modal.Header >
+        <span className="capitalize text-base ml-4">Confirmation</span>
+      </Modal.Header>
       <Modal.Body>
-        <div className="text-center">
-          <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" />
-          <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-            Are you sure you want to {action}?
-          </h3>
-          <div className="flex justify-center gap-4">
-            <Button isProcessing={loading} color="failure" onClick={() => { confirm() }}>
+        <div className="text-start">
+          {/* <HiOutlineExclamationCircle className="mx-auto mb-4 h-14 w-14 text-gray-400 dark:text-gray-200" /> */}
+          <p className="mb-5 text-sm font-normal text-gray-500 dark:text-gray-400">
+            Are you sure you want to {action}
+          </p>
+          <div className="flex gap-2">
+            <Button className="grow" isProcessing={loading} color="failure" onClick={() => { confirm() }}>
               {"Yes, I'm sure"} &nbsp;
             </Button>
-            <Button color="gray" onClick={() => setOpenedModal("")}>
+            <Button className="grow" color="gray" onClick={() => setOpenedModal("")}>
               No, cancel
             </Button>
           </div>

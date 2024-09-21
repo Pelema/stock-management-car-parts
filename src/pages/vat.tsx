@@ -1,28 +1,31 @@
 import {
-  Table,
-  TableHead,
-  TableHeadCell,
-  TableBody,
-  TableRow,
-  TableCell,
   Button,
   Card,
-  Label,
-  TextInput,
-  Spinner,
   Dropdown,
+  Label,
+  Spinner,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeadCell,
+  TableRow,
+  TextInput,
 } from "flowbite-react";
-import { HiPencil, HiTrash } from "react-icons/hi";
-import { tableTheme } from "./table_theme";
-import { VAT } from "../types";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { HiPencil, HiTrash } from "react-icons/hi";
 import { toast } from "sonner";
+import { ListSkeletalComponent, TableActionsComponent } from "../components";
 import useMutation from "../hooks/mutation";
 import useQuery from "../hooks/query";
-import { ListSkeletalComponent, TableActionsComponent } from "../components";
-import { Key, useEffect, useState } from "react";
+import { ConfirmModal } from "../modals";
+import { VAT } from "../types";
+import { tableTheme } from "./table_theme";
 
 export function VATPage() {
+  const [openedModal, setOpenedModal] = useState("");
+  const [selectedVAT, setSelectedVAT] = useState<VAT | null>(null);
 
   const {
     register,
@@ -32,9 +35,8 @@ export function VATPage() {
     reset
   } = useForm<VAT>()
 
-  const { insert, update, loading } = useMutation();
+  const { insert, update, onDelete, loading } = useMutation();
   const { data: VAT, loading: isLoading, refresh } = useQuery<VAT[]>({ table: 'VAT', is_single: false, from: 0, to: 10 });
-  const [selectedVAT, setSelectedVAT] = useState<VAT | null>(null);
 
   const onSubmit: SubmitHandler<VAT> = async (values) => {
     const { data, error } = selectedVAT ? await update('VAT', selectedVAT.id, values) : await insert('VAT', values);
@@ -45,6 +47,19 @@ export function VATPage() {
       reset();
       refresh();
       toast.success(`selectedVAT ${selectedVAT ? "updated" : "added"}`);
+    }
+  }
+
+  const confirmDelete = async () => {
+    const { data, error } = await onDelete("VAT", selectedVAT?.id as number);
+    if (data) {
+      toast.success(`${selectedVAT?.label} deleted`);
+      setOpenedModal("");
+      refresh();
+    }
+
+    if (error) {
+      toast.error(error.message);
     }
   }
 
@@ -74,10 +89,10 @@ export function VATPage() {
                 :
                 <>
                   {
-                    VAT?.map((item, key: Key) => (
+                    VAT?.map((item, key) => (
                       <TableRow key={key} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                         <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                          {item.id}
+                          {key + 1}
                         </TableCell>
                         <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                           {item.label}
@@ -100,6 +115,7 @@ export function VATPage() {
                                 icon={HiTrash}
                                 onClick={() => {
                                   setSelectedVAT(item);
+                                  setOpenedModal("confirm-modal")
                                 }}
                               >
                                 Delete
@@ -159,6 +175,9 @@ export function VATPage() {
             </form>
           </Card>
         </div>
+        <ConfirmModal
+          openedModal={openedModal}
+          setOpenedModal={setOpenedModal} confirm={confirmDelete} loading={loading} />
       </div>
     </>
   );

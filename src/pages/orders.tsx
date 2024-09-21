@@ -123,11 +123,11 @@ export function OrdersPage() {
                   {orders?.map((item, key) => (
                     <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800" key={item.order_number}>
                       <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        {key + 1}
+                        {start + key + 1}
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-col gap-0.5">
-                          <span className="line-clamp-1 max-w-md">{item?.sales_order_items?.map(product => (<span key={product.product?.id + "ITMKEY"}>{product?.product?.OEM_number}, </span>))}</span>
+                          <span className="line-clamp-1 max-w-md">{item?.sales_order_items?.map(product => (<span key={product.product?.id + "ITMKEY"}>{product?.product?.name}, </span>))}</span>
                           <span className="!text-xs">{item.order_number}</span>
                         </div>
                       </TableCell>
@@ -166,19 +166,19 @@ export function OrdersPage() {
                             </Dropdown.Item>
                             <Dropdown.Item
                               icon={HiPencil}
-                              // onClick={() => setOpenedModal("order-modal")}
+                            // onClick={() => setOpenedModal("order-modal")}
                             >
                               Edit
                             </Dropdown.Item>
                             <Dropdown.Item
                               icon={HiPrinter}
-                              // onClick={() => setOpenedModal("order-modal")}
+                            // onClick={() => setOpenedModal("order-modal")}
                             >
                               Print
                             </Dropdown.Item>
                             <Dropdown.Item
                               icon={HiShare}
-                              // onClick={() => setOpenedModal("order-modal")}
+                            // onClick={() => setOpenedModal("order-modal")}
                             >
                               Email
                             </Dropdown.Item>

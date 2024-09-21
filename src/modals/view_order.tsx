@@ -24,7 +24,7 @@ export function ViewOrderModalComponent({
             />
 
             <div className="flex justify-between mt-4 container mx-auto grow overflow-y-scroll">
-                <div className="rounded-xl h-fit bg-gray-500 p-4 space-y-2">
+                <div className="rounded-xl h-fit bg-gray-100 dark:bg-gray-500 p-4 space-y-2">
                     <h4 className="text-2xl font-bold">{formatCurrency(order?.total_amount as number)}</h4>
                     <div className="bg-gray-500/20 rounded backdrop-blur-sm flex flex-col gap-1 w-fit">
                         <Button>
@@ -60,7 +60,7 @@ export function ViewOrderModalComponent({
                         <div className="rounded-lg bg-gray-50 dark:bg-gray-600 w-fit p-4 space-y-1">
                             <h6 className="text-xs">Customer</h6>
                             <div className="flex gap-2 items-center">
-                                <div className="w-12 h-12 uppercase  rounded-full bg-gray-500 grid place-items-center text-2xl font-bold">
+                                <div className="w-12 h-12 uppercase  rounded-full bg-gray-200 dark:bg-gray-500 grid place-items-center text-2xl font-bold">
                                     {order?.customer?.name.slice(0, 2)}
                                 </div>
                                 <div className="flex flex-col gap-1">
@@ -84,7 +84,7 @@ export function ViewOrderModalComponent({
                             <div className="log">
                                 <img className="h-14 rounded-lg" src="/logo.webp" alt="signature" />
                             </div>
-                            <div className="space-y-2">
+                            <div className="flex flex-col gap-0.5">
                                 <h2 className="text-xl font-semibold">Inventory System Inc</h2>
                                 <span className="text-sm">Sirgil Co.</span>
                             </div>
@@ -92,7 +92,7 @@ export function ViewOrderModalComponent({
 
                         <div className="space-y-2">
                             <div className="flex flex-col gap-0.5">
-                                <h3 className="text-base font-semibold">Qoutation Number</h3>
+                                <h3 className="text-base font-semibold">Quotation Number</h3>
                                 <span className="text-xs">{order?.order_number}</span>
                             </div>
                             <div className="flex flex-col gap-.5">
@@ -174,7 +174,7 @@ export function ViewOrderModalComponent({
                     </div>
 
                     <div className="flex justify-between ">
-                        <div className="flex flex-col gap-2">
+                        {/* <div className="flex flex-col gap-2">
                             <div className="bg-gray-200 dark:bg-gray-900 px-3 py-1 rounded-full text-xs">Payment Information</div>
 
                             <div className="flex flex-col gap-0.5">
@@ -182,12 +182,12 @@ export function ViewOrderModalComponent({
                                 <span className="text-xs">Account Name: I M</span>
                                 <span className="text-xs max-w-md">Code: 776FRM9XX</span>
                             </div>
-                        </div>
+                        </div> */}
 
 
-                        <div className="">
+                        <div className="max-w-md">
                             <h3 className="font-bold text-base">Terms and Conditions</h3>
-                            <p className="text-xs max-w-60">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed eveniet, reprehenderit exercitationem labore officiis eum.</p>
+                            <p className="text-xs">Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed eveniet, reprehenderit exercitationem labore officiis eum.</p>
                         </div>
 
 

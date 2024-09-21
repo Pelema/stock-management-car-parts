@@ -112,11 +112,11 @@ export function InvoicePage() {
                   {invoices?.map((item, key) => (
                     <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800" key={item.invoice_number}>
                       <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        {key + 1}
+                        {start + key + 1}
                       </TableCell>
                       <TableCell>
                         <div className="flex flex-col gap-0.5">
-                          <span className="line-clamp-1 max-w-md">{item?.order?.sales_order_items?.map(product => (<span key={product.product?.id + "INV-Item"}>{product?.product?.OEM_number}, </span>))}</span>
+                          <span className="line-clamp-1 max-w-md">{item?.order?.sales_order_items?.map(product => (<span key={product.product?.id + "INV-Item"}>{product?.product?.name}, </span>))}</span>
                           <span className="!text-xs">{item.invoice_number}</span>
                         </div>
                       </TableCell>

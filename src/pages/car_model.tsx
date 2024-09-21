@@ -11,7 +11,7 @@ import {
   TableRow,
   TextInput
 } from "flowbite-react";
-import { Key, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { HiPencil, HiTrash } from "react-icons/hi";
 import { toast } from "sonner";
@@ -81,10 +81,10 @@ export function CarModelPage() {
               isLoading ?
                 <ListSkeletalComponent cols={3} /> :
                 <>
-                  {cars.map((item, key: Key) => (
+                  {cars.map((item, key) => (
                     <TableRow key={key} className="bg-white dark:border-gray-700 dark:bg-gray-800">
                       <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        {item.id}
+                        {start + key + 1}
                       </TableCell>
                       <TableCell>{item.make}</TableCell>
                       <TableCell>{item.model}</TableCell>

@@ -8,20 +8,20 @@ import {
   TableHeadCell,
   TableRow,
 } from "flowbite-react";
-import { Key, useState } from "react";
+import { useState } from "react";
+import { HiPencil, HiTrash } from "react-icons/hi";
+import { toast } from "sonner";
 import {
   ListSkeletalComponent,
   TableActionsComponent,
   TableFooterComponent,
   TableHeaderComponent,
 } from "../components";
+import useMutation from "../hooks/mutation";
 import useQuery from "../hooks/query";
 import { AddSupplierModal, ConfirmModal } from "../modals";
 import { Supplier } from "../types";
 import { tableTheme } from "./table_theme";
-import { HiPencil, HiTrash } from "react-icons/hi";
-import useMutation from "../hooks/mutation";
-import { toast } from "sonner";
 
 export function SuppliersPage() {
   const [openedModal, setOpenedModal] = useState("");
@@ -92,13 +92,13 @@ export function SuppliersPage() {
                 <ListSkeletalComponent cols={4} />
               ) : (
                 <>
-                  {suppliers?.map((item, key: Key) => (
+                  {suppliers?.map((item, key) => (
                     <TableRow
                       key={key}
                       className="bg-white dark:border-gray-700 dark:bg-gray-800"
                     >
                       <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        {item.id}
+                        {start + key + 1}
                       </TableCell>
                       <TableCell>{item.name}</TableCell>
                       <TableCell>{item.email}</TableCell>

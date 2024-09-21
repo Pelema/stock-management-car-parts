@@ -21,14 +21,15 @@ export default function TableFooterComponent({
     setCurrentPage(page)
     const start = (page - 1) * rowsPerPage
     setStart(start)
-    const end = Math.min(start + rowsPerPage - 1, count);
+    const end = start + rowsPerPage - 1;
     setEnd(end)
   };
 
   useEffect(() => {
     const start = (currentPage - 1) * rowsPerPage
     setStart(start)
-    const end = Math.min(start + rowsPerPage - 1, count);
+    
+    const end = start + rowsPerPage - 1;
     setEnd(end)
   }, [rowsPerPage])
 

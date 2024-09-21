@@ -11,7 +11,7 @@ import {
   HiCurrencyDollar,
   HiDocument
 } from "react-icons/hi";
-import { BiSupport } from "react-icons/bi";
+// import { BiSupport } from "react-icons/bi";
 import { theme } from "./theme";
 import { NavLink, useLocation } from "react-router-dom";
 
@@ -95,14 +95,14 @@ export function SidebarComponent() {
           >
             Payments
           </Sidebar.Item>
-          <Sidebar.Item
+          {/* <Sidebar.Item
             as={NavLink}
             to="/support"
             active={location.pathname === "/support"}
             icon={BiSupport}
           >
             Support
-          </Sidebar.Item>
+          </Sidebar.Item> */}
 
           <Sidebar.Collapse icon={HiCog} label="Settings">
             <Sidebar.Item

@@ -8,7 +8,7 @@ import {
   TableHeadCell,
   TableRow,
 } from "flowbite-react";
-import { Key, useState } from "react";
+import { useState } from "react";
 import { tableTheme } from "./table_theme";
 
 import { HiPencil, HiTrash } from "react-icons/hi";
@@ -20,14 +20,18 @@ import {
 } from "../components";
 import { formatCurrency } from "../functions";
 import useQuery from "../hooks/query";
-import { AddStockModal, RestockModal } from "../modals";
+import { AddStockModal, ConfirmModal, RestockModal } from "../modals";
 import { StockItem } from "../types";
+import { toast } from "sonner";
+import useMutation from "../hooks/mutation";
 
 export function StockPage() {
   const [openedModal, setOpenedModal] = useState("");
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(10);
   const [selectedItem, setSelectedItem] = useState<StockItem>();
+
+  const { onDelete, loading } = useMutation();
 
   const {
     data: stock,
@@ -40,12 +44,24 @@ export function StockPage() {
     from: start,
     to: end,
     filter:
-      "id,OEM_number,VIN,engine_number,manufacturer,model_range,selling_price, quantity_on_hand,supplier(name,email),car_model(make,model)",
+      "id,name,description,min_stock_level,OEM_number,VIN,engine_number,manufacturer,model_range,selling_price, quantity_on_hand,supplier(name,email),car_model(make,model)",
   });
 
   const onSearch = async (text: string) => {
     if (text.length > 0)
       search(`OEM_number.ilike.%${text}%,VIN.ilike.%${text}%,engine_number.ilike.%${text}%,manufacturer.ilike.%${text}%,model_range.ilike.%${text}%`);
+  }
+
+  const confirmDelete = async () => {
+    const { data, error } = await onDelete("stock", selectedItem?.id as number);
+    if (data) {
+      toast.success(`${selectedItem?.name} deleted`);
+      setOpenedModal("");
+      refresh();
+    }
+    if (error) {
+      toast.error(error.message);
+    }
   }
 
   return (
@@ -80,15 +96,15 @@ export function StockPage() {
                 <ListSkeletalComponent cols={7} />
               ) : (
                 <>
-                  {stock?.map((item, key: Key) => (
+                  {stock?.map((item, key) => (
                     <TableRow
                       className="bg-white dark:border-gray-700 dark:bg-gray-800"
-                      key={key}
+                      key={key + item.OEM_number}
                     >
                       <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                        {item.id}
+                      {start + key + 1}
                       </TableCell>
-                      <TableCell>{item.OEM_number}</TableCell>
+                      <TableCell>{item.OEM_number} - {item.name}</TableCell>
                       <TableCell>
                         {typeof item.car_model !== "number" &&
                           item.car_model?.make}
@@ -120,7 +136,10 @@ export function StockPage() {
                             </Dropdown.Item>
                             <Dropdown.Item
                               icon={HiPencil}
-                              onClick={() => setOpenedModal("stock-modal")}
+                              onClick={() => {
+                                setSelectedItem(item);
+                                setOpenedModal("stock-modal");
+                              }}
                             >
                               Edit
                             </Dropdown.Item>
@@ -150,6 +169,7 @@ export function StockPage() {
       </div>
 
       <AddStockModal
+        product={selectedItem ?? null}
         refresh={refresh}
         openedModal={openedModal}
         setOpenedModal={setOpenedModal}
@@ -161,6 +181,10 @@ export function StockPage() {
         setOpenedModal={setOpenedModal}
         item={selectedItem}
       />
+
+      <ConfirmModal
+        openedModal={openedModal}
+        setOpenedModal={setOpenedModal} confirm={confirmDelete} loading={loading} />
     </>
   );
 }
