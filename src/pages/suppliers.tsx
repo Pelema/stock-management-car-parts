@@ -22,12 +22,15 @@ import useQuery from "../hooks/query";
 import { AddSupplierModal, ConfirmModal } from "../modals";
 import { Supplier } from "../types";
 import { tableTheme } from "./table_theme";
+import { AccessGuard } from "../components/access_guard";
 
 export function SuppliersPage() {
   const [openedModal, setOpenedModal] = useState("");
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(10);
-  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(null);
+  const [selectedSupplier, setSelectedSupplier] = useState<Supplier | null>(
+    null
+  );
 
   const {
     data: suppliers,
@@ -46,7 +49,10 @@ export function SuppliersPage() {
   const { onDelete, loading } = useMutation();
 
   const confirmDelete = async () => {
-    const { data, error } = await onDelete("suppliers", selectedSupplier?.id as number);
+    const { data, error } = await onDelete(
+      "suppliers",
+      selectedSupplier?.id as number
+    );
     if (data) {
       toast.success(`${selectedSupplier?.name} deleted`);
       setOpenedModal("");
@@ -56,24 +62,28 @@ export function SuppliersPage() {
     if (error) {
       toast.error(error.message);
     }
-  }
+  };
 
   const onSearch = async (text: string) => {
     if (text.length > 0)
-      search(`email.ilike.%${text}%,telephone.ilike.%${text}%,contact_person.ilike.%${text}%,name.ilike.%${text}%`);
-  }
+      search(
+        `email.ilike.%${text}%,telephone.ilike.%${text}%,contact_person.ilike.%${text}%,name.ilike.%${text}%`
+      );
+  };
 
   return (
     <>
       <div className="overflow-x-auto rounded-md grow">
         <TableHeaderComponent onSearch={onSearch}>
-          <Button
-            type="submit"
-            className="uppercase"
-            onClick={() => setOpenedModal("supplier-modal")}
-          >
-            add supplier
-          </Button>
+          <AccessGuard allowed_roles={["admin"]}>
+            <Button
+              type="submit"
+              className="uppercase"
+              onClick={() => setOpenedModal("supplier-modal")}
+            >
+              add supplier
+            </Button>
+          </AccessGuard>
         </TableHeaderComponent>
         <div className="h-full overflow-y-auto">
           <Table hoverable theme={tableTheme} className="table-fixed grow">
@@ -110,8 +120,8 @@ export function SuppliersPage() {
                             <Dropdown.Item
                               icon={HiPencil}
                               onClick={() => {
-                                setSelectedSupplier(item)
-                                setOpenedModal("supplier-modal")
+                                setSelectedSupplier(item);
+                                setOpenedModal("supplier-modal");
                               }}
                             >
                               Edit
@@ -119,8 +129,8 @@ export function SuppliersPage() {
                             <Dropdown.Item
                               icon={HiTrash}
                               onClick={() => {
-                                setSelectedSupplier(item)
-                                setOpenedModal("confirm-modal")
+                                setSelectedSupplier(item);
+                                setOpenedModal("confirm-modal");
                               }}
                             >
                               Delete
@@ -149,7 +159,12 @@ export function SuppliersPage() {
         supplier={selectedSupplier}
       />
 
-      <ConfirmModal openedModal={openedModal} setOpenedModal={setOpenedModal} confirm={confirmDelete} loading={loading} />
+      <ConfirmModal
+        openedModal={openedModal}
+        setOpenedModal={setOpenedModal}
+        confirm={confirmDelete}
+        loading={loading}
+      />
     </>
   );
 }

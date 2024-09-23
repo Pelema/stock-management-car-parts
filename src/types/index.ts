@@ -7,7 +7,7 @@ export type UserInputs = {
     fullname?: string;
 }
 
-enum Roles {
+export enum Roles {
     admin = "admin",
     sales = "sales",
     stock = "stock",
