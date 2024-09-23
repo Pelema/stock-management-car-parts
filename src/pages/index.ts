@@ -1,6 +1,6 @@
 import { LoginPage } from "./login";
 import { DashboardPage } from "./dashboard";
-import { VATPage } from "./vat";
+import { MarkupPage } from "./vat";
 import { CarModelPage } from "./car_model";
 import { UsersPage } from "./users";
 import { SupportPage } from "./support";
@@ -13,7 +13,7 @@ import { InvoicePage } from "./invoices";
 export {
   LoginPage,
   DashboardPage,
-  VATPage,
+  MarkupPage,
   CarModelPage,
   UsersPage,
   OrdersPage,

@@ -23,7 +23,7 @@ import { ConfirmModal } from "../modals";
 import { VAT } from "../types";
 import { tableTheme } from "./table_theme";
 
-export function VATPage() {
+export function MarkupPage() {
   const [openedModal, setOpenedModal] = useState("");
   const [selectedVAT, setSelectedVAT] = useState<VAT | null>(null);
 
