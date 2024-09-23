@@ -1,21 +1,8 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { RootRoute } from "./root";
-import {
-  LoginPage,
-  DashboardPage,
-  MarkupPage,
-  CarModelPage,
-  UsersPage,
-  OrdersPage,
-  StockPage,
-  SupportPage,
-  PaymentsPage,
-  CustomersPage,
-  InvoicePage,
-} from "../pages";
-import { SuppliersPage } from "../pages/suppliers";
+import { LoginPage } from "../pages";
 import { RouteGuard } from "./route_guard";
-import { Roles } from "../types";
+import { routes } from "./routes";
 
 export const router = createBrowserRouter([
   {
@@ -31,94 +18,28 @@ export const router = createBrowserRouter([
         path: "",
         element: <Navigate replace to="/dashboard" />,
       },
-      {
-        path: "dashboard",
-        element: (
-          <RouteGuard allowed_roles={[Roles.admin, Roles.stock, Roles.sales]}>
-            <DashboardPage />
-          </RouteGuard>
-        ),
-      },
-      {
-        path: "markup",
-        element: (
-          <RouteGuard allowed_roles={[Roles.admin, Roles.sales]}>
-            <MarkupPage />
-          </RouteGuard>
-        ),
-      },
-      {
-        path: "car-model",
-        element: (
-          <RouteGuard allowed_roles={[Roles.admin, Roles.stock, Roles.sales]}>
-            <CarModelPage />
-          </RouteGuard>
-        ),
-      },
-      {
-        path: "suppliers",
-        element: (
-          <RouteGuard allowed_roles={[Roles.admin, Roles.stock, Roles.sales]}>
-            <SuppliersPage />
-          </RouteGuard>
-        ),
-      },
-      {
-        path: "customers",
-        element: (
-          <RouteGuard allowed_roles={[Roles.admin, Roles.stock, Roles.sales]}>
-            <CustomersPage />
-          </RouteGuard>
-        ),
-      },
-      {
-        path: "users",
-        element: (
-          <RouteGuard allowed_roles={[Roles.admin]}>
-            <UsersPage />
-          </RouteGuard>
-        ),
-      },
-      {
-        path: "orders",
-        element: (
-          <RouteGuard allowed_roles={[Roles.admin, Roles.sales]}>
-            <OrdersPage />
-          </RouteGuard>
-        ),
-      },
-      {
-        path: "invoices",
-        element: (
-          <RouteGuard allowed_roles={[Roles.admin, Roles.sales]}>
-            <InvoicePage />
-          </RouteGuard>
-        ),
-      },
-      {
-        path: "stock",
-        element: (
-          <RouteGuard allowed_roles={[Roles.admin, Roles.stock, Roles.sales]}>
-            <StockPage />
-          </RouteGuard>
-        ),
-      },
-      {
-        path: "support",
-        element: (
-          <RouteGuard allowed_roles={[Roles.admin, Roles.stock, Roles.sales]}>
-            <SupportPage />
-          </RouteGuard>
-        ),
-      },
-      {
-        path: "payments",
-        element: (
-          <RouteGuard allowed_roles={[Roles.admin, Roles.sales]}>
-            <PaymentsPage />
-          </RouteGuard>
-        ),
-      },
+      ...routes
+        .map((item) => {
+          if (item.children && item.children.length > 0) {
+            return item.children.map((child) => ({
+              path: child.path,
+              element: (
+                <RouteGuard allowed_roles={child.allowed_roles}>
+                  {<child.element />}
+                </RouteGuard>
+              ),
+            }));
+          }
+          return {
+            path: item.path,
+            element: (
+              <RouteGuard allowed_roles={item.allowed_roles}>
+                {<item.element />}
+              </RouteGuard>
+            ),
+          };
+        })
+        .flat(),
     ],
   },
 
