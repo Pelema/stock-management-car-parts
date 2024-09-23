@@ -15,6 +15,7 @@ import { BiSupport } from "react-icons/bi";
 import { theme } from "./theme";
 import { NavLink, useLocation } from "react-router-dom";
 import { AccessGuard } from "./access_guard";
+import { Roles } from "../types";
 
 export function SidebarComponent() {
   const location = useLocation();
@@ -23,73 +24,73 @@ export function SidebarComponent() {
     {
       label: "Dashboard",
       path: "/dashboard",
-      allowed_roles: ["admin", "staff"],
+      allowed_roles: [Roles.admin, Roles.sales, Roles.stock],
       icon: HiChartPie,
     },
     {
       label: "Markup",
       path: "/markup",
-      allowed_roles: ["admin", "staff"],
+      allowed_roles: [Roles.admin, Roles.sales],
       icon: HiViewBoards,
     },
     {
       label: "Car Model",
       path: "/car-model",
-      allowed_roles: ["admin", "staff"],
+      allowed_roles: [Roles.admin, Roles.sales, Roles.stock],
       icon: HiInbox,
     },
     {
       label: "Suppliers",
       path: "/suppliers",
-      allowed_roles: ["admin", "staff"],
+      allowed_roles: [Roles.admin, Roles.sales, Roles.stock],
       icon: HiTruck,
     },
     {
       label: "Customers",
       path: "/customers",
-      allowed_roles: ["admin", "staff"],
+      allowed_roles: [Roles.admin, Roles.sales, Roles.stock],
       icon: HiUsers,
     },
     {
       label: "Stock",
       path: "/stock",
-      allowed_roles: ["admin", "staff"],
+      allowed_roles: [Roles.admin, Roles.sales, Roles.stock],
       icon: HiDatabase,
     },
     {
       label: "Orders",
       path: "/orders",
-      allowed_roles: ["admin", "staff"],
+      allowed_roles: [Roles.admin, Roles.sales],
       icon: HiShoppingBag,
     },
     {
       label: "Invoices",
       path: "/invoices",
-      allowed_roles: ["admin", "staff"],
+      allowed_roles: [Roles.admin, Roles.sales],
       icon: HiDocument,
     },
     {
       label: "Payments",
       path: "/payments",
-      allowed_roles: ["admin", "staff"],
+      allowed_roles: [Roles.admin, Roles.sales],
       icon: HiCurrencyDollar,
     },
     {
       label: "Support",
       path: "/support",
-      allowed_roles: ["admin", "staff"],
+      allowed_roles: [Roles.admin, Roles.sales, Roles.stock],
       icon: BiSupport,
     },
     {
       label: "Settings",
       path: "/settings",
-      allowed_roles: ["admin", "staff"],
+      allowed_roles: [Roles.admin],
       icon: HiCog,
       children: [
         {
           label: "Users",
           path: "/users",
-          allowed_roles: ["admin", "staff"],
+          allowed_roles: [Roles.admin],
           icon: HiUsers,
         },
       ],
