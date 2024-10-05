@@ -54,13 +54,18 @@ export function AddStockModalComponent({
 
   useEffect(() => {
     if (product?.id) {
+      console.log(
+        product.car_model instanceof CarModelPage,
+        " instance of ......",
+        typeof product.car_model
+      );
       setValue("name", product.name);
       setValue("description", product.description);
       setValue("engine_number", product.engine_number);
       setValue("VIN", product.VIN);
       setValue(
         "car_model",
-        product.car_model instanceof CarModelPage
+        typeof product.car_model == "object"
           ? product.car_model.id
           : product.car_model
       );
