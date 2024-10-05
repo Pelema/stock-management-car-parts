@@ -1,5 +1,5 @@
 import { Roles } from "../types";
-import { BiSupport } from "react-icons/bi";
+// import { BiSupport } from "react-icons/bi";
 import {
   HiChartPie,
   HiInbox,
@@ -24,7 +24,7 @@ import {
   OrdersPage,
   PaymentsPage,
   StockPage,
-  SupportPage,
+  // SupportPage,
   UsersPage,
 } from "../pages";
 import { SuppliersPage } from "../pages/suppliers";
@@ -102,13 +102,13 @@ export const routes = <IRoute[]>[
     icon: HiCurrencyDollar,
     element: PaymentsPage,
   },
-  {
-    label: "Support",
-    path: "/support",
-    allowed_roles: [Roles.admin, Roles.sales, Roles.stock],
-    icon: BiSupport,
-    element: SupportPage,
-  },
+  // {
+  //   label: "Support",
+  //   path: "/support",
+  //   allowed_roles: [Roles.admin, Roles.sales, Roles.stock],
+  //   icon: BiSupport,
+  //   element: SupportPage,
+  // },
   {
     label: "Settings",
     path: "/settings",
