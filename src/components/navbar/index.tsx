@@ -16,7 +16,7 @@ export function NavbarComponent() {
           alt="Flowbite React Logo"
         />
         <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-          Inventory Manager
+          Aficasia
         </span>
       </Navbar.Brand>
       <div className="flex md:order-2">

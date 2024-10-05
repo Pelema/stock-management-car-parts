@@ -7,19 +7,17 @@ import { routes } from "../routes/routes";
 export function SidebarComponent() {
   const location = useLocation();
 
-  console.log(routes.flat())
-
   return (
     <Sidebar theme={theme}>
       <Sidebar.Items>
         <Sidebar.ItemGroup>
-          {routes.map((item) => {
+          {routes.map((item, idx) => {
             return (
-              <AccessGuard allowed_roles={item.allowed_roles}>
+              <AccessGuard allowed_roles={item.allowed_roles} key={idx}>
                 {item.children ? (
                   <Sidebar.Collapse icon={item.icon} label={item.label}>
-                    {item.children.map((child) => (
-                      <AccessGuard allowed_roles={child.allowed_roles}>
+                    {item.children.map((child, idx) => (
+                      <AccessGuard allowed_roles={child.allowed_roles} key={idx}>
                         <Sidebar.Item
                           as={NavLink}
                           to={child.path}
