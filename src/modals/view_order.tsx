@@ -25,7 +25,7 @@ export function ViewOrderModalComponent({
                 title={order?.order_number}
                 titleIcon={HiDocument}
                 onClick={() => setOpenedModal("")}
-                className="cursor-pointer px-4 pt-4 hover:bg-gray-50 dark:hover:bg-gray-700"
+                className="cursor-pointer px-4 pt-4 "
             />
 
             <div className="flex justify-between mt-4 container mx-auto grow overflow-y-scroll">
