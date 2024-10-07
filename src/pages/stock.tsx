@@ -49,8 +49,10 @@ export function StockPage() {
 
   const onSearch = async (text: string) => {
     if (text.length > 0)
-      search(`OEM_number.ilike.%${text}%,VIN.ilike.%${text}%,engine_number.ilike.%${text}%,manufacturer.ilike.%${text}%,model_range.ilike.%${text}%`);
-  }
+      search(
+        `OEM_number.ilike.%${text}%,VIN.ilike.%${text}%,engine_number.ilike.%${text}%,manufacturer.ilike.%${text}%,model_range.ilike.%${text}%`
+      );
+  };
 
   const confirmDelete = async () => {
     const { data, error } = await onDelete("stock", selectedItem?.id as number);
@@ -62,7 +64,7 @@ export function StockPage() {
     if (error) {
       toast.error(error.message);
     }
-  }
+  };
 
   return (
     <>
@@ -102,9 +104,11 @@ export function StockPage() {
                       key={key + item.OEM_number}
                     >
                       <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
-                      {start + key + 1}
+                        {start + key + 1}
                       </TableCell>
-                      <TableCell>{item.OEM_number} - {item.name}</TableCell>
+                      <TableCell>
+                        {item.OEM_number} - {item.name}
+                      </TableCell>
                       <TableCell>
                         {typeof item.car_model !== "number" &&
                           item.car_model?.make}
@@ -115,7 +119,9 @@ export function StockPage() {
                       </TableCell>
                       <TableCell>{item.model_range}</TableCell>
                       <TableCell>{item.manufacturer}</TableCell>
-                      <TableCell>{formatCurrency(item.selling_price)}</TableCell>
+                      <TableCell>
+                        {formatCurrency(item.selling_price)}
+                      </TableCell>
                       <TableCell>{item.quantity_on_hand}</TableCell>
 
                       {/* <TableCell>
@@ -145,7 +151,10 @@ export function StockPage() {
                             </Dropdown.Item>
                             <Dropdown.Item
                               icon={HiTrash}
-                              onClick={() => setOpenedModal("confirm-modal")}
+                              onClick={() => {
+                                setSelectedItem(item);
+                                setOpenedModal("confirm-modal");
+                              }}
                             >
                               Delete
                             </Dropdown.Item>
@@ -184,7 +193,10 @@ export function StockPage() {
 
       <ConfirmModal
         openedModal={openedModal}
-        setOpenedModal={setOpenedModal} confirm={confirmDelete} loading={loading} />
+        setOpenedModal={setOpenedModal}
+        confirm={confirmDelete}
+        loading={loading}
+      />
     </>
   );
 }

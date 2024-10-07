@@ -1,19 +1,8 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { RootRoute } from "./root";
-import {
-  LoginPage,
-  DashboardPage,
-  VATPage,
-  CarModelPage,
-  UsersPage,
-  OrdersPage,
-  StockPage,
-  SupportPage,
-  PaymentsPage,
-  CustomersPage,
-  InvoicePage,
-} from "../pages";
-import { SuppliersPage } from "../pages/suppliers";
+import { LoginPage } from "../pages";
+import { RouteGuard } from "./route_guard";
+import { routes } from "./routes";
 
 export const router = createBrowserRouter([
   {
@@ -29,50 +18,28 @@ export const router = createBrowserRouter([
         path: "",
         element: <Navigate replace to="/dashboard" />,
       },
-      {
-        path: "dashboard",
-        element: <DashboardPage />,
-      },
-      {
-        path: "vat",
-        element: <VATPage />,
-      },
-      {
-        path: "car-model",
-        element: <CarModelPage />,
-      },
-      {
-        path: "suppliers",
-        element: <SuppliersPage />,
-      },
-      {
-        path: "customers",
-        element: <CustomersPage />,
-      },
-      {
-        path: "users",
-        element: <UsersPage />,
-      },
-      {
-        path: "orders",
-        element: <OrdersPage />,
-      },
-      {
-        path: "invoices",
-        element: <InvoicePage />,
-      },
-      {
-        path: "stock",
-        element: <StockPage />,
-      },
-      {
-        path: "support",
-        element: <SupportPage />,
-      },
-      {
-        path: "payments",
-        element: <PaymentsPage />,
-      },
+      ...routes
+        .map((item) => {
+          if (item.children && item.children.length > 0) {
+            return item.children.map((child) => ({
+              path: child.path,
+              element: (
+                <RouteGuard allowed_roles={child.allowed_roles}>
+                  {<child.element />}
+                </RouteGuard>
+              ),
+            }));
+          }
+          return {
+            path: item.path,
+            element: (
+              <RouteGuard allowed_roles={item.allowed_roles}>
+                {<item.element />}
+              </RouteGuard>
+            ),
+          };
+        })
+        .flat(),
     ],
   },
 

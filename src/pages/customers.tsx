@@ -6,7 +6,7 @@ import {
   TableCell,
   TableHead,
   TableHeadCell,
-  TableRow
+  TableRow,
 } from "flowbite-react";
 import { useState } from "react";
 import { HiPencil, HiTrash } from "react-icons/hi";
@@ -28,7 +28,9 @@ export function CustomersPage() {
   const [openedModal, setOpenedModal] = useState("");
   const [start, setStart] = useState(0);
   const [end, setEnd] = useState(10);
-  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(
+    null
+  );
 
   const {
     data: customers,
@@ -45,13 +47,18 @@ export function CustomersPage() {
 
   const onSearch = async (text: string) => {
     if (text.length > 0)
-      search(`name.ilike.%${text}%,company_name.ilike.%${text}%,telephone.ilike.%${text}%,email.ilike.%${text}%`);
-  }
+      search(
+        `name.ilike.%${text}%,company_name.ilike.%${text}%,telephone.ilike.%${text}%,email.ilike.%${text}%`
+      );
+  };
 
-  const { onDelete } = useMutation();
+  const { onDelete, loading: onDeleteLoading } = useMutation();
 
   const confirmDelete = async () => {
-    const { data, error } = await onDelete("customers", selectedCustomer?.id as number);
+    const { data, error } = await onDelete(
+      "customers",
+      selectedCustomer?.id as number
+    );
     if (data) {
       toast.success(`${selectedCustomer?.name} deleted`);
       setOpenedModal("");
@@ -61,7 +68,7 @@ export function CustomersPage() {
     if (error) {
       toast.error(error.message);
     }
-  }
+  };
 
   return (
     <>
@@ -70,7 +77,10 @@ export function CustomersPage() {
           <Button
             type="submit"
             className="uppercase"
-            onClick={() => { setOpenedModal("customer-modal"); setSelectedCustomer(null) }}
+            onClick={() => {
+              setOpenedModal("customer-modal");
+              setSelectedCustomer(null);
+            }}
           >
             add customer
           </Button>
@@ -97,12 +107,12 @@ export function CustomersPage() {
                       <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                         {start + key + 1}
                       </TableCell>
-                      <TableCell>
-                        {item?.name}
-                      </TableCell>
+                      <TableCell>{item?.name}</TableCell>
                       <TableCell>{item.company_name}</TableCell>
                       <TableCell>{item.telephone}</TableCell>
-                      <TableCell><p className="line-clamp-2">{item.address}</p></TableCell>
+                      <TableCell>
+                        <p className="line-clamp-2">{item.address}</p>
+                      </TableCell>
                       <TableCell>
                         <TableActionsComponent>
                           <>
@@ -110,7 +120,7 @@ export function CustomersPage() {
                               icon={HiPencil}
                               onClick={() => {
                                 setSelectedCustomer(item);
-                                setOpenedModal("customer-modal")
+                                setOpenedModal("customer-modal");
                               }}
                             >
                               Edit
@@ -119,7 +129,7 @@ export function CustomersPage() {
                               icon={HiTrash}
                               onClick={() => {
                                 setSelectedCustomer(item);
-                                setOpenedModal("confirm-modal")
+                                setOpenedModal("confirm-modal");
                               }}
                             >
                               Delete
@@ -142,8 +152,18 @@ export function CustomersPage() {
         />
       </div>
 
-      <AddCustomerModalComponent refresh={refresh} openedModal={openedModal} setOpenedModal={setOpenedModal} customer={selectedCustomer} />
-      <ConfirmModal openedModal={openedModal} setOpenedModal={setOpenedModal} confirm={confirmDelete} loading={loading} />
+      <AddCustomerModalComponent
+        refresh={refresh}
+        openedModal={openedModal}
+        setOpenedModal={setOpenedModal}
+        customer={selectedCustomer}
+      />
+      <ConfirmModal
+        openedModal={openedModal}
+        setOpenedModal={setOpenedModal}
+        confirm={confirmDelete}
+        loading={onDeleteLoading}
+      />
     </>
   );
 }

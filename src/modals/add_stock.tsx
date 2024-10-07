@@ -13,29 +13,34 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import useQuery from "../hooks/query";
 import { Key, useEffect } from "react";
+import { CarModelPage } from "../pages";
 
 export function AddStockModalComponent({
   openedModal,
   setOpenedModal,
   refresh,
-  product
-}: TModalProps & { refresh: () => void, product: StockItem | null }) {
+  product,
+}: TModalProps & { refresh: () => void; product: StockItem | null }) {
   const {
     register,
     handleSubmit,
     formState: { errors },
     setValue,
-    reset
+    reset,
   } = useForm<StockItem>();
 
-  const {
-    data: cars,
-  } = useQuery<CarModel[]>({ table: "car_model", from: 0, to: 100 });
+  const { data: cars } = useQuery<CarModel[]>({
+    table: "car_model",
+    from: 0,
+    to: 100,
+  });
 
   const { insert, update, loading } = useMutation();
 
   const onSubmit: SubmitHandler<StockItem> = async (values) => {
-    const { data, error } = product ? await update('stock', product?.id as number, values) : await insert('stock', values);
+    const { data, error } = product
+      ? await update("stock", product?.id as number, values)
+      : await insert("stock", values);
     if (error) {
       toast.error(error.message);
     }
@@ -49,10 +54,21 @@ export function AddStockModalComponent({
 
   useEffect(() => {
     if (product?.id) {
+      console.log(
+        product.car_model instanceof CarModelPage,
+        " instance of ......",
+        typeof product.car_model
+      );
       setValue("name", product.name);
       setValue("description", product.description);
       setValue("engine_number", product.engine_number);
-      setValue("car_model", product.car_model);
+      setValue("VIN", product.VIN);
+      setValue(
+        "car_model",
+        typeof product.car_model == "object"
+          ? product.car_model.id
+          : product.car_model
+      );
       setValue("engine_number", product.engine_number);
       setValue("model_range", product.model_range);
       setValue("OEM_number", product.OEM_number);
@@ -60,7 +76,7 @@ export function AddStockModalComponent({
       setValue("min_stock_level", product.min_stock_level);
       setValue("selling_price", product.selling_price);
     }
-  }, [product, setValue])
+  }, [product, setValue]);
 
   return (
     <Modal
@@ -201,6 +217,7 @@ export function AddStockModalComponent({
                 {...register("car_model", {
                   required: "car model is required",
                 })}
+                // defaultValue={product?.car_model}
                 helperText={
                   <>
                     {errors.car_model && (
