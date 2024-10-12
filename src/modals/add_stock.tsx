@@ -164,14 +164,14 @@ export function AddStockModalComponent({
           <div className="flex space-x-2">
             <div className="grow">
               <div className="mb-2 block">
-                <Label htmlFor="VIN" value="VIN" />
+                <Label htmlFor="VIN/Part Number" value="VIN" />
               </div>
               <TextInput
                 id="VIN"
                 type="text"
                 placeholder="WVWZZZ6RXHKL90H"
                 {...register("VIN", {
-                  minLength: { value: 17, message: "min of 17 letters" },
+                  // minLength: { value: 17, message: "min of 17 letters" },
                 })}
                 helperText={
                   <>

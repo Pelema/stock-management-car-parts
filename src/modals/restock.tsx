@@ -11,7 +11,7 @@ import useMutation from "../hooks/mutation";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import useQuery from "../hooks/query";
-import { Key } from "react";
+import { Key, useEffect } from "react";
 
 export function ReStockModalComponent({
   openedModal,
@@ -23,7 +23,8 @@ export function ReStockModalComponent({
     register,
     handleSubmit,
     formState: { errors },
-    // watch,
+    watch,
+    setValue
   } = useForm<ReStockItem>();
 
   const {
@@ -38,12 +39,18 @@ export function ReStockModalComponent({
     // error: isVATError,
   } = useQuery<VAT[]>({ table: "VAT", from: 0, to: 10 });
 
-  const { insert, update, data: fetchData, loading, error } = useMutation();
+  const { insert, update, loading, error } = useMutation();
   // const purchase_price = watch("purchase_price");
 
+  const markup_perc = watch("markup_perc");
+  const purchase_price = watch("purchase_price");
+
+  useEffect(() => {
+    setValue("markup_price", ((markup_perc as number / 100) + 1) * purchase_price);
+  }, [markup_perc, purchase_price, setValue])
   const onSubmit: SubmitHandler<ReStockItem> = async (values) => {
     console.log("called..");
-    await insert("stock_history", { ...values, stock_id: item?.id });
+    const respond = await insert("stock_history", { ...values, stock_id: item?.id });
     if (error) {
       console.log(error);
       return toast.error(error);
@@ -51,12 +58,13 @@ export function ReStockModalComponent({
 
     if (item?.id) {
       console.log("updating stock ", item.id);
-      await update("stock", item?.id, {
+      const res = await update("stock", item?.id, {
         quantity_on_hand: item.quantity_on_hand + values.quantity_received,
       });
+      console.log(res);
     }
 
-    if (fetchData) {
+    if (respond) {
       toast.success("Stock updated!");
       refresh();
       setOpenedModal("");
@@ -138,7 +146,7 @@ export function ReStockModalComponent({
                 }
               >
                 {VATData?.map((item, key: Key) => (
-                  <option key={key} value={item.id}>
+                  <option key={key} value={item.percentage}>
                     {item.label} - {item.percentage}%
                   </option>
                 ))}
@@ -204,6 +212,7 @@ export function ReStockModalComponent({
               <TextInput
                 id="markup_price"
                 type="number"
+                disabled
                 placeholder="20,000"
                 {...register("markup_price", {
                   required: "Markup price field is required",
