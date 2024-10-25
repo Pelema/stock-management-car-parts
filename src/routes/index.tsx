@@ -3,6 +3,7 @@ import { RootRoute } from "./root";
 import { LoginPage } from "../pages";
 import { RouteGuard } from "./route_guard";
 import { routes } from "./routes";
+import { ClientPage } from "../pages/client_side";
 
 export const router = createBrowserRouter([
   {
@@ -12,11 +13,16 @@ export const router = createBrowserRouter([
 
   {
     path: "/",
+    element: <ClientPage />
+  },
+
+  {
+    path: "/admin",
     element: <RootRoute />,
     children: [
       {
-        path: "",
-        element: <Navigate replace to="/dashboard" />,
+        path: "admin",
+        element: <Navigate replace to="/admin/dashboard" />,
       },
       ...routes
         .map((item) => {

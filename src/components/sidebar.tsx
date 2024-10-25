@@ -1,5 +1,5 @@
 import { Sidebar } from "flowbite-react";
-import { theme } from "./theme";
+import { theme } from "./sidebar_theme";
 import { NavLink, useLocation } from "react-router-dom";
 import { AccessGuard } from "./access_guard";
 import { routes } from "../routes/routes";

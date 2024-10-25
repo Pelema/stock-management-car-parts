@@ -9,7 +9,7 @@ export function NavbarComponent() {
 
   return (
     <Navbar theme={theme}>
-      <Navbar.Brand href="/">
+      <Navbar.Brand href="/admin">
         <img
           src="/logo.webp"
           className="mr-3 h-6 sm:h-9 rounded-lg"
