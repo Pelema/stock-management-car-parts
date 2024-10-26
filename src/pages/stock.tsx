@@ -50,7 +50,7 @@ export function StockPage() {
   const onSearch = async (text: string) => {
     if (text.length > 0)
       search(
-        `OEM_number.ilike.%${text}%,VIN.ilike.%${text}%,engine_number.ilike.%${text}%,manufacturer.ilike.%${text}%,model_range.ilike.%${text}%`
+        `name.ilike.%${text}%,OEM_number.ilike.%${text}%,VIN.ilike.%${text}%,engine_number.ilike.%${text}%,manufacturer.ilike.%${text}%,model_range.ilike.%${text}%`
       );
   };
 

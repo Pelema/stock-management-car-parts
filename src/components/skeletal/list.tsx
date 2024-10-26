@@ -5,7 +5,7 @@ type TSkeletal = {
   rows?: number;
 };
 
-export default function ListSkeletalComponent({
+export function ListSkeletalComponent({
   rows = 10,
   cols = 6,
 }: TSkeletal) {

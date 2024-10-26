@@ -164,6 +164,8 @@ export function AddOrderModalComponent({
                 toast.error(orderItemError.message);
             }
             if (orderItem) {
+                console.log("Order", orderItem);
+                
                 toast.success("order added");
                 setOpenedModal("");
                 refresh();
@@ -459,7 +461,7 @@ export function AddOrderModalComponent({
                                                         scale: 0.8,
                                                         rotate: -90
                                                     }}>-</motion.button>
-                                                <span className="">{item.quantity}</span>
+                                                <span className="dark:text-black">{item.quantity}</span>
                                                 <motion.button
                                                     className="flex items-center justify-center h-6 w-6 bg-white dark:bg-gray-700 rounded-full font-bold"
                                                     onClick={() => onChangeQuantity(item, '+')}

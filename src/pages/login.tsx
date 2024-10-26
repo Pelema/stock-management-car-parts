@@ -14,11 +14,15 @@ export function LoginPage() {
   const { loading, error, signIn } = useAuth();
 
   const onSubmit: SubmitHandler<UserInputs> = async (values) => {
-    const data = await signIn(values);
+    const { data, error } = await signIn(values);
+    // console.log("USer data ", data);
+    
+    if (error) {
+      return
+    }
     if (data) {
       localStorage.setItem("logged_in", "true");
-      console.log("User Data");
-      window.location.href = "/"
+      window.location.href = "/admin/dashboard"
     }
   };
 
@@ -30,12 +34,12 @@ export function LoginPage() {
       >
         <div>
           <div className="mb-2 block">
-            <Label htmlFor="email" value="Your email" />
+            <Label htmlFor="email" value="Email" />
           </div>
           <TextInput
             id="email"
             type="email"
-            placeholder="name@mail.com"
+            placeholder="name@example.com"
             required
             {...register("email")}
           />
@@ -43,7 +47,7 @@ export function LoginPage() {
         </div>
         <div>
           <div className="mb-2 block">
-            <Label htmlFor="password" value="Your password" />
+            <Label htmlFor="password" value="Password" />
           </div>
           <TextInput id="password" type="password" required {...register("password")} />
           {errors.password && <span>password is required</span>}
