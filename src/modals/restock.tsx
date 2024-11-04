@@ -40,8 +40,7 @@ export function ReStockModalComponent({
   const quantity_received = watch("quantity_received");
 
   useEffect(() => {
-    const basePrice = quantity_received * purchase_price;
-    const markupPrice = basePrice * (1 + (markup_perc as number) / 100);
+    const markupPrice = purchase_price * (1 + (markup_perc as number) / 100);
 
     setValue("markup_price", markupPrice);
   }, [markup_perc, purchase_price, quantity_received, setValue]);
@@ -81,7 +80,7 @@ export function ReStockModalComponent({
             <TextInput
               id="invoice_number"
               type="text"
-              placeholder="INV-2984"
+              placeholder="e.g. INV-2984"
               {...register("invoice_number", {
                 required: "Invoice # field is required",
               })}
@@ -193,7 +192,7 @@ export function ReStockModalComponent({
           <div className="flex space-x-2">
             <div className="grow">
               <div className="mb-2 block">
-                <Label htmlFor="markup_price" value="Price Inc VAT (N$)" />
+                <Label htmlFor="markup_price" value="Price Inc VAT (N$) per item" />
               </div>
               <TextInput
                 id="markup_price"
