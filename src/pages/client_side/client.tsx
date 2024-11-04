@@ -8,7 +8,7 @@ import {
 } from "flowbite-react";
 import { HiSearch } from "react-icons/hi";
 import { LuCar, LuShoppingCart } from "react-icons/lu";
-import { FaHeadset, FaUserCircle, FaPlus } from "react-icons/fa";
+import { FaHeadset, FaUserCircle, FaCartPlus } from "react-icons/fa";
 import { theme } from "../../components/sidebar_theme";
 import { useNavigate } from "react-router-dom";
 import { StockItem } from "../../types";
@@ -214,7 +214,7 @@ export default function ClientPage() {
                       <div className="text-sm font-bold">{formatCurrency(item.selling_price)}</div>
                       <button className="flex items-center gap-2" onClick={() => addToCart(item)}>
                         <span className="text-xs">Add to Cart</span>
-                        <FaPlus />
+                        <FaCartPlus />
                       </button>
                     </div>
                   </div>
