@@ -1,11 +1,4 @@
-import {
-  Button,
-  Label,
-  Modal,
-  Select,
-  Spinner,
-  TextInput,
-} from "flowbite-react";
+import { Button, Label, Modal, Select, Spinner, TextInput } from "flowbite-react";
 import { ReStockItem, StockItem, Supplier, TModalProps, VAT } from "../types";
 import useMutation from "../hooks/mutation";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -24,7 +17,7 @@ export function ReStockModalComponent({
     handleSubmit,
     formState: { errors },
     watch,
-    setValue
+    setValue,
   } = useForm<ReStockItem>();
 
   const {
@@ -44,10 +37,15 @@ export function ReStockModalComponent({
 
   const markup_perc = watch("markup_perc");
   const purchase_price = watch("purchase_price");
+  const quantity_received = watch("quantity_received");
 
   useEffect(() => {
-    setValue("markup_price", ((markup_perc as number / 100) + 1) * purchase_price);
-  }, [markup_perc, purchase_price, setValue])
+    const basePrice = quantity_received * purchase_price;
+    const markupPrice = basePrice * (1 + (markup_perc as number) / 100);
+
+    setValue("markup_price", markupPrice);
+  }, [markup_perc, purchase_price, quantity_received, setValue]);
+
   const onSubmit: SubmitHandler<ReStockItem> = async (values) => {
     console.log("called..");
     const respond = await insert("stock_history", { ...values, stock_id: item?.id });
@@ -72,11 +70,7 @@ export function ReStockModalComponent({
   };
 
   return (
-    <Modal
-      show={openedModal === "restock-modal"}
-      onClose={() => setOpenedModal("")}
-      size={"3xl"}
-    >
+    <Modal show={openedModal === "restock-modal"} onClose={() => setOpenedModal("")} size={"3xl"}>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <Modal.Header>Restock - {item?.OEM_number}</Modal.Header>
         <Modal.Body>
@@ -94,9 +88,7 @@ export function ReStockModalComponent({
               helperText={
                 <>
                   {errors.invoice_number && (
-                    <span className="font-medium text-sm">
-                      {errors.invoice_number.message}
-                    </span>
+                    <span className="font-medium text-sm">{errors.invoice_number.message}</span>
                   )}
                 </>
               }
@@ -110,16 +102,14 @@ export function ReStockModalComponent({
               <TextInput
                 id="purchase_price"
                 type="number"
-                placeholder="20,000"
+                placeholder="e.g. 20,000"
                 {...register("purchase_price", {
                   required: "Purchase price field is required",
                 })}
                 helperText={
                   <>
                     {errors.purchase_price && (
-                      <span className="font-medium text-sm">
-                        {errors.purchase_price.message}
-                      </span>
+                      <span className="font-medium text-sm">{errors.purchase_price.message}</span>
                     )}
                   </>
                 }
@@ -138,9 +128,7 @@ export function ReStockModalComponent({
                 helperText={
                   <>
                     {errors.markup_perc && (
-                      <span className="font-medium text-sm">
-                        {errors.markup_perc.message}
-                      </span>
+                      <span className="font-medium text-sm">{errors.markup_perc.message}</span>
                     )}
                   </>
                 }
@@ -161,7 +149,7 @@ export function ReStockModalComponent({
               <TextInput
                 id="quantity_received"
                 type="number"
-                placeholder="5,000"
+                placeholder="e.g. 5,000"
                 {...register("quantity_received", {
                   required: "quantity is required",
                 })}
@@ -188,9 +176,7 @@ export function ReStockModalComponent({
                 helperText={
                   <>
                     {errors.supplier_id && (
-                      <span className="font-medium text-sm">
-                        {errors.supplier_id.message}
-                      </span>
+                      <span className="font-medium text-sm">{errors.supplier_id.message}</span>
                     )}
                   </>
                 }
@@ -220,9 +206,7 @@ export function ReStockModalComponent({
                 helperText={
                   <>
                     {errors.markup_price && (
-                      <span className="font-medium text-sm">
-                        {errors.markup_price.message}
-                      </span>
+                      <span className="font-medium text-sm">{errors.markup_price.message}</span>
                     )}
                   </>
                 }
