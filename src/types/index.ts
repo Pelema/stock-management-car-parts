@@ -58,6 +58,7 @@ export type ReStockItem = {
     quantity_received: number;
     purchase_price: number;
     markup_price: number;
+    selling_price?: number;
 }
 
 export type StockItem = {
